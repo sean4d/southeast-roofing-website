@@ -42,6 +42,14 @@ export const stockPhotos = {
       "https://unsplash.com/photos/a-man-working-on-a-roof-with-a-power-drill-Scaj0T40nFI",
     license: "Unsplash License",
   },
+  /** Commercial division panel — aerial of large flat membrane roofs */
+  commercialAerial: {
+    src: "/images/stock/commercial-flat-roof-aerial-view.jpg",
+    alt: "Aerial view of large commercial buildings with white flat membrane roofs",
+    source:
+      "https://images.unsplash.com/photo-1758304481447-fd91f8995e1e (Unsplash, photographer Alex Reynolds)",
+    license: "Unsplash License",
+  },
   /** Storm/restoration — shingle tear-off in progress */
   roofTearOff: {
     src: "/images/stock/asphalt-shingle-roof-replacement-tear-off.jpg",

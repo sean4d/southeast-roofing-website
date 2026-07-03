@@ -6,12 +6,93 @@ import { divisionSplit } from "@/content/homepage";
 import { Reveal } from "@/components/motion/reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/stagger";
 
+interface PanelProps {
+  title: string;
+  description: string;
+  href: string;
+  cta: string;
+  photo: { src: string; alt: string };
+  highlights: readonly string[];
+  chips?: readonly {
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+  }[];
+}
+
+function DivisionPanel({
+  title,
+  description,
+  href,
+  cta,
+  photo,
+  highlights,
+  chips,
+}: PanelProps) {
+  return (
+    <Link
+      href={href}
+      className="group shadow-premium relative flex h-full min-h-[26rem] flex-col justify-end overflow-hidden rounded-3xl border border-border"
+    >
+      <Image
+        src={photo.src}
+        alt={photo.alt}
+        fill
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+      {/* Navy gradient for text legibility over the photo */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/35 to-transparent"
+      />
+      <div className="relative p-8 text-white sm:p-10">
+        {chips && (
+          <ul
+            className="mb-6 flex flex-wrap gap-2"
+            aria-label="Industries served"
+          >
+            {chips.map(({ icon: Icon, label }) => (
+              <li
+                key={label}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-navy-950/40 px-3 py-1 text-xs font-medium text-steel-100 backdrop-blur-sm"
+              >
+                <Icon className="size-3.5" aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </ul>
+        )}
+        <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
+          {title}
+        </h3>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-steel-100 sm:text-base">
+          {description}
+        </p>
+        <ul className="mt-5 space-y-1.5 text-sm text-steel-100">
+          {highlights.map((item) => (
+            <li key={item} className="flex items-center gap-2">
+              <Check className="size-4 text-steel-300" aria-hidden="true" />
+              {item}
+            </li>
+          ))}
+        </ul>
+        <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
+          {cta}
+          <ArrowRight
+            className="size-4 transition-transform group-hover:translate-x-1"
+            aria-hidden="true"
+          />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 /**
- * Residential / Commercial split (PRD §3.3): the structural statement that
- * Southeast Roofing has exactly two divisions, presented with equal weight.
- * Residential is photo-led (real project photography exists); Commercial is
- * a navy design panel until real commercial photography is supplied —
- * never a stock or misattributed photo (integrity rule).
+ * Residential / Commercial split (PRD §3.3). Owner rebalance 2026-07-04:
+ * the two divisions are presented evenly — equal panels, both photo-led
+ * (residential home + commercial aerial, both licensed stock per the
+ * homepage imagery policy).
  */
 export function DivisionSplit() {
   const { residential, commercial } = divisionSplit;
@@ -28,120 +109,12 @@ export function DivisionSplit() {
           </h2>
         </Reveal>
 
-        {/* Residential 3/5, commercial 2/5 — residential visually leads
-            (brand directive 2026-07-03 §2) */}
-        <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-5">
-          {/* Residential — photo-led panel, larger */}
-          <StaggerItem className="lg:col-span-3">
-            <Link
-              href={residential.href}
-              className="group shadow-premium relative flex h-full min-h-[26rem] flex-col justify-end overflow-hidden rounded-3xl border border-border"
-            >
-              <Image
-                src={residential.photo.src}
-                alt={residential.photo.alt}
-                fill
-                sizes="(min-width: 1024px) 60vw, 100vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-              {/* Navy gradient for text legibility over the photo */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/35 to-transparent"
-              />
-              <span className="absolute top-6 left-6 rounded-full bg-white/95 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary uppercase backdrop-blur">
-                {residential.badge}
-              </span>
-              <div className="relative p-8 text-white sm:p-10">
-                <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
-                  {residential.title}
-                </h3>
-                <p className="mt-3 max-w-md text-sm leading-relaxed text-steel-100 sm:text-base">
-                  {residential.description}
-                </p>
-                <ul className="mt-5 space-y-1.5 text-sm text-steel-100">
-                  {residential.highlights.map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <Check
-                        className="size-4 text-steel-300"
-                        aria-hidden="true"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
-                  {residential.cta}
-                  <ArrowRight
-                    className="size-4 transition-transform group-hover:translate-x-1"
-                    aria-hidden="true"
-                  />
-                </span>
-              </div>
-            </Link>
+        <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-2">
+          <StaggerItem>
+            <DivisionPanel {...residential} />
           </StaggerItem>
-
-          {/* Commercial — navy design panel (secondary weight) */}
-          <StaggerItem className="lg:col-span-2">
-            <Link
-              href={commercial.href}
-              className="group shadow-premium relative flex h-full min-h-[26rem] flex-col justify-end overflow-hidden rounded-3xl border border-navy-800 bg-navy-900"
-            >
-              {/* Subtle structural grid motif */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 opacity-[0.07]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(var(--color-steel-300) 1px, transparent 1px), linear-gradient(90deg, var(--color-steel-300) 1px, transparent 1px)",
-                  backgroundSize: "44px 44px",
-                }}
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgb(79_126_168_/_0.25),_transparent_60%)]"
-              />
-              <div className="relative p-8 text-white sm:p-10">
-                <ul
-                  className="mb-6 flex flex-wrap gap-2"
-                  aria-label="Industries served"
-                >
-                  {commercial.industries.map(({ icon: Icon, label }) => (
-                    <li
-                      key={label}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-steel-100"
-                    >
-                      <Icon className="size-3.5" aria-hidden="true" />
-                      {label}
-                    </li>
-                  ))}
-                </ul>
-                <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
-                  {commercial.title}
-                </h3>
-                <p className="mt-3 max-w-md text-sm leading-relaxed text-steel-100 sm:text-base">
-                  {commercial.description}
-                </p>
-                <ul className="mt-5 space-y-1.5 text-sm text-steel-100">
-                  {commercial.highlights.map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <Check
-                        className="size-4 text-steel-300"
-                        aria-hidden="true"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
-                  {commercial.cta}
-                  <ArrowRight
-                    className="size-4 transition-transform group-hover:translate-x-1"
-                    aria-hidden="true"
-                  />
-                </span>
-              </div>
-            </Link>
+          <StaggerItem>
+            <DivisionPanel {...commercial} chips={commercial.industries} />
           </StaggerItem>
         </StaggerGroup>
       </div>

@@ -45,16 +45,12 @@ import { stockPhotos } from "@/content/stock-photos";
 export const hero = {
   locationLine: "Hattiesburg, MS — serving a 2-hour radius across Mississippi",
   /**
-   * 10-second rule (brand directive 2026-07-03): a visitor must immediately
-   * understand "we specialize in residential roof replacement."
+   * Owner rebalance 2026-07-04: brand-neutral headline — residential and
+   * commercial are presented evenly; never look residential-only.
    */
-  headline: {
-    lead: "Residential roof replacement,",
-    accent: "done right.",
-    tail: "",
-  },
+  headline: { lead: "Roofing done", accent: "right.", tail: "" },
   subhead:
-    "Southeast Roofing is South Mississippi's residential asphalt shingle specialist — GAF-certified roof replacement, repairs, storm restoration, and insurance claim help, with metal and commercial capability when you need it.",
+    "Southeast Roofing protects South Mississippi homes and businesses alike — GAF-certified asphalt shingle replacement, commercial roofing systems, storm restoration, and insurance claim help, from first inspection to final walkthrough.",
   photo: stockPhotos.heroHome,
   /** Descriptive only — stock imagery is never presented as our project */
   photoBadge: "Architectural asphalt shingle roofing",
@@ -93,9 +89,9 @@ export const trustItems: TrustItem[] = [
     detail: "Accredited business standing",
   },
   {
-    icon: Layers,
-    label: "GAF & Owens Corning Systems",
-    detail: "Quality shingle products we install",
+    icon: FileCheck,
+    label: "Fully Licensed & Insured",
+    detail: "Your home and project are protected",
   },
 ];
 
@@ -104,17 +100,15 @@ export const trustItems: TrustItem[] = [
 /* ------------------------------------------------------------------ */
 
 /**
- * Residential leads visually (larger panel, "Our specialty" badge) —
- * commercial is real capability but never outweighs residential asphalt
- * shingle roofing (brand directive 2026-07-03 §2).
+ * Owner rebalance 2026-07-04: residential and commercial presented evenly —
+ * equal panels, both photo-led.
  */
 export const divisionSplit = {
-  heading: "Residential specialists. Commercial capable.",
+  heading: "Two divisions. One standard of craftsmanship.",
   residential: {
     title: "Residential Roofing",
-    badge: "Our specialty",
     description:
-      "Asphalt shingle roof replacement is what we do best — backed by repairs, storm restoration, insurance claim help, and metal options.",
+      "Asphalt shingle roof replacement done right — backed by repairs, storm restoration, insurance claim help, and metal options.",
     href: "/residential",
     cta: "Explore residential",
     photo: stockPhotos.residentialHome,
@@ -130,6 +124,7 @@ export const divisionSplit = {
       "Flat and low-slope systems for facilities across the region — TPO, EPDM, coatings, metal, and planned maintenance.",
     href: "/commercial",
     cta: "Explore commercial",
+    photo: stockPhotos.commercialAerial,
     highlights: [
       "TPO, EPDM & modified bitumen",
       "Roof coatings & maintenance programs",
