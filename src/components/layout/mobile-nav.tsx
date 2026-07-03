@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { PhoneLink } from "@/components/shared/phone-link";
 
-/** Mobile navigation drawer (lg breakpoint and below). */
+/** Mobile navigation drawer (below the xl breakpoint). */
 export function MobileNav() {
   const [open, setOpen] = useState(false);
 
@@ -26,20 +26,17 @@ export function MobileNav() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="xl:hidden"
             aria-label="Open menu"
           />
         }
       >
         <Menu className="size-6" aria-hidden="true" />
       </SheetTrigger>
-      <SheetContent
-        side="right"
-        className="w-80 border-charcoal-700 bg-charcoal-900"
-      >
+      <SheetContent side="right" className="w-80 border-border bg-white">
         <SheetHeader>
-          <SheetTitle className="text-left font-display tracking-widest">
-            SOUTHEAST ROOFING
+          <SheetTitle className="text-left font-display text-primary">
+            Southeast Roofing
           </SheetTitle>
         </SheetHeader>
         <nav aria-label="Mobile navigation" className="mt-2 px-4">
@@ -49,7 +46,7 @@ export function MobileNav() {
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-3 py-3 text-base font-medium text-silver-200 transition-colors hover:bg-charcoal-800 hover:text-white"
+                  className="block rounded-lg px-3 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -66,7 +63,7 @@ export function MobileNav() {
             >
               {primaryCta.label}
             </Button>
-            <PhoneLink className="justify-center text-silver-200" />
+            <PhoneLink className="justify-center text-primary" />
           </div>
         </nav>
       </SheetContent>

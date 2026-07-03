@@ -22,14 +22,38 @@ export const brandAssets = {
     /** Intrinsic aspect ratio of the trimmed marks (479x278) */
     aspect: { width: 479, height: 278 },
   },
+  /**
+   * Credentials confirmed by the owner 2026-07-03: GAF certified, BBB
+   * accredited, MSBOC licensed, Owens Corning Preferred (OC is the primary
+   * displayed manufacturer credential; logo used with permission).
+   * Third-party logos always keep their original colors (PRD §6.1).
+   */
   certifications: {
-    /** Owner confirmed for site-wide display, 2026-07-03 */
     owensCorningPreferred: {
+      label: "Owens Corning Preferred Contractor",
       images: [
         "/images/brand/owens-corning-preferred-contractor-logo-01.png",
         "/images/brand/owens-corning-preferred-contractor-logo-02.png",
       ],
       confirmed: true,
+    },
+    gaf: {
+      label: "GAF Certified",
+      /** [NEEDS: official GAF badge file] — text mention only until supplied */
+      images: [] as string[],
+      confirmed: true,
+    },
+    bbb: {
+      label: "BBB Accredited",
+      /** [NEEDS: official BBB seal file] — text mention only until supplied */
+      images: [] as string[],
+      confirmed: true,
+    },
+    msboc: {
+      label: "Licensed by the Mississippi State Board of Contractors",
+      images: [] as string[],
+      confirmed: true,
+      /** [NEEDS: license number in its public form] — lives in siteConfig.license */
     },
   },
   trust: {

@@ -19,10 +19,21 @@ export const service = defineType({
     }),
     defineField({
       name: "channel",
+      title: "Division",
       type: "string",
-      options: { list: ["residential", "commercial", "metal"] },
+      description:
+        "Residential and Commercial are the only divisions — metal services belong to one of them (PRD §4.3).",
+      options: { list: ["residential", "commercial"] },
       initialValue: "residential",
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "isMetalSystem",
+      title: "Metal roofing system",
+      type: "boolean",
+      initialValue: false,
+      description:
+        "Marks metal material/system pages within a division (feeds the /metal-roofing cross-hub).",
     }),
     defineField({
       name: "excerpt",

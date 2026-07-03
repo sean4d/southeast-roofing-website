@@ -53,7 +53,11 @@ export const siteConfig = {
   /** [NEEDS: social profile URLs + Google Business Profile URL] — used for schema sameAs */
   socialProfiles: [] as string[],
 
-  /** Launch service area (PRD §5). Tiers drive content depth on city pages. */
+  /**
+   * Launch service area (PRD §5). Tiers drive content depth on city pages.
+   * Coverage is a full 2-hour radius around Hattiesburg (owner-confirmed
+   * 2026-07-03) — Jackson, Meridian, the Gulf Coast, and towns between.
+   */
   serviceArea: [
     { city: "Hattiesburg", tier: 1 },
     { city: "Petal", tier: 1 },
@@ -69,6 +73,8 @@ export const siteConfig = {
     { city: "Poplarville", tier: 2 },
     { city: "Picayune", tier: 2 },
     { city: "Diamondhead", tier: 2 },
+    { city: "Jackson", tier: 2 },
+    { city: "Meridian", tier: 2 },
   ],
 
   /** Site-wide feature flags (storm banner etc. — later mirrored in Sanity siteFlags) */

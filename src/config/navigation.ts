@@ -1,8 +1,10 @@
 /**
- * Navigation structure for header and footer. Reflects the full PRD sitemap
- * (docs/PRD.md §2) — routes for later phases resolve to the branded
- * "on the roadmap" 404 until their phase ships, keeping the information
- * architecture real from day one.
+ * Navigation structure for header and footer, reflecting the corrected
+ * information architecture (PRD §2, v3): Residential Roofing and Commercial
+ * Roofing are the two primary service divisions; Metal Roofing is a
+ * material/system within both (cross-hub at /metal-roofing, never presented
+ * as a third division). Routes for later phases resolve to the branded
+ * "on the roadmap" 404 until their phase ships.
  */
 
 export interface NavLink {
@@ -11,11 +13,13 @@ export interface NavLink {
 }
 
 export const mainNav: NavLink[] = [
-  { label: "Services", href: "/services" },
-  { label: "Metal Roofing", href: "/metal-roofing" },
-  { label: "Commercial", href: "/commercial" },
-  { label: "Service Areas", href: "/service-areas" },
+  { label: "Residential Roofing", href: "/residential" },
+  { label: "Commercial Roofing", href: "/commercial" },
+  { label: "Storm Damage", href: "/storm-damage" },
   { label: "About", href: "/about" },
+  { label: "Financing", href: "/financing" },
+  { label: "Projects", href: "/projects" },
+  { label: "Learning Center", href: "/learn" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -36,30 +40,38 @@ export interface FooterColumn {
 
 export const footerColumns: FooterColumn[] = [
   {
-    heading: "Residential Services",
+    heading: "Residential Roofing",
     links: [
-      { label: "Residential Roofing", href: "/services/residential-roofing" },
-      { label: "Roof Replacement", href: "/services/roof-replacement" },
-      { label: "Roof Repair", href: "/services/roof-repair" },
-      { label: "Storm Damage", href: "/services/storm-damage" },
-      { label: "Insurance Claims", href: "/services/insurance-claims" },
-      { label: "Emergency Roofing", href: "/services/emergency-roofing" },
-      { label: "Shingle Roofing", href: "/services/shingle-roofing" },
-      { label: "Roof Inspections", href: "/services/roof-inspections" },
-      { label: "Gutters", href: "/services/gutters" },
+      { label: "Residential Overview", href: "/residential" },
+      {
+        label: "Asphalt Shingle Roofing",
+        href: "/residential/asphalt-shingle-roofing",
+      },
+      {
+        label: "Residential Metal Roofing",
+        href: "/residential/metal-roofing",
+      },
+      { label: "Roof Replacement", href: "/residential/roof-replacement" },
+      { label: "Roof Repair", href: "/residential/roof-repair" },
+      { label: "Gutters", href: "/residential/gutters" },
+      { label: "Skylights", href: "/residential/skylights" },
+      { label: "Ventilation", href: "/residential/ventilation" },
     ],
   },
   {
-    heading: "Commercial & Metal",
+    heading: "Commercial Roofing",
     links: [
-      { label: "Commercial Roofing", href: "/commercial" },
-      { label: "Commercial Replacement", href: "/commercial/roof-replacement" },
-      { label: "Flat Roofing", href: "/commercial/flat-roofing" },
+      { label: "Commercial Overview", href: "/commercial" },
+      { label: "TPO Roofing", href: "/commercial/tpo" },
+      { label: "EPDM Roofing", href: "/commercial/epdm" },
+      { label: "Roof Coatings", href: "/commercial/roof-coatings" },
+      { label: "Commercial Metal Roofing", href: "/commercial/metal-roofing" },
+      { label: "Roof Maintenance", href: "/commercial/roof-maintenance" },
       { label: "Industries We Serve", href: "/commercial/industries" },
-      { label: "Commercial Projects", href: "/commercial/projects" },
-      { label: "Metal Roofing", href: "/metal-roofing" },
-      { label: "Standing Seam", href: "/metal-roofing/standing-seam" },
-      { label: "Metal Materials Guide", href: "/metal-roofing/materials" },
+      {
+        label: "Request Consultation",
+        href: "/commercial/request-consultation",
+      },
     ],
   },
   {
@@ -70,9 +82,8 @@ export const footerColumns: FooterColumn[] = [
       { label: "Laurel", href: "/service-areas/laurel" },
       { label: "Gulfport", href: "/service-areas/gulfport" },
       { label: "Biloxi", href: "/service-areas/biloxi" },
-      { label: "Purvis", href: "/service-areas/purvis" },
-      { label: "Columbia", href: "/service-areas/columbia" },
-      { label: "Picayune", href: "/service-areas/picayune" },
+      { label: "Jackson", href: "/service-areas/jackson" },
+      { label: "Meridian", href: "/service-areas/meridian" },
       { label: "All Service Areas", href: "/service-areas" },
     ],
   },
@@ -80,11 +91,12 @@ export const footerColumns: FooterColumn[] = [
     heading: "Company",
     links: [
       { label: "About Us", href: "/about" },
+      { label: "Storm Damage", href: "/storm-damage" },
+      { label: "Metal Roofing", href: "/metal-roofing" },
       { label: "Project Gallery", href: "/projects" },
       { label: "Reviews", href: "/reviews" },
       { label: "Financing", href: "/financing" },
       { label: "Learning Center", href: "/learn" },
-      { label: "Blog", href: "/blog" },
       { label: "Careers", href: "/careers" },
       { label: "Contact", href: "/contact" },
     ],

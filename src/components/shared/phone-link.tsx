@@ -28,7 +28,7 @@ export function PhoneLink({ className, showIcon = true }: PhoneLinkProps) {
       <a
         href={`tel:${tel}`}
         className={cn(
-          "inline-flex items-center gap-2 font-semibold transition-colors hover:text-silver-400",
+          "inline-flex items-center gap-2 font-semibold transition-opacity hover:opacity-75",
           className,
         )}
       >

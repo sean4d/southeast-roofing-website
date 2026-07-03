@@ -4,7 +4,7 @@
 **Primary live domain:** southeastroofing.llc
 **Secondary domain:** roofs.ms (currently 301 redirects → southeastroofing.llc)
 **Company base:** Hattiesburg, Mississippi — residential & commercial roofing within ~2 hours of Hattiesburg
-**Status:** Draft v2 — awaiting owner approval before development begins
+**Status:** v3 — approved. Incorporates the 2026-07-03 owner directives: (a) full visual refresh to a light, premium navy palette (§6 supersedes any dark/charcoal/burgundy visual descriptors elsewhere in this document), (b) IA correction — Metal Roofing is a material/system within the Residential and Commercial divisions, not a third division (§2, §4.3), (c) confirmed credentials: GAF certified, BBB accredited, MSBOC licensed, Owens Corning Preferred (logo used with permission), (d) service area is a full 2-hour radius of Hattiesburg including Jackson, Meridian, and towns between.
 
 ---
 
@@ -64,38 +64,35 @@ southeastroofing.llc
 │
 ├── /                                     Homepage (residential + commercial dual emphasis)
 │
-├── RESIDENTIAL / CORE SERVICES
-├── /services                             Services hub
-│   ├── /services/residential-roofing
-│   ├── /services/roof-replacement
-│   ├── /services/roof-repair
-│   ├── /services/storm-damage
-│   ├── /services/insurance-claims
-│   ├── /services/emergency-roofing
-│   ├── /services/shingle-roofing
-│   ├── /services/roof-inspections
-│   ├── /services/gutters
-│   └── /services/roof-cleaning          ("Roof Revive" soft-wash — confirm offering)
+├── RESIDENTIAL ROOFING (primary division 1)
+├── /residential                          Residential hub
+│   ├── /residential/asphalt-shingle-roofing
+│   ├── /residential/metal-roofing        Residential metal hub
+│   │   ├── /residential/metal-roofing/standing-seam
+│   │   ├── /residential/metal-roofing/exposed-fastener
+│   │   ├── /residential/metal-roofing/26-gauge
+│   │   └── /residential/metal-roofing/29-gauge
+│   ├── /residential/roof-replacement
+│   ├── /residential/roof-repair
+│   ├── /residential/gutters
+│   ├── /residential/skylights
+│   └── /residential/ventilation
 │
-├── METAL ROOFING (dedicated hub — flagship growth category)
-├── /metal-roofing                        Metal hub: overview, styles, materials, gallery
-│   ├── /metal-roofing/standing-seam
-│   ├── /metal-roofing/exposed-fastener   (R-Panel & PBR panels)
-│   ├── /metal-roofing/residential        Residential metal
-│   ├── /metal-roofing/commercial         Commercial metal
-│   ├── /metal-roofing/agricultural       Ag buildings & barndominiums
-│   └── /metal-roofing/materials          Gauge (26 vs 29), Galvalume, painted steel guide
-│       (launch = hub page; children roll out in Phase 3–4 and via Learning Center)
-│
-├── COMMERCIAL (dedicated experience — equal weight to residential)
+├── COMMERCIAL ROOFING (primary division 2)
 ├── /commercial                           Commercial hub / commercial homepage
+│   ├── /commercial/tpo
+│   ├── /commercial/epdm
+│   ├── /commercial/pvc
+│   ├── /commercial/modified-bitumen
+│   ├── /commercial/roof-coatings
+│   ├── /commercial/metal-roofing         Commercial metal hub
+│   │   ├── /commercial/metal-roofing/standing-seam
+│   │   ├── /commercial/metal-roofing/r-panel
+│   │   ├── /commercial/metal-roofing/pbr-panel
+│   │   └── /commercial/metal-roofing/structural-metal
+│   ├── /commercial/roof-maintenance
 │   ├── /commercial/roof-replacement
 │   ├── /commercial/roof-repair
-│   ├── /commercial/flat-roofing          (TPO / EPDM / modified bitumen `[NEEDS: confirm systems offered]`)
-│   ├── /commercial/metal-roofing         (cross-links with /metal-roofing/commercial)
-│   ├── /commercial/roof-coatings         `[NEEDS: confirm offering]`
-│   ├── /commercial/maintenance-programs  `[NEEDS: confirm offering]`
-│   ├── /commercial/inspections
 │   ├── /commercial/industries            Industry hub
 │   │   ├── /commercial/industries/schools
 │   │   ├── /commercial/industries/churches
@@ -106,6 +103,18 @@ southeastroofing.llc
 │   ├── /commercial/projects              Commercial portfolio
 │   │   └── /commercial/projects/[slug]   Case studies
 │   └── /commercial/request-consultation  Commercial lead flow (distinct from residential form)
+│
+├── METAL ROOFING — cross-category SEO hub (NOT a third division)
+├── /metal-roofing                        Landing page that captures metal-intent searches and
+│                                         routes visitors to /residential/metal-roofing or
+│                                         /commercial/metal-roofing. Breadcrumbs, internal links,
+│                                         and page hierarchy always present metal as a
+│                                         material/system within the two divisions.
+│
+├── STORM DAMAGE (primary nav item)
+├── /storm-damage                         Storm hub: damage types, response process
+│   ├── /storm-damage/insurance-claims
+│   └── /storm-damage/emergency-roofing
 │
 ├── LOCAL SEO
 ├── /service-areas                        Hub (interactive map + all cities)
@@ -180,7 +189,7 @@ The homepage now serves **two audiences**: homeowners and commercial decision-ma
 | 16 | **Final CTA band** | Cinematic band + short quote form (name, phone, zip, residential/commercial toggle) + call button. |
 | 17 | **Footer** | 5 columns: Residential Services, Commercial, Service Areas, Company (about/reviews/financing/careers/learn), Contact + hours + license `[NEEDS: #]` + socials `[NEEDS: profiles]`. |
 
-**Persistent elements (all pages):** sticky condensing header (logo, nav with Residential / Commercial / Metal / Service Areas / Learn, phone, "Free Inspection" button); sticky mobile bottom bar (**Call** + **Free Inspection**; on /commercial routes it swaps to **Call** + **Request Consultation**); toggleable storm-event banner slot.
+**Persistent elements (all pages):** sticky condensing header (logo; primary nav: Residential Roofing · Commercial Roofing · Storm Damage · About · Financing · Projects · Learning Center · Contact; phone; "Free Inspection" button); sticky mobile bottom bar (**Call** + **Free Inspection**; on /commercial routes it swaps to **Call** + **Request Consultation**); toggleable storm-event banner slot.
 
 ---
 
@@ -230,31 +239,35 @@ Commercial buyers are not homeowners: they're property managers, facility direct
 
 **Case studies (/commercial/projects/[slug]):** challenge → solution → outcome format, system installed, timeline, photos; `[NEEDS: past commercial projects + client permission]`. Modeled as a CMS content type from day one.
 
-### 4.3 Metal roofing hub (new — flagship category)
+### 4.3 Metal roofing — cross-category hub (IA-corrected 2026-07-03)
 
-Metal gets its own hub because it's (a) a high-margin growth category, (b) a massive topical-authority opportunity (§10), and (c) both residential and commercial.
+**Metal Roofing is NOT a separate business division.** It is a roofing system/material offered within BOTH primary divisions. Southeast Roofing has two primary service divisions — Residential Roofing and Commercial Roofing — and metal lives inside each (`/residential/metal-roofing/*`, `/commercial/metal-roofing/*`).
 
-**Hub page (/metal-roofing):**
-1. Cinematic metal hero (standing-seam imagery `[NEEDS: metal project photos]`)
-2. Style explorer — cards for Standing Seam, Exposed Fastener (R-Panel/PBR), residential, commercial, agricultural/barndominium
-3. Materials & specs section — 26 vs 29 gauge, Galvalume vs painted steel, panel profiles `[NEEDS: actual products/suppliers used]`
+`/metal-roofing` exists purely as an SEO landing page: it captures metal-intent searches (still a massive topical-authority opportunity, §10) and immediately routes visitors to **Residential Metal Roofing** or **Commercial Metal Roofing**. Navigation, breadcrumbs, internal linking, URL structure, and page hierarchy must never present metal as equal to the two divisions.
+
+**Cross-hub page (/metal-roofing):**
+1. Premium metal hero (standing-seam imagery `[NEEDS: metal project photos]`)
+2. **Two-path router** — equal cards for "Residential Metal Roofing" → `/residential/metal-roofing` and "Commercial Metal Roofing" → `/commercial/metal-roofing` (the page's primary job)
+3. Materials & specs overview — 26 vs 29 gauge, Galvalume vs painted steel, panel profiles `[NEEDS: actual products/suppliers used]`
 4. Metal vs shingle comparison block (honest, factual)
 5. Metal gallery strip
 6. Metal FAQ (lifespan, cost, noise myths, insurance benefits — factual only)
 7. CTA: metal-specific estimate request
 
-**Child pages** (rolling out Phases 3–4):
+**Division metal pages** (rolling out Phases 3–4):
 
 | Page | Focus |
 |------|-------|
-| /metal-roofing/standing-seam | Concealed-fastener systems, panel profiles, residential + commercial applications |
-| /metal-roofing/exposed-fastener | R-Panel & PBR panels — cost-effective option, ag/commercial/residential uses |
-| /metal-roofing/residential | Homeowner-focused: styles, colors, value, insurance considerations |
-| /metal-roofing/commercial | Low-slope + architectural metal for commercial buildings |
-| /metal-roofing/agricultural | Ag buildings, barns, barndominiums `[NEEDS: confirm barndo/ag capability]` |
-| /metal-roofing/materials | Buyer's guide: gauge (26 vs 29), Galvalume, painted steel, finishes/warranties `[NEEDS: real product lines]` |
+| /residential/metal-roofing | Homeowner metal hub: styles, colors, value, insurance considerations |
+| /residential/metal-roofing/standing-seam | Concealed-fastener systems for homes |
+| /residential/metal-roofing/exposed-fastener | Cost-effective exposed-fastener panels for homes |
+| /residential/metal-roofing/26-gauge · /29-gauge | Gauge education/spec pages (buyer comparison intent) |
+| /commercial/metal-roofing | Commercial metal hub: low-slope + architectural metal |
+| /commercial/metal-roofing/standing-seam | Architectural standing seam for commercial buildings |
+| /commercial/metal-roofing/r-panel · /pbr-panel | Panel systems for commercial/ag structures |
+| /commercial/metal-roofing/structural-metal | Structural metal roof systems |
 
-Deep-dive comparisons ("26 vs 29 gauge," "Galvalume vs painted") live in the Learning Center and link up to these pages — hub pages sell, learning pages rank and educate.
+Deep-dive comparisons ("26 vs 29 gauge," "Galvalume vs painted") also live in the Learning Center and link into the division pages — division pages sell, learning pages rank and educate.
 
 ---
 
@@ -270,7 +283,9 @@ Deep-dive comparisons ("26 vs 29 gauge," "Galvalume vs painted") live in the Lea
 | Tier | Cities | Depth |
 |------|--------|------|
 | 1 | Hattiesburg, Petal, Laurel, Gulfport, Biloxi | 800–1,200 words unique copy, neighborhoods/landmarks, city-specific FAQ, local projects |
-| 2 | Purvis, Sumrall, Columbia, Ellisville, Richton, Seminary, Poplarville, Picayune, Diamondhead | 500–700 words unique copy, county + response-time context, rotated FAQ pool |
+| 2 | Purvis, Sumrall, Columbia, Ellisville, Richton, Seminary, Poplarville, Picayune, Diamondhead, **Jackson, Meridian** (added 2026-07-03 — real projects exist in both) | 500–700 words unique copy, county + response-time context, rotated FAQ pool |
+
+**Coverage definition (owner-confirmed 2026-07-03):** the service area is a full **2-hour radius around Hattiesburg** — Jackson, Meridian, the Gulf Coast, and all towns and cities in between. The city-page system grows toward that radius; the interactive map's radius ring (§7.2) is the visual statement of it.
 
 **Anti-doorway rules (critical):** genuinely local content on every page (county, landmarks, storm patterns, distance/response time, accumulating local projects); no find-and-replace body copy; Tier 2 ships in batches as unique copy completes — never thin.
 
@@ -284,15 +299,54 @@ Deep-dive comparisons ("26 vs 29 gauge," "Galvalume vs painted") live in the Lea
 
 ---
 
-## 6. Brand / Design System
+## 6. Brand / Design System (v3 — full refresh, 2026-07-03)
 
-*(Carried forward from v1 — unchanged palette, typography, imagery, and UI rules. Summary below; full token table stands.)*
+**This section supersedes every dark/charcoal/burgundy visual descriptor elsewhere in this document.** Target impression: a premium commercial + residential roofing company with a modern, high-end construction aesthetic — the visual company of elite commercial construction firms, high-end architecture studios, and premium home builders. "Apple meets Caterpillar meets Tesla meets a luxury architecture firm." Minimal. Premium. Confident. Purposeful.
 
-- **Palette:** charcoal foundation (`#0B0B0D` → `#26262C` scale), white/silver text (`#FFFFFF`, `#E6E8EB`, `#C7CBD1` metallic accent), burgundy accent scale (`#7A1F2B` primary, `#93293A` hover, `#5E1620` pressed). Metallic silver gradients used sparingly on headline words, card borders, dividers. All combinations WCAG AA.
-- **Typography:** bold premium display sans (Archivo / Barlow Condensed direction) + Inter body, self-hosted via `next/font`, fluid `clamp()` scale, one H1 per page.
-- **Imagery:** real project photography only on key pages `[NEEDS: photo library]`, consistent dark cinematic grading, AVIF/WebP via `next/image`, subtle grain texture on hero/CTA bands.
-- **UI:** dark cards with 1px borders + silver hover glow, burgundy primary buttons / silver ghost secondary / pulsing emergency variant, 44px+ touch targets, dark forms with silver focus rings, Lucide icons (1.5px stroke), 96–160px section rhythm.
-- **Commercial sub-brand note:** the commercial experience shares the design system but shifts tone — slightly more silver/steel, less burgundy; photography of large buildings and crews at scale; denser information layout appropriate for B2B readers. Same system, more boardroom.
+### 6.1 Palette
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| Primary — Deep Navy | `#123B63` | Primary buttons, links, headings accent, footer background family |
+| Navy hover | `#1B4A7A` | Primary button hover (slightly lighter navy) |
+| Navy deep | `#0D2C4B` / `#0A2036` | Footer, dark accent surfaces |
+| Secondary — Steel Blue | `#4F7EA8` | Secondary accents, focus rings, icons, data viz |
+| Steel tint | `#E8EFF6` | Accent washes, subtle section tints |
+| Background | `#FFFFFF` | Page background — light, airy |
+| Surface | `#F5F7FA` | Alternating sections, muted surfaces, form fields |
+| Text | `#2B2F33` (charcoal) | Body text |
+| Slate gray | `#5C6670` | Secondary text |
+| Borders | `#D8DEE6` (soft gray) | Card borders, dividers, inputs |
+| Success | `#2E7D32` (forest green) | Success states only |
+| Orange | `#C9702E` | **Very subtle, only when absolutely necessary** |
+
+**Hard rules:** no heavy black backgrounds; **no red as a UI color** (red appears only inside official third-party logos — GAF etc., which always keep their original colors); no oversaturated colors; manufacturer logos never recolored.
+
+### 6.2 Typography
+
+Modern, clean, excellent readability — premium over flashy. Archivo (display, semibold/bold — not black-weight shouting) + Inter (body) via `next/font`, fluid `clamp()` scale, one H1 per page, generous line-height. Headings in charcoal or deep navy; steel-blue gradient accent on a single headline word at most.
+
+### 6.3 Surfaces & components
+
+- **Cards:** white background, `#D8DEE6` soft borders, large rounded corners (~16px), subtle shadows. Elevation whispers, never shouts.
+- **Buttons:** primary = deep navy fill/white text, hover slightly lighter navy; secondary = white with navy border; destructive only if truly needed (never as a marketing accent).
+- **Forms:** white/light-gray fields, soft borders, steel-blue focus rings, 44px+ touch targets.
+- **Icons:** Lucide, 1.5px stroke, navy/steel.
+- **Footer:** deep navy surface with the white knockout logo — the one intentionally dark region.
+
+### 6.4 Spacing & atmosphere
+
+Increase whitespace throughout — calm, premium feel; every section gets breathing room (roughly 112–176px vertical rhythm on desktop). Photography: real project photos, bright natural grading (no dark cinematic filter), large rounded corners, generous margins.
+
+### 6.5 Motion tone
+
+Elegant, smooth, professional — no gimmicks. Framer Motion used tastefully; every animation intentional (§7 mechanics stand; the *tone* is calm confidence, not spectacle).
+
+### 6.6 Logo usage
+
+Official artwork only, never recolored: navy version on light surfaces, white knockout (derived from official black artwork) on navy surfaces. Manufacturer/certification logos (GAF, Owens Corning, BBB) in original colors always.
+
+- **Commercial sub-brand note:** the commercial experience shares this system with a slightly steelier, denser, more B2B tone. Same system, more boardroom.
 
 ---
 
@@ -367,7 +421,8 @@ src/
 ├── app/
 │   ├── (marketing)/                     Public site — everything in §2
 │   │   ├── page.tsx                     Home
-│   │   ├── services/…  metal-roofing/…  commercial/…  service-areas/…
+│   │   ├── residential/…  commercial/…  metal-roofing/ (cross-hub)
+│   │   ├── storm-damage/…  service-areas/…
 │   │   ├── projects/…  learn/…  blog/…  storm-center/…
 │   │   ├── free-inspection/…  quote/…  financing/…  contact/…  careers/…
 │   │   ├── about/…  reviews/…  (+ legal)
@@ -507,7 +562,7 @@ Local roofing SEO is won by being the **most complete, most local, most trustwor
 
 **Contact & operations:** primary phone (+ emergency line?) · lead email(s) · address publishable vs service-area-only · hours + real 24/7 availability · GBP URL/access · social profiles · current lead workflow/CRM
 
-**Proof & credibility:** real reviews + permission · ~~manufacturer certifications~~ ✅ Owens Corning Preferred Contractor confirmed by owner 2026-07-03 (badge in `public/images/brand/`) · real warranty terms · real awards/memberships · defensible stats (roofs completed, etc.) · safety record/EMR if publishable (commercial)
+**Proof & credibility:** real reviews + permission · ~~manufacturer certifications~~ ✅ CONFIRMED 2026-07-03: **GAF certified · BBB accredited · MSBOC licensed · Owens Corning Preferred** (OC is the primary displayed manufacturer credential — logo used with permission; badge in `public/images/brand/`) · `[NEEDS: GAF + BBB official badge files · MSBOC license number in its public form]` · real warranty terms · real awards/memberships · defensible stats (roofs completed, etc.) · safety record/EMR if publishable (commercial)
 
 **Media:** ~~30–50 best project photos~~ ✅ **RECEIVED 2026-07-03**: 42 residential roof-replacement photos across 14 cities (`public/images/projects/`, manifest in `src/content/photos.ts`) + 24 storm-damage photos (`public/images/storm/`) + logos & badges (`public/images/brand/`). Still needed: before/after **pairs**, commercial project photos, metal roofing photos (standing seam especially), team/crew/truck photos, drone/video footage, **white/knockout logo for dark backgrounds**
 

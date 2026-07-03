@@ -13,8 +13,8 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { PhoneLink } from "@/components/shared/phone-link";
 
 /**
- * Sticky site header. Transparent over the top of the page, condensing into
- * a blurred charcoal bar once the user scrolls (PRD §3 persistent elements).
+ * Sticky site header (PRD §6 v3 — light, premium). White surface that gains
+ * a soft border + shadow once the user scrolls; condenses slightly.
  */
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,26 +30,26 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full transition-all duration-300",
+        "sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md transition-all duration-300",
         scrolled
-          ? "border-b border-charcoal-700 bg-charcoal-950/90 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent",
+          ? "shadow-premium border-b border-border"
+          : "border-b border-transparent",
       )}
     >
       <div
         className={cn(
-          "container-site flex items-center justify-between gap-4 transition-all duration-300",
+          "container-site flex items-center justify-between gap-6 transition-all duration-300",
           scrolled ? "h-16" : "h-20",
         )}
       >
-        {/* Official logo (white knockout for the dark theme) */}
+        {/* Official navy logo on light surface (PRD §6.6) */}
         <Link
           href="/"
           className="shrink-0"
           aria-label="Southeast Roofing — home"
         >
           <Image
-            src={brandAssets.logo.light}
+            src={brandAssets.logo.navyTrimmed}
             alt="Southeast Roofing"
             width={brandAssets.logo.aspect.width}
             height={brandAssets.logo.aspect.height}
@@ -59,8 +59,8 @@ export function SiteHeader() {
         </Link>
 
         {/* Desktop navigation */}
-        <nav aria-label="Main navigation" className="hidden lg:block">
-          <ul className="flex items-center gap-6">
+        <nav aria-label="Main navigation" className="hidden xl:block">
+          <ul className="flex items-center gap-5">
             {mainNav.map((link) => {
               const active =
                 link.href === pathname || pathname.startsWith(`${link.href}/`);
@@ -70,8 +70,8 @@ export function SiteHeader() {
                     href={link.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "text-sm font-medium transition-colors hover:text-white",
-                      active ? "text-white" : "text-silver-400",
+                      "text-sm font-medium transition-colors hover:text-primary",
+                      active ? "text-primary" : "text-slate-600",
                     )}
                   >
                     {link.label}
@@ -83,7 +83,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <PhoneLink className="hidden text-sm text-silver-200 xl:inline-flex" />
+          <PhoneLink className="hidden text-sm text-primary 2xl:inline-flex" />
           <Button
             render={<Link href={primaryCta.href} />}
             nativeButton={false}

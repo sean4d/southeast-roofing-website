@@ -5,17 +5,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* ---- Brand palette (PRD §6) ---- */
-  --color-charcoal-950: #0b0b0d;
-  --color-charcoal-900: #131316;
-  --color-charcoal-800: #1c1c21;
-  --color-charcoal-700: #26262c;
-  --color-silver-200: #e6e8eb;
-  --color-silver-400: #c7cbd1;
-  --color-silver-600: #8a8f98;
-  --color-burgundy-500: #93293a;
-  --color-burgundy-600: #7a1f2b;
-  --color-burgundy-700: #5e1620;
+  /* ---- Brand palette (PRD §6, v3 refresh) ---- */
+  --color-navy-950: #0a2036;
+  --color-navy-900: #0d2c4b;
+  --color-navy-800: #123b63;
+  --color-navy-700: #1b4a7a;
+  --color-steel-500: #4f7ea8;
+  --color-steel-300: #8faecb;
+  --color-steel-100: #e8eff6;
+  --color-slate-600: #5c6670;
+  --color-success-600: #2e7d32;
+  /* Very subtle orange — only when absolutely necessary (PRD §6.1) */
+  --color-ember-500: #c9702e;
 
   /* ---- Semantic tokens (shadcn/ui) ---- */
   --color-background: var(--background);
@@ -62,42 +63,43 @@
 }
 
 /*
- * Dark is the brand's default, not a mode (PRD §6).
- * :root carries the dark charcoal theme directly.
+ * Light, premium, navy-accented theme (PRD §6 v3).
+ * White background, charcoal text, deep navy primary, soft gray borders.
  */
 :root {
-  --background: #0b0b0d;
-  --foreground: #ffffff;
-  --card: #131316;
-  --card-foreground: #e6e8eb;
-  --popover: #1c1c21;
-  --popover-foreground: #e6e8eb;
-  --primary: #7a1f2b;
+  --background: #ffffff;
+  --foreground: #2b2f33;
+  --card: #ffffff;
+  --card-foreground: #2b2f33;
+  --popover: #ffffff;
+  --popover-foreground: #2b2f33;
+  --primary: #123b63;
   --primary-foreground: #ffffff;
-  --secondary: #1c1c21;
-  --secondary-foreground: #e6e8eb;
-  --muted: #1c1c21;
-  --muted-foreground: #8a8f98;
-  --accent: #26262c;
-  --accent-foreground: #ffffff;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: #26262c;
-  --input: #26262c;
-  --ring: #93293a;
-  --chart-1: #c7cbd1;
-  --chart-2: #8a8f98;
-  --chart-3: #93293a;
-  --chart-4: #7a1f2b;
-  --chart-5: #26262c;
-  --radius: 0.75rem;
-  --sidebar: #131316;
-  --sidebar-foreground: #e6e8eb;
-  --sidebar-primary: #7a1f2b;
+  --secondary: #f5f7fa;
+  --secondary-foreground: #123b63;
+  --muted: #f5f7fa;
+  --muted-foreground: #5c6670;
+  --accent: #e8eff6;
+  --accent-foreground: #123b63;
+  /* Reserved for true destructive actions only — never a marketing accent */
+  --destructive: #b3261e;
+  --border: #d8dee6;
+  --input: #d8dee6;
+  --ring: #4f7ea8;
+  --chart-1: #123b63;
+  --chart-2: #4f7ea8;
+  --chart-3: #8faecb;
+  --chart-4: #5c6670;
+  --chart-5: #2e7d32;
+  --radius: 1rem;
+  --sidebar: #f5f7fa;
+  --sidebar-foreground: #2b2f33;
+  --sidebar-primary: #123b63;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #26262c;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #26262c;
-  --sidebar-ring: #93293a;
+  --sidebar-accent: #e8eff6;
+  --sidebar-accent-foreground: #123b63;
+  --sidebar-border: #d8dee6;
+  --sidebar-ring: #4f7ea8;
 }
 
 @layer base {
@@ -117,7 +119,7 @@
   h4,
   h5,
   h6 {
-    @apply font-display tracking-tight;
+    @apply font-display tracking-tight text-navy-900;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -132,17 +134,23 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
-  /* Metallic silver gradient text (PRD §6 — use sparingly) */
-  .text-metallic {
+  /* Steel-blue gradient accent — a single headline word at most (PRD §6.2) */
+  .text-gradient-steel {
     background-image: linear-gradient(
       100deg,
-      var(--color-silver-400) 0%,
-      #ffffff 45%,
-      var(--color-silver-400) 100%
+      var(--color-navy-800) 0%,
+      var(--color-steel-500) 100%
     );
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+  }
+
+  /* Soft premium card shadow — elevation whispers (PRD §6.3) */
+  .shadow-premium {
+    box-shadow:
+      0 1px 2px rgb(18 59 99 / 0.04),
+      0 8px 24px rgb(18 59 99 / 0.07);
   }
 
   /* Skip link — visible only when focused */
