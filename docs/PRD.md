@@ -1,466 +1,564 @@
 # Southeast Roofing — Website Blueprint / PRD
 
-**Project:** Southeast Roofing flagship website
-**Primary domain:** roofs.ms
-**Secondary domain:** southeastroofing.llc (301 redirect → roofs.ms)
-**Company base:** Hattiesburg, Mississippi — serving residential & commercial customers within ~2 hours of Hattiesburg
-**Status:** Draft v1 — awaiting owner approval before development begins
+**Project:** Southeast Roofing flagship website & long-term digital platform
+**Primary live domain:** southeastroofing.llc
+**Secondary domain:** roofs.ms (currently 301 redirects → southeastroofing.llc)
+**Company base:** Hattiesburg, Mississippi — residential & commercial roofing within ~2 hours of Hattiesburg
+**Status:** Draft v2 — awaiting owner approval before development begins
 
 ---
 
-## 0. Project Goals (in priority order)
+## 0. Vision & Goals
 
-1. **Generate roofing leads** — every page drives toward a call or a free-inspection request.
+### 0.1 Immediate goals (in priority order)
+
+1. **Generate roofing leads** — residential and commercial; every page drives toward a call, inspection request, or commercial consultation.
 2. **Look more premium and trustworthy than local competitors** — cinematic, high-end contractor brand, not a template.
-3. **Rank heavily in Google for local roofing searches** — service pages × location pages, schema, Core Web Vitals.
-4. **Support future growth** — commercial, metal, emergency, insurance claims, financing, expanding service-area SEO.
+3. **Rank heavily in Google for local roofing searches** — service pages × location pages, schema, Core Web Vitals, long-term topical authority.
+4. **Equal emphasis on commercial and residential** — a dedicated commercial experience, not a single commercial page.
 5. **Flashy, modern, animated — without sacrificing speed or SEO.** Motion is a brand asset, never a performance tax.
+
+### 0.2 Long-term vision (5+ years): the digital platform
+
+This project is the foundation of Southeast Roofing's digital platform, not a disposable brochure site. The architecture must accommodate — without rewrites — the later addition of:
+
+| Future capability | Architectural implication now |
+|---|---|
+| Customer portal (project status, documents, warranty records) | Reserved route group, auth-ready layout shell, DB introduced when needed |
+| Employee portal (crew schedules, job docs) | Same auth foundation, role-based access pattern |
+| Online scheduling | Booking flow slots into the existing lead-intake API layer |
+| Financing tools (calculator → application) | Calculator ships as interactive feature; application flow integrates partner APIs later |
+| AI customer assistant | Content modeled as structured data (CMS) so an assistant can ground on it; chat UI slots into layout |
+| Commercial project portfolio & case studies | Case-study content type modeled in CMS from day one |
+| Project-management integrations (JobNimbus, AccuLynx, etc.) | Lead intake built as a service layer with webhook/adapter pattern, not a hardcoded email |
+| Blog & learning center | CMS-driven from launch; topical authority plan (§10) |
+| Careers page | Simple at first; job-posting content type + `JobPosting` schema ready |
+| CRM integrations | Same adapter pattern as PM integrations; leads stored, not just emailed |
+
+**Guiding principle:** build the marketing site now, but make every hard-to-reverse choice (content model, route structure, lead pipeline, auth readiness) as if the platform features are coming — because they are.
 
 **Integrity rule (non-negotiable):** No fake reviews, fake license numbers, fake awards, fake certifications, or fake guarantees anywhere on the site. Wherever real proof is required, the spec marks it `[NEEDS: …]` and the build uses clearly-labeled placeholders until the owner supplies the real asset.
 
 ---
 
-## 1. Complete Sitemap
+## 1. Domain Strategy
+
+**Current production setup — do not change without explicit owner decision:**
+
+- **Primary:** `https://southeastroofing.llc` — the live, canonical domain. All canonical URLs, schema, sitemaps, and GBP references point here.
+- **Secondary:** `https://roofs.ms` — 301 redirects to southeastroofing.llc.
+
+**Implementation requirements:**
+
+- Both domains attach to the Vercel project; the redirect is configured at the platform/domain level (not in-app), preserving paths (`roofs.ms/services/x` → `southeastroofing.llc/services/x`).
+- The codebase must be **domain-agnostic**: the canonical host lives in a single environment variable / config value (`SITE_URL`) consumed by metadata, canonical tags, sitemap, robots, OG URLs, and JSON-LD. If the owner later decides to flip primary domains, the change is: one config value + swap the redirect direction + re-verify in Search Console. No content or code edits.
+- No hardcoded domain strings anywhere in components or content.
+- Search Console: both domains verified; sitemap submitted for the primary only.
+
+---
+
+## 2. Complete Sitemap
 
 ```
-roofs.ms
+southeastroofing.llc
 │
-├── /                                   Homepage
+├── /                                     Homepage (residential + commercial dual emphasis)
 │
-├── /services                           Services hub (all services grid)
+├── RESIDENTIAL / CORE SERVICES
+├── /services                             Services hub
 │   ├── /services/residential-roofing
-│   ├── /services/commercial-roofing
 │   ├── /services/roof-replacement
 │   ├── /services/roof-repair
 │   ├── /services/storm-damage
 │   ├── /services/insurance-claims
 │   ├── /services/emergency-roofing
-│   ├── /services/metal-roofing
 │   ├── /services/shingle-roofing
-│   ├── /services/flat-roofing
 │   ├── /services/roof-inspections
 │   ├── /services/gutters
-│   └── /services/roof-cleaning        ("Roof Revive" soft-wash — confirm offering)
+│   └── /services/roof-cleaning          ("Roof Revive" soft-wash — confirm offering)
 │
-├── /service-areas                      Service-area hub (map + all cities)
-│   ├── /service-areas/hattiesburg     Tier 1 (home city — deepest content)
-│   ├── /service-areas/petal           Tier 1
-│   ├── /service-areas/laurel          Tier 1
-│   ├── /service-areas/gulfport        Tier 1
-│   ├── /service-areas/biloxi          Tier 1
-│   ├── /service-areas/purvis          Tier 2
-│   ├── /service-areas/sumrall         Tier 2
-│   ├── /service-areas/columbia        Tier 2
-│   ├── /service-areas/ellisville      Tier 2
-│   ├── /service-areas/richton         Tier 2
-│   ├── /service-areas/seminary        Tier 2
-│   ├── /service-areas/poplarville     Tier 2
-│   ├── /service-areas/picayune        Tier 2
-│   └── /service-areas/diamondhead     Tier 2
-│       (system is data-driven — adding a city = adding one data entry)
+├── METAL ROOFING (dedicated hub — flagship growth category)
+├── /metal-roofing                        Metal hub: overview, styles, materials, gallery
+│   ├── /metal-roofing/standing-seam
+│   ├── /metal-roofing/exposed-fastener   (R-Panel & PBR panels)
+│   ├── /metal-roofing/residential        Residential metal
+│   ├── /metal-roofing/commercial         Commercial metal
+│   ├── /metal-roofing/agricultural       Ag buildings & barndominiums
+│   └── /metal-roofing/materials          Gauge (26 vs 29), Galvalume, painted steel guide
+│       (launch = hub page; children roll out in Phase 3–4 and via Learning Center)
 │
-├── /projects                           Project gallery (filterable by service/city)
-│   └── /projects/[slug]               Individual project case studies (phase 2+)
+├── COMMERCIAL (dedicated experience — equal weight to residential)
+├── /commercial                           Commercial hub / commercial homepage
+│   ├── /commercial/roof-replacement
+│   ├── /commercial/roof-repair
+│   ├── /commercial/flat-roofing          (TPO / EPDM / modified bitumen `[NEEDS: confirm systems offered]`)
+│   ├── /commercial/metal-roofing         (cross-links with /metal-roofing/commercial)
+│   ├── /commercial/roof-coatings         `[NEEDS: confirm offering]`
+│   ├── /commercial/maintenance-programs  `[NEEDS: confirm offering]`
+│   ├── /commercial/inspections
+│   ├── /commercial/industries            Industry hub
+│   │   ├── /commercial/industries/schools
+│   │   ├── /commercial/industries/churches
+│   │   ├── /commercial/industries/apartments
+│   │   ├── /commercial/industries/industrial
+│   │   ├── /commercial/industries/warehouses
+│   │   └── /commercial/industries/municipal
+│   ├── /commercial/projects              Commercial portfolio
+│   │   └── /commercial/projects/[slug]   Case studies
+│   └── /commercial/request-consultation  Commercial lead flow (distinct from residential form)
 │
-├── /about                              Company story, team, values, credentials
-├── /reviews                            Reviews page (real reviews only — placeholder until supplied)
-├── /financing                          Financing options + CTA
-├── /free-inspection                    Dedicated conversion landing page (primary form)
-├── /contact                            Contact page (form, phone, map, hours)
+├── LOCAL SEO
+├── /service-areas                        Hub (interactive map + all cities)
+│   ├── /service-areas/hattiesburg        Tier 1
+│   ├── /service-areas/petal              Tier 1
+│   ├── /service-areas/laurel             Tier 1
+│   ├── /service-areas/gulfport           Tier 1
+│   ├── /service-areas/biloxi             Tier 1
+│   ├── /service-areas/purvis …           Tier 2: purvis, sumrall, columbia, ellisville,
+│   │                                     richton, seminary, poplarville, picayune, diamondhead
+│   └── (data-driven — adding a city = one CMS entry; expansion list in §10)
 │
-├── /blog                               Blog hub (structure built now, content later)
+├── PROOF
+├── /projects                             Residential gallery (filterable: service, city, material)
+│   └── /projects/[slug]                  Project case studies
+├── /reviews                              Real reviews only
+├── /about                                Story, team, values, credentials
+│
+├── CONVERSION
+├── /free-inspection                      Residential conversion landing page
+├── /quote                                Interactive quote wizard (Phase 8; route reserved)
+├── /financing                            Financing info + calculator (calculator Phase 8)
+├── /contact
+│
+├── CONTENT ENGINE
+├── /learn                                Learning Center hub (evergreen guides, pillar pages)
+│   ├── /learn/[category]/[slug]          e.g. /learn/metal-roofing/26-vs-29-gauge
+│   └── (categories: metal-roofing, insurance-claims, storm-prep,
+│        materials, maintenance, commercial, cost-guides)
+├── /blog                                 Blog hub (timely posts, company news, storm updates)
 │   └── /blog/[slug]
+├── /storm-center                         Storm Center (Phase 8; route reserved — live storm
+│                                         resources, emergency checklist, claims help)
+│
+├── COMPANY / PLATFORM
+├── /careers                              Careers page (+ JobPosting schema when listings exist)
+├── /portal                               RESERVED — customer portal (future)
+├── /team                                 RESERVED — employee portal (future)
+├── /schedule                             RESERVED — online scheduling (future)
 │
 ├── /privacy-policy
 ├── /terms-of-service
-│
-├── sitemap.xml                         Auto-generated
-└── robots.txt
+├── sitemap.xml                           Auto-generated
+└── robots.txt                            (reserved routes noindexed until launched)
 ```
 
-**Redirects:** `southeastroofing.llc/*` → 301 → `roofs.ms/*` (configured at Vercel domain level).
-
-**URL conventions:** lowercase, hyphenated, no trailing slashes, no dates in blog URLs. Every page has exactly one canonical URL.
+**URL conventions:** lowercase, hyphenated, no trailing slashes, one canonical URL per page. Reserved routes return 404/noindex until their phase ships — they exist in the plan so nothing squats on the URL later.
 
 ---
 
-## 2. Homepage — Section-by-Section Plan
+## 3. Homepage — Section-by-Section Plan
 
-The homepage is the cinematic flagship. Every section has a job; every section ends within reach of a CTA.
+The homepage now serves **two audiences**: homeowners and commercial decision-makers. It leads residential (higher volume) but gives commercial a first-class, above-the-fold-adjacent path.
 
-| # | Section | Purpose | Content & Motion |
-|---|---------|---------|------------------|
-| 1 | **Hero** | Instant premium impression + immediate conversion path | Full-viewport dark cinematic hero. Background: high-quality roofing footage or Ken-Burns hero photo `[NEEDS: hero media]`. Headline emphasizing South Mississippi + premium roofing. Sub-line with service area. Dual CTAs: **Call Now** (tel: link) + **Schedule Free Inspection**. Subtle parallax on background, staggered text reveal on load. Trust chips under CTAs (licensed & insured `[NEEDS: license #]`, local, year founded `[NEEDS: year]`). |
-| 2 | **Trust bar** | Social proof at first scroll | Horizontal strip: rating placeholder `[NEEDS: real review source + rating]`, roofs completed `[NEEDS: real count]`, years in business, certifications `[NEEDS: e.g. GAF/Owens Corning if held]`. Animated count-up on scroll into view. |
-| 3 | **Services grid** | Route visitors to their need | 6–8 primary service cards (residential, commercial, replacement, repair, storm damage, metal, emergency, inspections). Card hover: lift + metallic border glow + icon micro-animation. Staggered scroll-in. Each links to its service page. "View all services" link. |
-| 4 | **Emergency strip** | Capture urgent, high-intent visitors | Burgundy accent band: "Storm damage? Leaking now?" + **24/7 Emergency Call** CTA `[NEEDS: confirm emergency availability]`. Subtle animated pulse on the call button. |
-| 5 | **Why Southeast Roofing** | Differentiation vs. competitors | Split layout: premium photography + 4–5 differentiators (local & owner-operated, quality materials, clean job sites, communication, warranty `[NEEDS: real warranty terms]`). Parallax image, sequential reveal of points. |
-| 6 | **Before / After showcase** | Visual proof of quality | Interactive before/after slider (2–3 projects) `[NEEDS: before/after photo pairs]`. Draggable divider, GPU-accelerated. |
-| 7 | **Process timeline** | Reduce anxiety, set expectations | 4–5 steps: Inspection → Estimate → (Insurance help if applicable) → Build day → Final walkthrough & warranty. Animated horizontal (desktop) / vertical (mobile) timeline that draws in as you scroll. |
-| 8 | **Insurance & financing strip** | Remove the two biggest objections (cost + claims confusion) | Two side-by-side panels: "We help with insurance claims" and "Financing available" `[NEEDS: financing partner/terms]`. Each with its own CTA. |
-| 9 | **Featured projects** | Portfolio depth | 3–6 project cards from the gallery (photo, city, service type). Hover zoom + caption slide. Links to /projects. |
-| 10 | **Reviews** | Third-party trust | Carousel of real reviews `[NEEDS: real reviews + permission]`. Until supplied: a "See what neighbors say" panel linking to the live Google profile `[NEEDS: Google Business Profile URL]` — never fabricated quotes. |
-| 11 | **Service-area map** | Local SEO + relevance signal | Stylized dark map of South Mississippi with animated location pins for each city. City names link to their service-area pages. |
-| 12 | **FAQ** | Objection handling + FAQ schema | 5–7 questions (cost, timeline, insurance, materials, warranty). Smooth accordion. FAQPage JSON-LD. |
-| 13 | **Final CTA band** | Last conversion push | Full-width cinematic band: "Ready for a roof you're proud of?" + inline short quote form (name, phone, zip) + call button. |
-| 14 | **Footer** | Navigation + SEO internal linking | 4 columns: Services (all), Service Areas (all cities), Company (about/reviews/financing/contact), Contact info + hours + license line `[NEEDS: license #]`. Social links `[NEEDS: profiles]`. |
+| # | Section | Purpose & Motion |
+|---|---------|------------------|
+| 1 | **Hero** | Full-viewport dark cinematic hero `[NEEDS: hero media]`. Headline: premium South Mississippi roofing. Dual CTAs: **Call Now** + **Schedule Free Inspection**. Third quiet link: "Commercial project? Start here →" routing to /commercial. Parallax background, staggered text reveal, trust chips (licensed & insured `[NEEDS: license #]`, local, year founded `[NEEDS: year]`). |
+| 2 | **Trust bar** | Animated count-up stats: rating `[NEEDS: source]`, roofs completed `[NEEDS: count]`, years in business, certifications `[NEEDS: real certs]`. |
+| 3 | **Residential / Commercial split** | Two large cinematic panels side by side — "Residential Roofing" / "Commercial Roofing" — equal visual weight, hover-expand effect, each routing to its experience. This is the structural statement that we do both, seriously. |
+| 4 | **Services grid** | 6–8 primary service cards (replacement, repair, storm, metal, emergency, inspections, gutters, insurance help). Hover lift + metallic border glow, staggered scroll-in. |
+| 5 | **Emergency strip** | Burgundy band: "Storm damage? Leaking now?" + **24/7 Emergency Call** `[NEEDS: confirm availability]`. Subtle pulse. |
+| 6 | **Metal roofing feature** | Dedicated showcase band for the metal category: standing-seam imagery, style chips (standing seam, R-panel, barndominium…), "Explore Metal Roofing" → /metal-roofing. Metal is a growth flagship and gets homepage real estate. |
+| 7 | **Why Southeast Roofing** | Split layout, parallax image, 4–5 real differentiators (local & owner-operated, materials, clean sites, communication, warranty `[NEEDS: terms]`). |
+| 8 | **Before / After showcase** | Interactive draggable sliders (2–3 projects) `[NEEDS: photo pairs]`. |
+| 9 | **Process timeline** | Inspection → Estimate → (Insurance help) → Build day → Walkthrough & warranty. Scroll-drawn timeline. |
+| 10 | **Commercial spotlight** | Building-owner-focused band: industries served (schools, churches, apartments, industrial, warehouses, municipal) as icon chips, featured commercial project `[NEEDS: commercial photos]`, CTA → /commercial/request-consultation. |
+| 11 | **Insurance & financing strip** | Two panels: claims help + financing `[NEEDS: financing partner/terms]`, each with CTA. |
+| 12 | **Featured projects** | 3–6 gallery cards (mix residential + commercial), hover zoom, → /projects. |
+| 13 | **Reviews** | Real reviews only `[NEEDS: reviews + permission]`; until supplied, link-out panel to live Google profile `[NEEDS: GBP URL]`. |
+| 14 | **Service-area map** | Stylized dark interactive map, animated pins, 2-hour radius ring (see §7 Interactive Features), city links. |
+| 15 | **FAQ** | 5–7 questions, smooth accordion, FAQPage schema. |
+| 16 | **Final CTA band** | Cinematic band + short quote form (name, phone, zip, residential/commercial toggle) + call button. |
+| 17 | **Footer** | 5 columns: Residential Services, Commercial, Service Areas, Company (about/reviews/financing/careers/learn), Contact + hours + license `[NEEDS: #]` + socials `[NEEDS: profiles]`. |
 
-**Persistent elements (all pages):** sticky header that condenses on scroll (logo, nav, phone number, "Free Inspection" button); sticky mobile bottom bar with **Call** + **Free Inspection**; emergency banner slot (toggleable during storm events).
-
----
-
-## 3. Service Page Structure (template — all 13 services)
-
-Every service page is generated from one template + one data entry, keeping quality consistent and additions cheap.
-
-1. **Service hero** — dark hero with service-specific headline, breadcrumb, dual CTA (Call / Free Inspection), service-relevant background image `[NEEDS: per-service photos]`.
-2. **Intro block** — 2–3 paragraphs: what the service is, who it's for, why it matters in South Mississippi (heat, humidity, hurricane-season storms). Written per-service, never spun/duplicated.
-3. **Signs you need this** — icon list ("You may need roof repair if…"). Scroll-staggered.
-4. **What's included / our approach** — process or scope specific to this service.
-5. **Materials / options** (where relevant) — e.g., shingle brands & styles, metal panel types, flat-roof membranes. `[NEEDS: actual brands/products used]`
-6. **Before/After or gallery strip** — filtered to this service when photos exist.
-7. **Insurance & financing panel** — contextual: heavy emphasis on storm-damage/insurance pages, lighter elsewhere.
-8. **Service-specific FAQ** — 4–6 questions with FAQPage schema.
-9. **Related services** — 3 cards (internal linking).
-10. **Service-area links** — "We provide {service} in:" city link list (internal linking to location pages).
-11. **Final CTA band** — quote form + call button.
-
-**Emergency-roofing page additions:** 24/7 phone CTA above the fold, "what to do right now while you wait" checklist, tarping/mitigation explanation.
-
-**Insurance-claims page additions:** step-by-step claims walkthrough, "we meet your adjuster" positioning, documentation checklist. No promises of claim outcomes — factual assistance language only.
+**Persistent elements (all pages):** sticky condensing header (logo, nav with Residential / Commercial / Metal / Service Areas / Learn, phone, "Free Inspection" button); sticky mobile bottom bar (**Call** + **Free Inspection**; on /commercial routes it swaps to **Call** + **Request Consultation**); toggleable storm-event banner slot.
 
 ---
 
-## 4. Service-Area SEO Strategy
+## 4. Service Page Structure
 
-**Model: hub-and-spoke, data-driven, uniqueness-enforced.**
+### 4.1 Residential/core service template (unchanged from v1, 11 sections)
 
-- **Hub:** `/service-areas` — map, full city list, service-area overview copy.
-- **Spokes:** one page per city, all generated from a typed data file (`locations.ts`), so adding city #16 is a data entry, not a new build.
+1. Service hero (breadcrumb, dual CTA, service imagery `[NEEDS: per-service photos]`)
+2. Intro — what/who/why it matters in South Mississippi (heat, humidity, hurricane season); unique copy per service
+3. "Signs you need this" icon list
+4. What's included / our approach
+5. Materials & options where relevant `[NEEDS: brands/products used]`
+6. Before/After or gallery strip (filtered to service)
+7. Insurance & financing panel (contextual weight)
+8. Service-specific FAQ (FAQPage schema)
+9. Related services (3 cards)
+10. Service-area links ("We provide {service} in: …")
+11. Final CTA band
 
-**Tier system (controls content depth):**
+**Emergency page additions:** 24/7 CTA above fold, "what to do right now" checklist, tarping/mitigation explainer.
+**Insurance page additions:** step-by-step claims walkthrough, "we meet your adjuster," documentation checklist — factual assistance language, no outcome promises.
 
-| Tier | Cities | Content depth |
-|------|--------|---------------|
-| 1 | Hattiesburg, Petal, Laurel, Gulfport, Biloxi | ~800–1,200 words unique copy, local landmarks/neighborhoods, city-specific FAQ, local project photos when available |
-| 2 | Purvis, Sumrall, Columbia, Ellisville, Richton, Seminary, Poplarville, Picayune, Diamondhead | ~500–700 words unique copy, county + distance-from-Hattiesburg context, shared-but-rotated FAQ pool |
+### 4.2 Commercial experience (new — equal emphasis)
 
-**Anti-doorway-page rules (critical — Google penalizes thin location pages):**
-- Every city page must contain genuinely local content: county, neighborhoods/landmarks, weather/storm patterns relevant to that area, distance/response time from Hattiesburg, and real local projects as they accumulate.
-- No find-and-replace city-name templating for body copy. Structure is shared; copy is written per city.
-- Launch with Tier 1 pages fully written; Tier 2 pages roll out in batches as unique copy is completed rather than shipping thin.
+Commercial buyers are not homeowners: they're property managers, facility directors, school boards, church committees, and owners' reps. Longer sales cycles, budget approvals, bid processes, maintenance contracts. The commercial experience is therefore **its own funnel**, not a re-skinned residential page.
 
-**City page template:**
-1. Hero: "Roofing in {City}, MS" + CTAs
-2. Local intro (unique copy — the tier determines depth)
-3. Services offered in {city} (links to all service pages — the internal-linking mesh)
-4. Why locals choose Southeast Roofing + response-time note
-5. Local projects gallery slot (fills over time)
-6. City-specific FAQ (FAQPage schema)
-7. Nearby areas served (links to adjacent city pages)
-8. Final CTA band
+**Commercial hub (/commercial) — the "commercial homepage":**
+1. Commercial hero — building-owner messaging ("Protect your property, your tenants, and your budget"), CTA: **Request a Commercial Consultation** + direct line
+2. Trust/credibility strip — commercial-relevant proof: bonding/insurance limits `[NEEDS: what's publishable]`, safety record `[NEEDS: real data]`, manufacturer commercial certifications `[NEEDS: real certs]`
+3. Commercial services grid (replacement, repair, flat systems, metal, coatings, maintenance, inspections)
+4. Industries served — six industry cards (schools, churches, apartments, industrial, warehouses, municipal)
+5. Featured commercial projects / case-study cards `[NEEDS: commercial project history]`
+6. Process for commercial clients — assessment → detailed proposal/spec → scheduling around operations → execution → maintenance plan
+7. Why choose us for commercial — minimal disruption, documentation, communication with stakeholders
+8. Commercial FAQ + final consultation CTA
 
-**Internal-linking mesh:** every service page links to all city pages; every city page links to all service pages; city pages cross-link to neighbors; footer carries both full lists. This concentrates local relevance without orphan pages.
+**Commercial service pages** follow the core template but with commercial copy, flat/low-slope system detail, and the consultation CTA replacing "free inspection."
 
-**Future expansion path:** the data model reserves an optional `service × city` combination page type (e.g., `/service-areas/hattiesburg/roof-replacement`) — **not built at launch** to avoid thin content, activated later for proven high-value combinations backed by unique copy.
+**Industry pages (/commercial/industries/*)** — the differentiator vs. local competitors:
+1. Industry hero (e.g., "Roofing for Schools & Educational Facilities")
+2. Industry-specific concerns (schools: summer scheduling, safety compliance, budget cycles; churches: steep-slope + architectural features, congregation fundraising timelines; apartments: tenant disruption, phased work; industrial/warehouse: large flat spans, downtime cost; municipal: bid/procurement processes `[NEEDS: confirm municipal bid experience]`)
+3. Systems we recommend for this building type
+4. Relevant case studies (as they accumulate)
+5. Industry FAQ + consultation CTA
 
-**Google Business Profile:** the site links to and is linked from GBP `[NEEDS: GBP access/URL]`; NAP (name, address, phone) rendered identically site-wide and matching GBP exactly.
+**Commercial lead flow (/commercial/request-consultation):** dedicated form — company, contact name/role, property type, property address, roof type (if known), approximate square footage, timeline, budget stage, description. Delivered with "commercial" tagging so the owner can triage. No instant-quote framing — commercial buyers expect a consultation.
 
----
+**Case studies (/commercial/projects/[slug]):** challenge → solution → outcome format, system installed, timeline, photos; `[NEEDS: past commercial projects + client permission]`. Modeled as a CMS content type from day one.
 
-## 5. Brand / Design System
+### 4.3 Metal roofing hub (new — flagship category)
 
-### 5.1 Color palette
+Metal gets its own hub because it's (a) a high-margin growth category, (b) a massive topical-authority opportunity (§10), and (c) both residential and commercial.
 
-| Token | Value (proposed) | Usage |
-|-------|------------------|-------|
-| `charcoal-950` | `#0B0B0D` | Page background (primary dark) |
-| `charcoal-900` | `#131316` | Section alternation, cards |
-| `charcoal-800` | `#1C1C21` | Elevated surfaces, card hover |
-| `charcoal-700` | `#26262C` | Borders, dividers (subtle) |
-| `silver-400` | `#C7CBD1` | Metallic accent — borders, icons, gradients |
-| `silver-200` | `#E6E8EB` | Secondary text on dark |
-| `white` | `#FFFFFF` | Headlines, primary text on dark |
-| `burgundy-600` | `#7A1F2B` | Primary accent — CTAs, emergency, highlights |
-| `burgundy-500` | `#93293A` | CTA hover, gradients |
-| `burgundy-700` | `#5E1620` | Pressed states, deep accents |
+**Hub page (/metal-roofing):**
+1. Cinematic metal hero (standing-seam imagery `[NEEDS: metal project photos]`)
+2. Style explorer — cards for Standing Seam, Exposed Fastener (R-Panel/PBR), residential, commercial, agricultural/barndominium
+3. Materials & specs section — 26 vs 29 gauge, Galvalume vs painted steel, panel profiles `[NEEDS: actual products/suppliers used]`
+4. Metal vs shingle comparison block (honest, factual)
+5. Metal gallery strip
+6. Metal FAQ (lifespan, cost, noise myths, insurance benefits — factual only)
+7. CTA: metal-specific estimate request
 
-- **Metallic effect:** silver gradients (`silver-400 → white → silver-400`) on key headline words, card borders, and dividers — used sparingly so it reads expensive, not chrome-plated.
-- **Contrast rule:** all text/background combinations meet WCAG AA (4.5:1 body, 3:1 large text). Burgundy on charcoal is verified for buttons with white text.
-- Light-surface sections (white/`silver-200`) may be used for occasional contrast breaks (e.g., process section) so the site doesn't fatigue — dark remains the dominant identity.
+**Child pages** (rolling out Phases 3–4):
 
-### 5.2 Typography
+| Page | Focus |
+|------|-------|
+| /metal-roofing/standing-seam | Concealed-fastener systems, panel profiles, residential + commercial applications |
+| /metal-roofing/exposed-fastener | R-Panel & PBR panels — cost-effective option, ag/commercial/residential uses |
+| /metal-roofing/residential | Homeowner-focused: styles, colors, value, insurance considerations |
+| /metal-roofing/commercial | Low-slope + architectural metal for commercial buildings |
+| /metal-roofing/agricultural | Ag buildings, barns, barndominiums `[NEEDS: confirm barndo/ag capability]` |
+| /metal-roofing/materials | Buyer's guide: gauge (26 vs 29), Galvalume, painted steel, finishes/warranties `[NEEDS: real product lines]` |
 
-- **Headings:** a bold condensed-to-medium premium sans (e.g., *Archivo* or *Barlow Condensed* for display + tightened tracking) — strong, industrial, modern.
-- **Body:** highly readable sans (e.g., *Inter*) at 16–18px base, relaxed line-height on dark backgrounds.
-- Loaded via `next/font` (self-hosted, zero layout shift). Fluid type scale via `clamp()` — hero display ~clamp(2.5rem → 5rem).
-- Hierarchy: one H1 per page; H2 per section; H3 within. Headline case: title case for display, sentence case elsewhere.
-
-### 5.3 Imagery & texture
-
-- Real project photography only — no obvious stock roofing photos on key pages. `[NEEDS: photo library]`
-- Dark duotone/graded treatment on photos to sit in the palette; consistent grading across the site.
-- Subtle texture allowed: fine grain/carbon texture on hero and CTA bands at very low opacity.
-- All images: descriptive alt text (see SEO section), AVIF/WebP via `next/image`, dimensioned to prevent CLS.
-
-### 5.4 UI style
-
-- **Cards:** `charcoal-900` surface, 1px `charcoal-700` border, radius ~12–16px, hover lifts with silver border-glow.
-- **Buttons:** primary = burgundy fill/white text; secondary = silver outline/ghost on dark; emergency = burgundy with subtle pulse. Generous padding, 44px+ touch targets.
-- **Forms:** dark inputs with silver focus rings, inline validation, large touch-friendly fields.
-- **Iconography:** Lucide, 1.5px stroke, silver default / burgundy for emphasis.
-- Spacing: 4px base scale; sections breathe (96–160px vertical on desktop).
+Deep-dive comparisons ("26 vs 29 gauge," "Galvalume vs painted") live in the Learning Center and link up to these pages — hub pages sell, learning pages rank and educate.
 
 ---
 
-## 6. Animation / Motion System
+## 5. Service-Area SEO Strategy
 
-**Philosophy: "expensive and controlled."** Motion confirms quality; it never blocks reading, delays interaction, or tanks Core Web Vitals.
+**Model: hub-and-spoke, data-driven, uniqueness-enforced.** (Unchanged from v1 in structure; now CMS-driven and feeding the larger topical-authority plan in §10.)
 
-### 6.1 Technology assignment
+- **Hub:** /service-areas — interactive map (§7), full city list, service-area overview.
+- **Spokes:** one page per city from a CMS `location` document; adding city #15+ is a content entry, not a build.
 
-| Layer | Tool | Used for |
-|-------|------|----------|
-| Smooth scroll | **Lenis** | Site-wide inertial scroll (desktop; native on touch) |
-| UI/component motion | **Framer Motion** | Section reveals, staggered cards, hover states, accordion, page transitions, sticky-header condensing |
-| Scroll-driven set pieces | **GSAP + ScrollTrigger** | Hero parallax, process-timeline draw-in, stat count-ups synced to scroll, map pin choreography |
-| Micro-interactions | CSS transitions | Links, buttons, focus states (cheapest path first) |
+**Tiers:**
 
-Rule: use the cheapest tool that achieves the effect. GSAP is reserved for the handful of scroll-driven set pieces; everything routine is Framer Motion or CSS.
+| Tier | Cities | Depth |
+|------|--------|------|
+| 1 | Hattiesburg, Petal, Laurel, Gulfport, Biloxi | 800–1,200 words unique copy, neighborhoods/landmarks, city-specific FAQ, local projects |
+| 2 | Purvis, Sumrall, Columbia, Ellisville, Richton, Seminary, Poplarville, Picayune, Diamondhead | 500–700 words unique copy, county + response-time context, rotated FAQ pool |
 
-### 6.2 Motion vocabulary (consistent site-wide)
+**Anti-doorway rules (critical):** genuinely local content on every page (county, landmarks, storm patterns, distance/response time, accumulating local projects); no find-and-replace body copy; Tier 2 ships in batches as unique copy completes — never thin.
 
-- **Reveals:** fade + 24–32px rise, 0.5–0.7s, custom ease (`cubic-bezier(0.22, 1, 0.36, 1)`), staggered 60–90ms between siblings. Elements animate once (no re-trigger spam on scroll-up).
-- **Parallax:** background layers max ~10–15% translate — depth, not seasickness.
-- **Hover:** 150–250ms; lift ≤ 6px; border/glow transitions; image zoom ≤ 1.05.
-- **Count-ups:** stats animate over ~1.2s when entering viewport, once.
-- **Page transitions:** quick fade/slide via Framer Motion + App Router — ≤ 300ms, never gating LCP.
-- **Before/After slider:** pointer/touch-driven, transform-only.
+**City page template:** hero + CTAs → unique local intro → services in {city} (linking mesh) → why locals choose us + response time → local projects slot → city FAQ (schema) → nearby areas → final CTA. Commercial note: Tier 1 city pages include a commercial section ("Commercial roofing in {city}") linking into the commercial funnel.
 
-### 6.3 Performance & accessibility guardrails
+**Internal-linking mesh:** services ↔ cities, cities ↔ neighbors, footer carries both lists, Learning Center articles link down into service and city pages.
 
-- Animate **only** `transform` and `opacity` (compositor-friendly); no layout-property animation.
-- All animation code loads client-side after content renders — pages are server-rendered and fully readable with JS disabled.
-- `prefers-reduced-motion: reduce` → parallax off, reveals become simple fades or none, smooth scroll off, count-ups render final values.
-- Nothing above the fold waits on an animation library to display (hero text visible immediately; motion enhances in).
-- Motion budget: no page ships more than ~2 GSAP scroll-trigger set pieces.
+**Expansion path:** the CMS model reserves `service × city` combination pages — not built at launch; activated selectively later for proven high-value combos with unique copy (part of the 200+ page roadmap, §10).
+
+**Google Business Profile:** site ↔ GBP linkage `[NEEDS: GBP access/URL]`; NAP identical site-wide, matching GBP exactly, sourced from one config record.
 
 ---
 
-## 7. Lead-Generation Strategy
+## 6. Brand / Design System
 
-### 7.1 Conversion inventory (every major page)
+*(Carried forward from v1 — unchanged palette, typography, imagery, and UI rules. Summary below; full token table stands.)*
 
-- **Call Now** — `tel:` link in header, hero, sticky mobile bar, final CTA `[NEEDS: primary phone number]`
-- **Schedule Free Inspection** — primary button → `/free-inspection` or opens quote form
-- **Quote form** — full version on `/free-inspection` and `/contact`; short version (name/phone/zip/service) embedded in final CTA bands
-- **Emergency CTA** — homepage strip, storm/emergency pages, toggleable site-wide storm banner
-- **Financing CTA** — homepage strip, service pages, `/financing`
-- **Insurance-claim help CTA** — storm/insurance pages, homepage strip
-- **Trust badges** — real credentials only `[NEEDS: license, insurance proof, any manufacturer certifications]`
-- **Sticky mobile bottom bar** — Call + Free Inspection, always visible on mobile
-
-### 7.2 Form design
-
-- **Short form (embedded):** name, phone, city/zip, service needed → 10-second completion.
-- **Full form (/free-inspection, /contact):** + address, preferred time, "is this storm/insurance related?", photo upload (phase 2), message. React Hook Form + Zod validation, inline errors, obvious success state with "what happens next" copy.
-- Anti-spam: honeypot + optional Turnstile/reCAPTCHA (invisible-first).
-- **Delivery:** server action → email notification to owner `[NEEDS: lead email address]` + storage. CRM/webhook integration (e.g., JobNimbus/AccuLynx/Zapier) reserved as phase 2 `[NEEDS: current lead workflow]`.
-
-### 7.3 The offer ladder
-
-Primary offer: **Free Roof Inspection** (low commitment, high intent). Secondary: free estimate on replacements; emergency response; insurance-claim review. Each page leads with the offer matching its intent (storm page → emergency/claims; metal page → design consultation/estimate).
-
-### 7.4 Measurement
-
-- GA4 + conversion events: form submit, tel: click, CTA clicks, scroll depth on money pages.
-- Call tracking decision needed `[NEEDS: decision — dynamic call-tracking number vs. clean single NAP number; recommendation: single number at launch for NAP consistency, revisit later]`.
-- UTM discipline for any future ads; `/free-inspection` doubles as the ads landing page.
+- **Palette:** charcoal foundation (`#0B0B0D` → `#26262C` scale), white/silver text (`#FFFFFF`, `#E6E8EB`, `#C7CBD1` metallic accent), burgundy accent scale (`#7A1F2B` primary, `#93293A` hover, `#5E1620` pressed). Metallic silver gradients used sparingly on headline words, card borders, dividers. All combinations WCAG AA.
+- **Typography:** bold premium display sans (Archivo / Barlow Condensed direction) + Inter body, self-hosted via `next/font`, fluid `clamp()` scale, one H1 per page.
+- **Imagery:** real project photography only on key pages `[NEEDS: photo library]`, consistent dark cinematic grading, AVIF/WebP via `next/image`, subtle grain texture on hero/CTA bands.
+- **UI:** dark cards with 1px borders + silver hover glow, burgundy primary buttons / silver ghost secondary / pulsing emergency variant, 44px+ touch targets, dark forms with silver focus rings, Lucide icons (1.5px stroke), 96–160px section rhythm.
+- **Commercial sub-brand note:** the commercial experience shares the design system but shifts tone — slightly more silver/steel, less burgundy; photography of large buildings and crews at scale; denser information layout appropriate for B2B readers. Same system, more boardroom.
 
 ---
 
-## 8. Technical Architecture
+## 7. Animation, Motion & Interactive Features
 
-### 8.1 Stack (confirmed)
+### 7.1 Motion system
 
-- **Next.js (App Router) + React + TypeScript** — static generation (SSG) for all marketing pages
-- **Tailwind CSS + shadcn/ui** — design-system tokens mapped to Tailwind theme
-- **Framer Motion + GSAP (+ ScrollTrigger) + Lenis** — per motion system above
-- **Lucide** icons; **React Hook Form + Zod** forms
-- **Vercel** deployment (both domains; `.llc` domain 301s at the domain level)
+*(Carried forward from v1 — unchanged.)* Lenis smooth scroll; Framer Motion for UI/reveals/transitions; GSAP + ScrollTrigger reserved for ≤2 scroll set pieces per page; CSS for micro-interactions. Motion vocabulary: 24–32px fade-rise reveals with 60–90ms stagger, ≤15% parallax, ≤6px hover lifts, ~1.2s count-ups, ≤300ms page transitions. Guardrails: transform/opacity only, server-rendered content never waits on animation JS, full `prefers-reduced-motion` support, hero text visible immediately.
 
-### 8.2 Content model — data-driven pages
+### 7.2 Interactive feature roadmap (premium differentiators)
 
-All repeatable page types are driven by typed data, not hand-built pages:
+| Feature | Description | Phase |
+|---------|-------------|-------|
+| **Interactive service-area map** | Stylized dark SVG/vector map of South MS; hover/tap states per city; pins animate in on scroll; cities link to their pages | 5 |
+| **Animated 2-hour radius** | On the map: a radius ring animating out from Hattiesburg communicating "if you're in this circle, we've got you" | 5 |
+| **Before/after sliders** | Draggable, touch-friendly, transform-only comparison sliders | 2 |
+| **Advanced project gallery** | Filterable by service / city / material / residential-commercial; animated filtering (FLIP), lightbox with keyboard nav | 6 |
+| **Interactive quote wizard** (/quote) | Multi-step animated wizard: property type → service → roof details → photos (optional) → contact. Progress indicator, step transitions, saves partial state. Feeds the same lead pipeline with rich data | 8 |
+| **Financing calculator** | Slider-driven monthly-payment estimator on /financing `[NEEDS: real financing terms — no invented rates; ships only when partner terms are known]` | 8 |
+| **Storm Center** (/storm-center) | Activated during weather events: current storm info, "what to do now" checklist, emergency contact, insurance-claim starter, post-storm inspection scheduling. Toggleable site-wide banner drives to it | 8 |
+| **Roofing Learning Center** (/learn) | Filterable, categorized educational library with pillar pages and reading-time UI — the topical-authority engine (§10) | 7 |
+| **AI customer assistant** | Chat assistant grounded on CMS content (services, FAQs, learning articles) for instant answers + lead capture. Claude API; requires content maturity first | 8+ |
+
+Every interactive feature obeys the motion guardrails and ships only when it can be fast, accessible, and honest (the calculator especially).
+
+---
+
+## 8. Lead-Generation Strategy
+
+### 8.1 Two funnels
+
+**Residential funnel** — high volume, fast decisions:
+- Primary offer: **Free Roof Inspection**; secondary: free replacement estimate, emergency response, claims review
+- CTAs on every page: Call Now (tel:) `[NEEDS: phone]`, Schedule Free Inspection, short embedded quote form, emergency CTA where relevant, financing + insurance CTAs, sticky mobile call bar
+- Short form: name, phone, city/zip, service (10-second completion). Full form on /free-inspection and /contact: + address, preferred time, storm/insurance flag, message; photo upload phase 2
+
+**Commercial funnel** — lower volume, higher value, longer cycle:
+- Primary offer: **Commercial Roof Consultation** (assessment + written proposal)
+- /commercial/request-consultation form per §4.2, tagged separately in delivery
+- Secondary assets that nurture: case studies, industry pages, maintenance-program page
+- Direct line prominently displayed — commercial buyers call
+
+### 8.2 Lead pipeline (platform-ready)
+
+- Forms: React Hook Form + Zod, inline validation, honeypot + invisible Turnstile, explicit success state with "what happens next"
+- **Intake architecture:** form → server action / `/api/lead` → **lead service layer** that (a) stores the lead, (b) emails notification `[NEEDS: lead email]`, (c) fires optional webhooks. The webhook/adapter layer is how CRM and project-management integrations (JobNimbus, AccuLynx, Zapier…) attach later without touching forms `[NEEDS: current lead workflow]`
+- Residential and commercial leads carry a `channel` tag end-to-end
+
+### 8.3 Measurement
+
+- GA4 + events: form submits (by channel), tel: clicks, CTA clicks, wizard step completion (later), scroll depth on money pages
+- Call tracking `[NEEDS: decision — recommendation: single clean number at launch for NAP consistency; revisit dynamic tracking later]`
+- /free-inspection and /commercial/request-consultation double as ad landing pages; UTM discipline
+
+---
+
+## 9. Technical Architecture
+
+### 9.1 Stack
+
+- **Next.js (App Router) + React + TypeScript**, SSG/ISR for all marketing pages
+- **Tailwind CSS + shadcn/ui**, tokens mapped to the design system
+- **Framer Motion + GSAP/ScrollTrigger + Lenis** per §7
+- **Lucide, React Hook Form, Zod**
+- **Sanity CMS** (recommendation §9.3) for structured content
+- **Vercel** — both domains attached; roofs.ms → southeastroofing.llc 301 at domain level; `SITE_URL` env var is the single canonical-host source (§1)
+
+### 9.2 Application structure (platform-ready)
 
 ```
 src/
 ├── app/
-│   ├── (site)/
-│   │   ├── page.tsx                        Home
-│   │   ├── services/page.tsx               Hub
-│   │   ├── services/[slug]/page.tsx        Service template (generateStaticParams)
-│   │   ├── service-areas/page.tsx          Hub
-│   │   ├── service-areas/[slug]/page.tsx   City template (generateStaticParams)
-│   │   ├── projects/…  about/…  reviews/…  financing/…
-│   │   ├── free-inspection/…  contact/…  blog/…  (+ legal)
-│   │   ├── layout.tsx                      Header/footer/sticky elements
-│   │   └── sitemap.ts / robots.ts
-│   └── api/lead/route.ts                   Lead intake (or server action)
-├── components/                             (see §9)
-├── content/
-│   ├── services.ts                         Typed service entries (copy, FAQs, schema fields)
-│   ├── locations.ts                        Typed city entries (tier, county, copy, FAQs, geo)
-│   ├── faqs.ts  projects.ts  company.ts    NAP, hours, license, socials — single source of truth
+│   ├── (marketing)/                     Public site — everything in §2
+│   │   ├── page.tsx                     Home
+│   │   ├── services/…  metal-roofing/…  commercial/…  service-areas/…
+│   │   ├── projects/…  learn/…  blog/…  storm-center/…
+│   │   ├── free-inspection/…  quote/…  financing/…  contact/…  careers/…
+│   │   ├── about/…  reviews/…  (+ legal)
+│   │   └── layout.tsx                   Marketing shell (header/footer/sticky CTA)
+│   ├── (platform)/                      RESERVED — future authenticated area
+│   │   ├── portal/…                     Customer portal (future)
+│   │   ├── team/…                       Employee portal (future)
+│   │   └── layout.tsx                   Auth-gated shell (future)
+│   ├── api/
+│   │   ├── lead/route.ts                Lead intake → lead service layer
+│   │   └── webhooks/…                   Integration endpoints (future CRM/PM)
+│   ├── sitemap.ts / robots.ts
+├── components/                          (§ component inventory)
 ├── lib/
-│   ├── seo.ts                              Metadata builders (title/desc/OG/canonical)
-│   ├── schema.ts                           JSON-LD builders (see §10)
-│   └── motion.ts                           Shared variants/eases/viewport config
-└── styles/
+│   ├── seo.ts / schema.ts / motion.ts
+│   ├── leads/                           Lead service layer + adapter pattern
+│   └── cms/                             Sanity client, typed queries (GROQ), image URLs
+├── sanity/                              Studio config + schemas (services, locations,
+│                                        projects, case studies, posts, guides, FAQs,
+│                                        company/NAP singleton, jobs)
+└── config/site.ts                       SITE_URL, NAP, feature flags (storm banner, etc.)
 ```
 
-- Adding a service or city = one data entry; routes, sitemap, schema, and internal links all derive from the data files.
-- `company.ts` is the single source of NAP truth — footer, contact page, and schema all read from it (consistency requirement for local SEO).
-- Blog: MDX files at `content/blog/` (structure shipped at launch; posts later).
+- **Route groups** separate marketing from the future platform area — the portal arrives later without disturbing the public site. Auth (Clerk or NextAuth) and a database (Vercel Postgres/Neon) are introduced **only when the first platform feature ships**; nothing pays that complexity cost now.
+- **company/NAP singleton** in CMS + `config/site.ts` = single source of truth for name/address/phone/hours/license across footer, contact, schema.
+- **Feature flags** (storm banner, storm center, wizard) let the owner toggle features from the CMS without deploys where appropriate.
 
-### 8.3 Rendering & performance strategy
+### 9.3 CMS evaluation: Sanity vs Payload
 
-- Every marketing page statically generated at build; content changes ship via commit → Vercel deploy.
-- Server Components by default; client components only for interactive/animated islands (keeps JS payload small).
-- `next/image` everywhere (AVIF/WebP, lazy below fold, priority hero); `next/font` self-hosted fonts.
-- GSAP/Lenis dynamically imported; motion code excluded from server bundle.
-- **Core Web Vitals budgets:** LCP < 2.0s, CLS < 0.05, INP < 200ms (mobile, throttled). Lighthouse ≥ 90 across the board on money pages, enforced before each phase ships.
+| Criterion | Sanity | Payload |
+|---|---|---|
+| Hosting/ops | Fully managed (content lake + CDN); zero database to run | Self-hosted in the Next.js app; requires Postgres/Mongo you own (Neon/Supabase/Payload Cloud) |
+| Editing experience | Sanity Studio — polished, real-time, customizable; excellent for a non-technical owner | Solid admin UI, TypeScript-native; slightly more "developer tool" feel |
+| Structured content / SEO | First-class structured content, strong references/relations — ideal for service×city×material relationships that drive the 200+ page plan | Equally capable structurally; content lives in your DB |
+| Images | Built-in image CDN with on-the-fly transforms (pairs well with next/image) | You manage storage (S3/UploadThing) + transforms |
+| Cost at this scale | Generous free tier; small business likely free/cheap for years | Software free/open-source; you pay for DB + storage hosting |
+| Ownership | Content lives in Sanity's cloud (exportable) | Full ownership, everything in your repo/DB |
+| Platform future (portals, scheduling) | CMS stays content-only; app DB added separately later (clean separation) | Could double as app DB/backend later (one system) |
+| Risk profile | Vendor dependency (mitigated by export) | You own uptime, backups, migrations |
 
-### 8.4 Quality & operations
+**Recommendation: Sanity.**
 
-- ESLint + Prettier + TypeScript strict; CI on GitHub (build + lint must pass to merge).
-- Vercel preview deployments per branch for owner review.
-- 404 page with search-ish nav back to services/areas; error boundaries.
-- Accessibility: semantic landmarks, skip-link, focus-visible styles, keyboard-operable sliders/accordions, WCAG AA contrast.
+Rationale for Southeast Roofing specifically:
+1. **Ease of use wins** — the owner (non-developer) will add projects, reviews, city pages, and articles for years. Sanity Studio is the best non-technical editing experience of the two.
+2. **Zero ops** — no database to babysit, back up, or migrate. For a roofing company, that's not a hobby worth having; managed infrastructure is worth the (currently ~zero) cost.
+3. **Image pipeline** — a photo-heavy site gets Sanity's image CDN and transforms for free; with Payload we'd assemble storage + optimization ourselves.
+4. **SEO content velocity** — the 200+ page topical-authority plan lives or dies on how easy it is to publish structured content. Sanity's references (a guide links a service, a material, and three cities) make the internal-linking mesh queryable and enforceable.
+5. **Clean platform separation** — when the customer portal arrives, application data (users, projects, schedules) belongs in an app database anyway. Sanity for content + app DB for platform is a cleaner long-term architecture than stretching one CMS into both roles.
 
----
+Payload would be the pick if full data ownership in-repo were a hard requirement or if we wanted the CMS to double as the platform backend. Neither outweighs ease-of-use + zero-ops for this business. **Decision point for owner: approve Sanity or request Payload.**
 
-## 9. Component List
+### 9.4 Rendering, performance, quality
 
-**Layout & navigation**
-`SiteHeader` (sticky, condensing) · `MobileNav` (animated drawer) · `StickyMobileCTA` (call + inspection bar) · `EmergencyBanner` (toggleable) · `SiteFooter` · `Breadcrumbs` (with schema) · `PageTransition`
-
-**Heroes & CTA**
-`HomeHero` (cinematic/parallax) · `PageHero` (interior pages) · `CTAButton` (primary/secondary/emergency variants) · `FinalCTABand` (with embedded short form) · `EmergencyStrip` · `InsuranceFinancingPanels`
-
-**Conversion & forms**
-`QuoteFormShort` · `QuoteFormFull` · `FormField` primitives (shadcn/ui-based) · `FormSuccess` ("what happens next") · `PhoneLink` (tracked tel:) · `TrustBadgeRow`
-
-**Content & proof**
-`ServiceCard` · `ServicesGrid` · `ProcessTimeline` (animated) · `StatCounter` / `StatsRow` · `BeforeAfterSlider` · `ProjectCard` / `ProjectGrid` (filterable) · `ReviewCard` / `ReviewsCarousel` (real data only) · `FAQAccordion` (schema-emitting) · `WhyUsSplit` · `MaterialOptionCard`
-
-**Local SEO**
-`ServiceAreaMap` (stylized, animated pins) · `CityCard` / `CityLinkList` · `NearbyAreas` · `ServiceAreaLinksBlock` (for service pages) · `NAPBlock`
-
-**Motion utilities**
-`Reveal` (viewport-triggered wrapper) · `StaggerGroup` · `Parallax` · `CountUp` · `SmoothScrollProvider` (Lenis) · `ReducedMotionProvider`
-
-**SEO utilities (non-visual)**
-`JsonLd` renderer · metadata builder (`lib/seo.ts`) · OG-image template (dynamic per page)
+*(Carried forward from v1.)* Static generation + ISR for CMS-driven pages (content publishes without full redeploys); Server Components by default, client islands only for interactivity; `next/image` + `next/font`; GSAP/Lenis dynamically imported. **Budgets: LCP < 2.0s, CLS < 0.05, INP < 200ms (throttled mobile); Lighthouse ≥ 90 on money pages — enforced per phase.** ESLint/Prettier/TS-strict, CI on GitHub, Vercel preview deploys, semantic landmarks + skip link + WCAG AA, custom 404, error boundaries.
 
 ---
 
-## 10. SEO / Schema Plan
+## 10. SEO — Long-Term Topical Authority Plan (200+ pages)
 
-### 10.1 JSON-LD by page type
+### 10.1 Strategy
 
-| Page | Schema |
-|------|--------|
-| All pages | `RoofingContractor` (subtype of LocalBusiness): name, URL, phone, address `[NEEDS: confirm public street address vs. service-area-only]`, geo, hours, areaServed (all cities), sameAs (GBP + socials), license # when supplied |
-| Homepage | + `WebSite`, `Organization` (logo) |
-| Service pages | + `Service` (name, description, provider, areaServed) + `FAQPage` + `BreadcrumbList` |
-| City pages | + `Service`/areaServed scoped to city + `FAQPage` + `BreadcrumbList` |
-| Projects | + `ImageObject` galleries (case-study schema phase 2) |
-| Reviews page | + `AggregateRating`/`Review` **only when real, verifiable reviews exist** — never before |
-| Blog posts | + `Article` + `BreadcrumbList` |
+Local roofing SEO is won by being the **most complete, most local, most trustworthy answer** in the region. The plan builds four topical clusters, each anchored by pillar pages, interlinked down to service/city money pages:
 
-### 10.2 Metadata system
+1. **Residential roofing** (pillar: /services + roof-replacement cost guide)
+2. **Commercial roofing** (pillar: /commercial — the biggest local content gap; competitors barely cover it)
+3. **Metal roofing** (pillar: /metal-roofing — highest topical-authority upside; barndominium and gauge/material queries have real volume and weak local competition)
+4. **Storm, insurance & maintenance** (pillar: storm-damage + insurance-claims pages, later Storm Center)
 
-- Title pattern: `{Page Topic} | Southeast Roofing — {City/Region}` , ≤ 60 chars, service+geo keyword leading.
-- Unique meta description per page (~150 chars, includes CTA language).
-- Canonical on every page; OG + Twitter cards with branded dynamic OG images; `og:image` per page type.
-- H1 = primary keyword phrase for the page (one per page); H2s map to section intents.
-- Image alt strategy: descriptive + contextual ("Metal roof installation on a home in Petal, MS — Southeast Roofing") — factual, no keyword-stuffing, empty alt for decorative textures.
+### 10.2 The 200+ page roadmap
 
-### 10.3 Indexing & structure
+| Content type | Pages (approx.) | Phase(s) |
+|---|---|---|
+| Core/residential service pages | 10 | 3 |
+| Metal roofing hub + children | 7 | 3–4 |
+| Commercial hub + services + industries + lead page | 15 | 4 |
+| City pages (launch set) | 14 | 5 |
+| City pages (expansion ring: e.g. Wiggins, Lucedale, Waynesboro, Collins, Mendenhall, Brookhaven, McComb, Bay St. Louis, Ocean Springs, Pascagoula, Mobile-line communities…) | +16 | 5→ongoing |
+| Service × city combination pages (selective, high-value only — e.g. "metal roofing Hattiesburg," "commercial roofing Gulfport") | 30–40 | 7–8, data-justified |
+| Learning Center — material & buying guides (gauge comparisons, Galvalume vs painted, shingle brand guides, TPO vs EPDM, metal vs shingle cost, roof lifespan in MS climate…) | 25–30 | 7→ongoing |
+| Learning Center — insurance & storm education (claim walkthroughs, deductible law facts, hurricane prep, hail/wind damage identification…) | 20–25 | 7→ongoing |
+| Learning Center — maintenance & homeowner education | 15–20 | 7→ongoing |
+| Learning Center — commercial education (flat-roof systems, maintenance programs, budgeting/capital planning for facility managers…) | 15–20 | 7→ongoing |
+| Blog (news, storm updates, completed-project stories) | 30+ | 7→ongoing |
+| Project case studies (residential + commercial) | 20+ | 6→ongoing |
+| **Total trajectory** | **215–250+** | ~24–36 months |
 
-- `sitemap.xml` auto-generated from the route/data model; `robots.txt` allowing all, referencing sitemap.
-- Internal-linking mesh per §4; breadcrumbs on all interior pages.
-- Blog architecture ready at launch (topical clusters planned around storm prep, insurance education, material comparisons — content phase later).
-- Core Web Vitals as a ranking input: budgets in §8.3 are SEO requirements, not just UX.
+### 10.3 Editorial rules
 
----
+- Every page earns its existence: unique intent, unique copy, a real query behind it. No page ships to hit a count.
+- Pillar → cluster → money-page linking is mandatory and modeled in the CMS (every guide references its related service, material, and cities).
+- E-E-A-T: articles carry real author attribution (owner/company), real photos, real local specifics; review/refresh cycle for top pages annually.
+- Publishing cadence target after Phase 7: 4–8 quality pages/month `[NEEDS: decision — who writes: owner-supplied expertise + drafting support, or contracted]`.
 
-## 11. Content Needed From You (the `[NEEDS]` list)
+### 10.4 Schema plan
 
-**Identity & legal**
-1. Logo files (vector if possible) — or confirm a logo needs to be designed
-2. Mississippi contractor license number (as it should appear publicly)
-3. Proof-of-insurance language you're comfortable publishing
-4. Legal entity name for footer/terms (Southeast Roofing LLC?)
-5. Year founded / years of experience (real figure)
+| Page | JSON-LD |
+|------|---------|
+| All pages | `RoofingContractor` (name, URL, phone, address `[NEEDS: publishable?]`, geo, hours, areaServed, sameAs, license when supplied) |
+| Homepage | + `WebSite`, `Organization` |
+| Service/metal/commercial-service pages | + `Service` + `FAQPage` + `BreadcrumbList` |
+| Industry pages | + `Service` (audience-scoped) + `FAQPage` + `BreadcrumbList` |
+| City pages | + `Service` areaServed-scoped + `FAQPage` + `BreadcrumbList` |
+| Case studies / projects | + `ImageObject` galleries; case-study `Article` schema |
+| Learning Center / blog | + `Article` (+ `HowTo` where genuinely procedural) + `BreadcrumbList` |
+| Reviews | + `AggregateRating`/`Review` **only with real, verifiable reviews** |
+| Careers | + `JobPosting` (when real listings exist) |
 
-**Contact & operations**
-6. Primary phone number (and whether a separate emergency line exists)
-7. Lead notification email address(es)
-8. Business address — and whether it's publishable or service-area-only (affects schema + GBP strategy)
-9. Business hours + real 24/7 emergency availability (yes/no)
-10. Google Business Profile URL/access
-11. Social profiles (Facebook, Instagram, etc.)
-12. Current lead workflow/CRM if any (JobNimbus, AccuLynx, spreadsheet…)
+### 10.5 Metadata & indexing
 
-**Proof & credibility**
-13. Real customer reviews (source + permission to display)
-14. Manufacturer certifications if any (GAF, Owens Corning, CertainTeed…) — only what's genuinely held
-15. Real warranty terms (workmanship years, manufacturer warranties offered)
-16. Any real awards/associations (BBB, chamber memberships…)
-17. Roofs-completed count or other real stats you can stand behind
-
-**Media**
-18. Project photo library (best 30–50 shots; before/after pairs are gold)
-19. Team/owner photos, truck/crew/jobsite photos
-20. Any drone footage or video (hero candidate)
-
-**Business decisions**
-21. Financing: do you offer it today? Through whom? Terms you can state?
-22. Confirm "Roof Cleaning / Roof Revive" is a real current offering
-23. Commercial roofing: current capability level (affects how aggressively we position it)
-24. Call tracking preference (§7.4 — recommendation: single clean number at launch)
-
-**Launch is not blocked on all 24** — development starts with labeled placeholders; items 6, 7, 1, and 18 are the highest-impact to supply early.
+*(Carried forward from v1.)* Title pattern `{Topic} | Southeast Roofing — {City/Region}` ≤ 60 chars; unique ~150-char descriptions; canonical everywhere (host from `SITE_URL`); branded dynamic OG images; one H1 per page; descriptive contextual alt text; auto-generated sitemap.xml + robots.txt (reserved routes noindexed); breadcrumbs on all interior pages; Search Console on both domains, sitemap submitted for primary.
 
 ---
 
-## 12. Development Phases
+## 11. Component Inventory
 
-**Phase 0 — Foundation (approval → scaffold)**
-Next.js + TypeScript + Tailwind + shadcn/ui scaffold; design tokens; fonts; repo CI; Vercel project + both domains + redirect; `company.ts` data model; layout shell (header/footer/sticky CTA); SEO + schema utility libraries.
-*Exit: deployed skeleton on roofs.ms with premium header/footer and working CTAs.*
+**Layout & navigation:** SiteHeader (sticky/condensing, dual-audience nav) · MobileNav · StickyMobileCTA (context-aware: residential vs commercial) · EmergencyBanner (flag-driven) · SiteFooter (5-column) · Breadcrumbs (+schema) · PageTransition
 
-**Phase 1 — Core conversion pages**
-Homepage (all 14 sections); `/free-inspection` + working lead form (email delivery); `/contact`; motion system foundation (Lenis, Reveal/Stagger, hero parallax); GA4 + conversion events.
-*Exit: the site can generate leads. Lighthouse ≥ 90 mobile verified.*
+**Heroes & CTA:** HomeHero · PageHero · SplitAudiencePanels (residential/commercial) · CTAButton (primary/secondary/emergency) · FinalCTABand (+short form) · EmergencyStrip · InsuranceFinancingPanels · MetalShowcaseBand · CommercialSpotlight
 
-**Phase 2 — Services buildout**
-Services hub + all 13 service pages (template + per-service copy); FAQ system + schema; before/after slider; insurance & financing pages; emergency page with storm-mode banner.
-*Exit: full service coverage indexed, each page conversion-complete.*
+**Conversion & forms:** QuoteFormShort · QuoteFormFull · CommercialConsultForm · QuoteWizard (Phase 8) · FinancingCalculator (Phase 8) · FormField primitives · FormSuccess · PhoneLink (tracked) · TrustBadgeRow
 
-**Phase 3 — Local SEO buildout**
-Service-areas hub + map; Tier 1 city pages (full unique copy); Tier 2 pages in batches as copy completes; internal-linking mesh; breadcrumbs; sitemap/robots finalization; GBP alignment.
-*Exit: the hub-and-spoke local SEO system is live and indexed.*
+**Content & proof:** ServiceCard/Grid · IndustryCard · MetalStyleCard · MaterialSpecTable · ProcessTimeline · StatCounter/StatsRow · BeforeAfterSlider · ProjectCard/ProjectGrid (filterable, FLIP) · CaseStudyLayout · ReviewCard/Carousel (real data only) · FAQAccordion (schema-emitting) · WhyUsSplit · ComparisonBlock (metal vs shingle etc.)
 
-**Phase 4 — Proof & polish**
-Project gallery (filterable) + real photography integration; reviews page with real reviews; about page; remaining motion set pieces (timeline draw, map pins, count-ups); OG image templates; accessibility + CWV audit pass.
-*Exit: site fully matches this PRD; placeholder audit — every remaining `[NEEDS]` is either filled or consciously deferred.*
+**Local SEO:** ServiceAreaMap (interactive) · RadiusRing (2-hour animation) · CityCard/CityLinkList · NearbyAreas · ServiceAreaLinksBlock · NAPBlock
 
-**Phase 5 — Growth layer (post-launch)**
-Blog engine + first content clusters; project case-study pages; CRM/webhook lead integration; photo-upload on forms; call-tracking revisit; A/B tests on hero/CTA copy; expansion cities; (optional) service×city combination pages where justified.
+**Content engine:** ArticleCard · CategoryFilter · PillarPageLayout · ArticleLayout (+Article schema) · AuthorBlock · RelatedContent (CMS-reference-driven) · StormCenterDashboard (Phase 8)
+
+**Motion utilities:** Reveal · StaggerGroup · Parallax · CountUp · SmoothScrollProvider · ReducedMotionProvider
+
+**SEO utilities:** JsonLd renderer · metadata builders · dynamic OG-image templates
 
 ---
 
-*End of PRD v1. No code will be written until this document is approved.*
+## 12. Content Needed From Owner (the `[NEEDS]` list)
+
+**Identity & legal:** logo (vector) or logo-design decision · MS contractor license # (public form) · insurance/bonding language safe to publish · legal entity name · year founded
+
+**Contact & operations:** primary phone (+ emergency line?) · lead email(s) · address publishable vs service-area-only · hours + real 24/7 availability · GBP URL/access · social profiles · current lead workflow/CRM
+
+**Proof & credibility:** real reviews + permission · manufacturer certifications actually held (residential and commercial) · real warranty terms · real awards/memberships · defensible stats (roofs completed, etc.) · safety record/EMR if publishable (commercial)
+
+**Media:** 30–50 best project photos (before/after pairs are gold) · commercial project photos · metal roofing photos (standing seam especially) · team/crew/truck photos · drone/video footage
+
+**Business decisions:**
+1. Confirm commercial systems offered (TPO? EPDM? coatings? maintenance programs?)
+2. Confirm metal capabilities (standing seam? ag/barndominium? which panel lines/suppliers?)
+3. Confirm Roof Cleaning / "Roof Revive" offering
+4. Financing: offered today? partner? terms safe to state?
+5. Municipal/government bid experience (yes/no — affects municipal page claims)
+6. Call-tracking decision (recommendation: single number at launch)
+7. **CMS approval: Sanity (recommended) or Payload (§9.3)**
+8. Content authorship model for the 200+ page plan (§10.3)
+
+Development is not blocked on the full list — phone, lead email, logo, and photos unblock the most, earliest.
+
+---
+
+## 13. Development Phases
+
+**Phase 1 — Foundation**
+Next.js + TS + Tailwind + shadcn/ui scaffold; design tokens + fonts; `SITE_URL` config + domain-agnostic SEO utilities; Vercel project with both domains (existing redirect direction preserved: roofs.ms → southeastroofing.llc); Sanity Studio + core schemas (service, location, project, case study, guide, post, FAQ, company singleton, flags); lead service layer (store + email + webhook stub); layout shell (header/footer/sticky CTAs); CI.
+*Exit: deployed skeleton on southeastroofing.llc; CMS editable; lead pipeline works end-to-end.*
+
+**Phase 2 — Homepage**
+All 17 homepage sections; motion foundation (Lenis, Reveal/Stagger, hero parallax, count-ups, before/after slider); /free-inspection + /contact with working forms; GA4 + conversion events.
+*Exit: the site converts. Lighthouse ≥ 90 mobile on home + form pages.*
+
+**Phase 3 — Core Service Pages**
+Services hub + 10 core service pages (unique copy); metal-roofing hub page + first children (standing-seam, materials); FAQ system + schema; emergency page + storm-banner flag; insurance & financing pages.
+*Exit: full residential service coverage indexed and conversion-complete.*
+
+**Phase 4 — Commercial Roofing**
+Commercial hub; commercial service pages; six industry pages; /commercial/request-consultation flow with tagged delivery; commercial case-study template (+ first case studies as content allows); remaining metal children (commercial, agricultural, exposed-fastener, residential).
+*Exit: the dedicated commercial funnel is live — equal footing with residential.*
+
+**Phase 5 — Local SEO**
+Service-areas hub + interactive map + 2-hour radius animation; Tier 1 city pages (full unique copy); Tier 2 in batches; internal-linking mesh + breadcrumbs; sitemap/robots finalization; GBP alignment; Search Console on both domains.
+*Exit: hub-and-spoke local SEO system live and indexed.*
+
+**Phase 6 — Gallery & Reviews**
+Advanced filterable project gallery (residential + commercial, FLIP animations, lightbox); project case-study pages; /reviews with real reviews; /about; /careers (basic); remaining motion set pieces; dynamic OG images; full CWV + accessibility audit.
+*Exit: proof layer complete; every remaining `[NEEDS]` either filled or consciously deferred.*
+
+**Phase 7 — Blog & Learning Center**
+/learn hub with categories + pillar pages; /blog; Article/HowTo schema; RelatedContent linking mesh; author/E-E-A-T framework; editorial workflow in Sanity; first content wave (per §10 roadmap); publishing cadence begins.
+*Exit: the topical-authority engine is running; owner can publish without developer help.*
+
+**Phase 8 — Future Platform Features**
+Sequenced by business value, each its own mini-project: interactive quote wizard (/quote) → financing calculator (real terms only) → Storm Center → selective service×city pages (data-justified) → CRM/PM webhook integrations → AI customer assistant (grounded on mature CMS content) → customer portal → employee portal → online scheduling (auth + app DB arrive here).
+*Exit: rolling — this phase is the 5-year platform runway.*
+
+---
+
+*End of PRD v2. No code will be written until this document is approved.*
