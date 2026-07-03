@@ -4,11 +4,20 @@
 **Primary live domain:** southeastroofing.llc
 **Secondary domain:** roofs.ms (currently 301 redirects → southeastroofing.llc)
 **Company base:** Hattiesburg, Mississippi — residential & commercial roofing within ~2 hours of Hattiesburg
-**Status:** v3 — approved. Incorporates the 2026-07-03 owner directives: (a) full visual refresh to a light, premium navy palette (§6 supersedes any dark/charcoal/burgundy visual descriptors elsewhere in this document), (b) IA correction — Metal Roofing is a material/system within the Residential and Commercial divisions, not a third division (§2, §4.3), (c) confirmed credentials: GAF certified, BBB accredited, MSBOC licensed, Owens Corning Preferred (logo used with permission), (d) service area is a full 2-hour radius of Hattiesburg including Jackson, Meridian, and towns between.
+**Status:** v3.1 — approved. Incorporates the 2026-07-03 owner directives: (a) full visual refresh to a light, premium navy palette (§6 supersedes any dark/charcoal/burgundy visual descriptors elsewhere in this document), (b) IA correction — Metal Roofing is a material/system within the Residential and Commercial divisions, not a third division (§2, §4.3), (c) service area is a full 2-hour radius of Hattiesburg including Jackson, Meridian, and towns between, (d) **standing brand directive — see §0.0**: residential asphalt shingle roof replacement is the primary business; credentials are GAF Certified Contractor (greatest emphasis), BBB accredited, MSBOC licensed. **Southeast Roofing is NOT an Owens Corning certified/preferred contractor** — OC is a product line only (a prior version of this document stated otherwise; corrected 2026-07-03).
 
 ---
 
 ## 0. Vision & Goals
+
+### 0.0 Standing brand directive (2026-07-03 — supersedes conflicting statements)
+
+1. **Positioning:** Southeast Roofing is first and foremost a **residential asphalt shingle roofing company**; residential roof replacement is the primary business. The 10-second rule: a homepage visitor must immediately understand *"we specialize in residential roof replacement."* Every major design decision reinforces this.
+2. **Service hierarchy:** PRIMARY — residential roofing (asphalt shingle replacement, repairs, storm restoration, insurance claims, GAF & Owens Corning systems). SECONDARY — residential metal, commercial roofing, gutters, roof revive/cleaning, emergency services. Secondary services never visually outweigh residential asphalt shingle roofing (commercial "equal emphasis" language elsewhere in this document is superseded — commercial remains a full, credible funnel but visually subordinate).
+3. **Manufacturer relationships:** **GAF Certified Contractor — the credential with the greatest emphasis.** Southeast Roofing is NOT an Owens Corning certified/preferred/platinum contractor and no wording may imply it. OC is a **product line we sell**: product imagery, logos, comparisons, and education are appropriate; certification claims are not.
+4. **Asset policy:** official, current, high-res manufacturer assets (GAF, Owens Corning, Gibraltar, Spectra, Roofr, QXO, BBB, MSBOC, Google) may be sourced from official manufacturer sites; prefer SVG; never redraw/modify/recolor logos; red only inside third-party logos. Manufacturer product photography may support product/service/education pages and premium homepage sections, but is never presented as Southeast Roofing project work.
+5. **Photo quality bar:** authentic project photos always take priority, but weak photos (blurry, poorly framed, low-res) go to galleries/case studies — never premium homepage placements.
+6. **Future product pages** (reusable CMS-driven template, added with minimal refactoring): GAF Timberline HDZ, Timberline UHDZ (if offered); OC Oakridge, Duration, Duration Designer/Flex/Storm/Max, Natural Shadow; Gibraltar metal systems; Spectra gutter systems. Adds ~12 pages to the §10.2 roadmap.
 
 ### 0.1 Immediate goals (in priority order)
 
@@ -562,7 +571,7 @@ Local roofing SEO is won by being the **most complete, most local, most trustwor
 
 **Contact & operations:** primary phone (+ emergency line?) · lead email(s) · address publishable vs service-area-only · hours + real 24/7 availability · GBP URL/access · social profiles · current lead workflow/CRM
 
-**Proof & credibility:** real reviews + permission · ~~manufacturer certifications~~ ✅ CONFIRMED 2026-07-03: **GAF certified · BBB accredited · MSBOC licensed · Owens Corning Preferred** (OC is the primary displayed manufacturer credential — logo used with permission; badge in `public/images/brand/`) · `[NEEDS: GAF + BBB official badge files · MSBOC license number in its public form]` · real warranty terms · real awards/memberships · defensible stats (roofs completed, etc.) · safety record/EMR if publishable (commercial)
+**Proof & credibility:** real reviews + permission · ~~manufacturer certifications~~ ✅ CORRECTED 2026-07-03 (§0.0): **GAF Certified Contractor (primary emphasis) · BBB accredited · MSBOC licensed** — Owens Corning is a product line only, NOT a held certification · official GAF/BBB badge artwork to be sourced from manufacturer sites (permission granted §0.0.4) · `[NEEDS: MSBOC license number in its public form]` · real warranty terms · real awards/memberships · defensible stats (roofs completed, etc.) · safety record/EMR if publishable (commercial)
 
 **Media:** ~~30–50 best project photos~~ ✅ **RECEIVED 2026-07-03**: 42 residential roof-replacement photos across 14 cities (`public/images/projects/`, manifest in `src/content/photos.ts`) + 24 storm-damage photos (`public/images/storm/`) + logos & badges (`public/images/brand/`). Still needed: before/after **pairs**, commercial project photos, metal roofing photos (standing seam especially), team/crew/truck photos, drone/video footage, **white/knockout logo for dark backgrounds**
 

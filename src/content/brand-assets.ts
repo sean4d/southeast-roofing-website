@@ -23,33 +23,24 @@ export const brandAssets = {
     aspect: { width: 479, height: 278 },
   },
   /**
-   * Credentials confirmed by the owner 2026-07-03: GAF certified, BBB
-   * accredited, MSBOC licensed, Owens Corning Preferred (OC is the primary
-   * displayed manufacturer credential; logo used with permission).
-   * Third-party logos always keep their original colors (PRD §6.1).
+   * Held credentials (brand directive 2026-07-03 §4): GAF certification
+   * receives the greatest emphasis of all manufacturer relationships.
+   * Southeast Roofing is NOT an Owens Corning certified/preferred
+   * contractor — never state or imply OC certification (see productLines).
+   * Third-party logos always keep their original colors, never redrawn
+   * or recolored; source official SVGs from manufacturer sites (§5).
    */
   certifications: {
-    owensCorningPreferred: {
-      label: "Owens Corning Preferred Contractor",
-      /** Cleaned export (baked-in checkerboard removed) — 320x320, white bg */
-      badge: "/images/brand/owens-corning-preferred-contractor-badge.png",
-      /** Original supplied files — logo-01/02 have a baked-in transparency
-       * checkerboard; prefer `badge` for display. */
-      images: [
-        "/images/brand/owens-corning-preferred-contractor-logo-01.png",
-        "/images/brand/owens-corning-preferred-contractor-logo-02.png",
-      ],
-      confirmed: true,
-    },
     gaf: {
-      label: "GAF Certified",
-      /** [NEEDS: official GAF badge file] — text mention only until supplied */
+      label: "GAF Certified Contractor",
+      /** [NEEDS: official GAF badge — permission granted to source from gaf.com] */
       images: [] as string[],
       confirmed: true,
+      emphasis: "primary",
     },
     bbb: {
       label: "BBB Accredited",
-      /** [NEEDS: official BBB seal file] — text mention only until supplied */
+      /** [NEEDS: official BBB seal — permission granted to source from bbb.org] */
       images: [] as string[],
       confirmed: true,
     },
@@ -59,6 +50,32 @@ export const brandAssets = {
       confirmed: true,
       /** [NEEDS: license number in its public form] — lives in siteConfig.license */
     },
+  },
+  /**
+   * Manufacturer product lines we sell/install — product references,
+   * imagery, and education are appropriate; certification wording is NOT
+   * (directive §4). Official product photography may be sourced from
+   * manufacturer sites for product/service/education pages (§5–6), never
+   * presented as completed Southeast Roofing projects.
+   */
+  productLines: {
+    gaf: { label: "GAF roofing systems" },
+    owensCorning: {
+      label: "Owens Corning roofing products",
+      /**
+       * DO NOT DISPLAY — supplied files are "Preferred Contractor" badge
+       * artwork implying a certification we do not hold. Retained only for
+       * reference; replace with official OC *product* logos when product
+       * pages are built.
+       */
+      doNotDisplay: [
+        "/images/brand/owens-corning-preferred-contractor-logo-01.png",
+        "/images/brand/owens-corning-preferred-contractor-logo-02.png",
+        "/images/brand/owens-corning-preferred-contractor-badge.png",
+      ],
+    },
+    gibraltar: { label: "Gibraltar metal roofing systems" },
+    spectra: { label: "Spectra gutter systems" },
   },
   trust: {
     /**

@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import { brandAssets } from "@/content/brand-assets";
 import { reviewsSection } from "@/content/homepage";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
@@ -35,18 +33,14 @@ export function ReviewsTrust() {
           {reviewsSection.googleCta.label}
         </Button>
 
+        {/*
+          Credential chips only — GAF leads (brand directive 2026-07-03 §4).
+          Official GAF/BBB badge artwork to be sourced from manufacturer
+          sites in Phase 3; no OC certification claims anywhere.
+        */}
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-          <span className="rounded-2xl border border-border bg-white p-3">
-            <Image
-              src={brandAssets.certifications.owensCorningPreferred.badge}
-              alt="Owens Corning Preferred Contractor badge"
-              width={320}
-              height={320}
-              className="h-20 w-auto"
-            />
-          </span>
-          <span className="rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-slate-600">
-            GAF Certified
+          <span className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-primary">
+            GAF Certified Contractor
           </span>
           <span className="rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-slate-600">
             BBB Accredited

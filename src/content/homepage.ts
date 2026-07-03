@@ -43,13 +43,20 @@ const photoBySrc = (fragment: string) => {
 
 export const hero = {
   locationLine: "Hattiesburg, MS — serving a 2-hour radius across Mississippi",
-  /** Single gradient-accent word per PRD §6.2 */
-  headline: { lead: "Roofing done", accent: "right.", tail: "" },
+  /**
+   * 10-second rule (brand directive 2026-07-03): a visitor must immediately
+   * understand "we specialize in residential roof replacement."
+   */
+  headline: {
+    lead: "Residential roof replacement,",
+    accent: "done right.",
+    tail: "",
+  },
   subhead:
-    "Southeast Roofing protects South Mississippi homes and businesses — roof replacement, repair, metal systems, and storm response, handled by a local team from first inspection to final walkthrough.",
-  photo: photoBySrc("hattiesburg-ms-002"),
-  photoBadge: "Recent roof replacement — Hattiesburg, MS",
-  credentialLine: "GAF Certified · Owens Corning Preferred · BBB Accredited",
+    "Southeast Roofing is South Mississippi's residential asphalt shingle specialist — GAF-certified roof replacement, repairs, storm restoration, and insurance claim help, with metal and commercial capability when you need it.",
+  photo: photoBySrc("petal-ms-002"),
+  photoBadge: "Recent roof replacement — Petal, MS",
+  credentialLine: "GAF Certified Contractor · BBB Accredited · MSBOC Licensed",
 } as const;
 
 /* ------------------------------------------------------------------ */
@@ -62,16 +69,21 @@ export interface TrustItem {
   detail: string;
 }
 
+/**
+ * Credential hierarchy (brand directive 2026-07-03): GAF certification gets
+ * the greatest emphasis. We are NOT an Owens Corning certified/preferred
+ * contractor — OC appears only as a product line we install.
+ */
 export const trustItems: TrustItem[] = [
   {
     icon: ShieldCheck,
-    label: "Owens Corning Preferred",
-    detail: "Preferred Contractor network member",
+    label: "GAF Certified Contractor",
+    detail: "Our primary manufacturer certification",
   },
   {
-    icon: FileCheck,
-    label: "GAF Certified",
-    detail: "Manufacturer-certified installation",
+    icon: Landmark,
+    label: "MSBOC Licensed",
+    detail: "Mississippi State Board of Contractors",
   },
   {
     icon: Handshake,
@@ -79,9 +91,9 @@ export const trustItems: TrustItem[] = [
     detail: "Accredited business standing",
   },
   {
-    icon: Landmark,
-    label: "MSBOC Licensed",
-    detail: "Mississippi State Board of Contractors",
+    icon: Layers,
+    label: "GAF & Owens Corning Systems",
+    detail: "Quality shingle products we install",
   },
 ];
 
@@ -89,19 +101,25 @@ export const trustItems: TrustItem[] = [
 /* 3. Residential / Commercial split — the two divisions               */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Residential leads visually (larger panel, "Our specialty" badge) —
+ * commercial is real capability but never outweighs residential asphalt
+ * shingle roofing (brand directive 2026-07-03 §2).
+ */
 export const divisionSplit = {
-  heading: "Two divisions. One standard of craftsmanship.",
+  heading: "Residential specialists. Commercial capable.",
   residential: {
     title: "Residential Roofing",
+    badge: "Our specialty",
     description:
-      "Shingle and metal roofing for South Mississippi homes — replacement, repair, gutters, skylights, and ventilation.",
+      "Asphalt shingle roof replacement is what we do best — backed by repairs, storm restoration, insurance claim help, and metal options.",
     href: "/residential",
     cta: "Explore residential",
     photo: photoBySrc("petal-ms-001"),
     highlights: [
-      "Asphalt shingle & metal systems",
-      "Roof replacement & repair",
-      "Gutters, skylights & ventilation",
+      "Asphalt shingle roof replacement",
+      "GAF & Owens Corning systems",
+      "Repairs, storm restoration & claims",
     ],
   },
   commercial: {
@@ -273,7 +291,7 @@ export const featuredProjects = {
   cta: { label: "View the project gallery", href: "/projects" },
   projects: [
     { photo: photoBySrc("hattiesburg-ms-003"), service: "Roof replacement" },
-    { photo: photoBySrc("petal-ms-002"), service: "Roof replacement" },
+    { photo: photoBySrc("petal-ms-003"), service: "Roof replacement" },
     { photo: photoBySrc("laurel-ms-001"), service: "Roof replacement" },
     { photo: photoBySrc("gulfport-ms-001"), service: "Roof replacement" },
     { photo: photoBySrc("meridian-ms-001"), service: "Roof replacement" },
@@ -299,8 +317,8 @@ export const whyUs = {
     },
     {
       icon: ShieldCheck,
-      title: "Manufacturer-backed installs",
-      text: "Owens Corning Preferred Contractor and GAF certified — installed to manufacturer specification.",
+      title: "GAF Certified Contractor",
+      text: "Certified installation of GAF systems, plus Owens Corning shingle products — always to manufacturer specification.",
     },
     {
       icon: FileCheck,

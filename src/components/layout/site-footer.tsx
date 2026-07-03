@@ -40,7 +40,7 @@ export function SiteFooter() {
             </span>
           </div>
           <p className="mt-6 text-xs leading-relaxed text-steel-300">
-            GAF Certified · Owens Corning Preferred · BBB Accredited
+            GAF Certified Contractor · BBB Accredited · MSBOC Licensed
           </p>
         </div>
 

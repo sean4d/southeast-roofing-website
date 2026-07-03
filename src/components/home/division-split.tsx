@@ -28,9 +28,11 @@ export function DivisionSplit() {
           </h2>
         </Reveal>
 
-        <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-2">
-          {/* Residential — photo-led panel */}
-          <StaggerItem>
+        {/* Residential 3/5, commercial 2/5 — residential visually leads
+            (brand directive 2026-07-03 §2) */}
+        <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-5">
+          {/* Residential — photo-led panel, larger */}
+          <StaggerItem className="lg:col-span-3">
             <Link
               href={residential.href}
               className="group shadow-premium relative flex h-full min-h-[26rem] flex-col justify-end overflow-hidden rounded-3xl border border-border"
@@ -39,7 +41,7 @@ export function DivisionSplit() {
                 src={residential.photo.src}
                 alt={residential.photo.alt}
                 fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 60vw, 100vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
               {/* Navy gradient for text legibility over the photo */}
@@ -47,6 +49,9 @@ export function DivisionSplit() {
                 aria-hidden="true"
                 className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/35 to-transparent"
               />
+              <span className="absolute top-6 left-6 rounded-full bg-white/95 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary uppercase backdrop-blur">
+                {residential.badge}
+              </span>
               <div className="relative p-8 text-white sm:p-10">
                 <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
                   {residential.title}
@@ -76,8 +81,8 @@ export function DivisionSplit() {
             </Link>
           </StaggerItem>
 
-          {/* Commercial — navy design panel (equal visual weight) */}
-          <StaggerItem>
+          {/* Commercial — navy design panel (secondary weight) */}
+          <StaggerItem className="lg:col-span-2">
             <Link
               href={commercial.href}
               className="group shadow-premium relative flex h-full min-h-[26rem] flex-col justify-end overflow-hidden rounded-3xl border border-navy-800 bg-navy-900"
