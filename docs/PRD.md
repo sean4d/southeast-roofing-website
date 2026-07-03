@@ -509,7 +509,7 @@ Local roofing SEO is won by being the **most complete, most local, most trustwor
 
 **Proof & credibility:** real reviews + permission · manufacturer certifications actually held (residential and commercial) · real warranty terms · real awards/memberships · defensible stats (roofs completed, etc.) · safety record/EMR if publishable (commercial)
 
-**Media:** 30–50 best project photos (before/after pairs are gold) · commercial project photos · metal roofing photos (standing seam especially) · team/crew/truck photos · drone/video footage
+**Media:** ~~30–50 best project photos~~ ✅ **RECEIVED 2026-07-03**: 42 residential roof-replacement photos across 14 cities (`public/images/projects/`, manifest in `src/content/photos.ts`) + 24 storm-damage photos (`public/images/storm/`) + logos & badges (`public/images/brand/`). Still needed: before/after **pairs**, commercial project photos, metal roofing photos (standing seam especially), team/crew/truck photos, drone/video footage, **white/knockout logo for dark backgrounds**
 
 **Business decisions:**
 1. Confirm commercial systems offered (TPO? EPDM? coatings? maintenance programs?)
