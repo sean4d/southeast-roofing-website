@@ -31,6 +31,10 @@ export const brandAssets = {
   certifications: {
     owensCorningPreferred: {
       label: "Owens Corning Preferred Contractor",
+      /** Cleaned export (baked-in checkerboard removed) — 320x320, white bg */
+      badge: "/images/brand/owens-corning-preferred-contractor-badge.png",
+      /** Original supplied files — logo-01/02 have a baked-in transparency
+       * checkerboard; prefer `badge` for display. */
       images: [
         "/images/brand/owens-corning-preferred-contractor-logo-01.png",
         "/images/brand/owens-corning-preferred-contractor-logo-02.png",
@@ -57,10 +61,21 @@ export const brandAssets = {
     },
   },
   trust: {
-    googleReviews: [
-      "/images/brand/google-reviews-logo-01.png",
-      "/images/brand/google-reviews-logo-02.png",
-    ],
+    /**
+     * DO NOT DISPLAY without owner verification (integrity rule):
+     * - logo-01 shows a 5-star graphic → implies an unverified rating.
+     * - logo-02 is the "Google Guaranteed" program badge → implies enrollment
+     *   in Google Local Services, which is unconfirmed.
+     * [NEEDS: owner confirmation of Google Guaranteed status + actual rating,
+     * plus the live Google Business Profile URL]
+     */
+    googleReviews: {
+      images: [
+        "/images/brand/google-reviews-logo-01.png",
+        "/images/brand/google-reviews-logo-02.png",
+      ],
+      confirmed: false,
+    },
   },
   partners: {
     roofr: "/images/brand/roofr-logo-01.webp",
