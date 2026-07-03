@@ -9,7 +9,23 @@
       "PowerShell(git config --global user.name \"Sean Ford\")",
       "PowerShell(git config --global user.email \"seanmichaelford1@gmail.com\")",
       "PowerShell(git init -b main)",
-      "PowerShell(git add -A)"
+      "PowerShell(git add -A)",
+      "PowerShell($candidates = @\\('seanmichaelford1','seanford','seanmford','sean-ford','seanmichaelford'\\); foreach \\($u in $candidates\\) { try { $r = Invoke-RestMethod -Uri \"https://api.github.com/repos/$u/southeast-roofing-website\" -ErrorAction Stop; Write-Output \"FOUND: $\\($r.full_name\\) \\(private: $\\($r.private\\)\\)\" } catch { Write-Output \"not found: $u\" } })",
+      "PowerShell(git remote add origin https://github.com/sean4d/southeast-roofing-website.git)",
+      "PowerShell(git ls-remote --heads origin)",
+      "PowerShell(git fetch origin)",
+      "PowerShell(git ls-tree -r --name-only origin/main)",
+      "PowerShell(git merge origin/main --allow-unrelated-histories)",
+      "PowerShell(git checkout --theirs README.md .gitignore)",
+      "PowerShell(git add README.md .gitignore)",
+      "PowerShell(git push -u origin main)",
+      "PowerShell(git add docs/PRD.md)",
+      "PowerShell(git push)",
+      "PowerShell($paths = @\\(\"$env:ProgramFiles\\\\nodejs\\\\node.exe\", \"$env:LOCALAPPDATA\\\\Programs\\\\nodejs\\\\node.exe\", \"$env:APPDATA\\\\nvm\", \"$env:LOCALAPPDATA\\\\fnm\", \"$env:LOCALAPPDATA\\\\Volta\"\\); foreach \\($p in $paths\\) { Write-Output \"$p : $\\(Test-Path $p\\)\" }; Get-Command winget -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)",
+      "PowerShell(winget install OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements --silent)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\('Path','Machine'\\) + ';' + [System.Environment]::GetEnvironmentVariable\\('Path','User'\\); node -v; npm -v)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\('Path','Machine'\\) + ';' + [System.Environment]::GetEnvironmentVariable\\('Path','User'\\); npm run typecheck; if \\($?\\) { npm run build })",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\('Path','Machine'\\) + ';' + [System.Environment]::GetEnvironmentVariable\\('Path','User'\\); npm run format; npm run lint; npm run typecheck)"
     ]
   }
 }

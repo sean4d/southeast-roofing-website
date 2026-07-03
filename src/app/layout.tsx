@@ -1,0 +1,48 @@
+import type { Metadata } from "next";
+import { Archivo, Inter } from "next/font/google";
+
+import { siteConfig } from "@/config/site";
+
+import "./globals.css";
+
+/**
+ * Root layout: fonts + global metadata only. The marketing shell
+ * (header/footer/CTAs) lives in the (marketing) route group so the Sanity
+ * Studio at /studio can render full-screen (PRD §9.2).
+ */
+
+const archivo = Archivo({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.name} — Roofing Contractor in Hattiesburg, MS`,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${archivo.variable} ${inter.variable} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col">{children}</body>
+    </html>
+  );
+}
