@@ -83,7 +83,7 @@ export default function FinancingPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/40 text-base text-white hover:border-white hover:bg-white/10"
+                className="border-white/40 bg-white/5 text-base text-white hover:border-white hover:bg-white/15"
                 render={<Link href="/free-inspection" />}
                 nativeButton={false}
               >

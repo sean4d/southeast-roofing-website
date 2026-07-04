@@ -21,11 +21,11 @@ export function RoofingSystems() {
         align="center"
       />
 
-      <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-2">
+      <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-3">
         {systemsSection.systems.map((system) => (
           <StaggerItem
             key={system.title}
-            className="group shadow-premium relative overflow-hidden rounded-3xl border border-border bg-card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-steel-500 hover:shadow-xl sm:p-10"
+            className="group shadow-premium relative overflow-hidden rounded-3xl border border-border bg-card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-steel-500 hover:shadow-xl"
           >
             {/* Steel accent that warms on hover */}
             <div
@@ -36,7 +36,7 @@ export function RoofingSystems() {
               className="size-9 text-steel-500 transition-colors duration-300 group-hover:text-navy-900"
               aria-hidden="true"
             />
-            <h3 className="mt-5 font-display text-2xl font-bold">
+            <h3 className="mt-5 font-display text-xl font-bold sm:text-2xl">
               {system.title}
             </h3>
             <p className="mt-3 leading-relaxed text-slate-600">{system.text}</p>

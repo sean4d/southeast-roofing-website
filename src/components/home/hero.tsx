@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MapPin, Zap } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Zap } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { primaryCta } from "@/config/navigation";
@@ -100,8 +100,17 @@ export function Hero() {
               </Button>
             </div>
 
-            <div className="mt-7">
+            <div className="mt-7 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
               <PhoneLink className="text-white" />
+              {siteConfig.email && (
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-white transition-opacity hover:opacity-75"
+                >
+                  <Mail className="size-4" aria-hidden="true" />
+                  {siteConfig.email}
+                </a>
+              )}
             </div>
           </Reveal>
         </div>

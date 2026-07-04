@@ -48,21 +48,15 @@ import { stockPhotos } from "@/content/stock-photos";
 
 export const hero = {
   locationLine: "Hattiesburg, MS · serving all of South Mississippi",
-  /**
-   * Phase 4 (owner directive 2026-07-04): trust-forward headline that
-   * stays factual and brand-neutral across both divisions.
-   */
-  headline: {
-    lead: "South Mississippi's",
-    accent: "trusted",
-    tail: "roofing contractor",
-  },
+  /** Owner-confirmed headline (2026-07-04): "Roofing done right." */
+  headline: { lead: "Roofing done", accent: "right.", tail: "" },
   /**
    * Mobile-first copy: short sentences, no long dashes that wrap awkwardly
-   * on phones. Architectural shingle leads (product positioning §13).
+   * on phones. Positioning (owner 2026-07-04): experts in EVERY roof type —
+   * never imply one system is the specialty and the rest are new to us.
    */
   subhead:
-    "Architectural shingle roofs are our specialty, installed to GAF spec and backed by a lifetime workmanship warranty. Storm restoration, metal systems, and commercial roofing too.",
+    "Residential or commercial. Shingle, metal, or flat. Whatever roof your home or business needs, we're the local experts who install it right — from first inspection to final walkthrough.",
   /** Full-bleed hero background (2400px licensed stock, dark overlay) */
   photo: stockPhotos.heroHome,
   /** Descriptive only — stock imagery is never presented as our project */
@@ -76,12 +70,13 @@ export const hero = {
  */
 export const heroTrustBar = [
   { icon: Star, label: "5-Star Google Rating" },
+  { icon: BadgeCheck, label: "Google Guaranteed" },
   { icon: ShieldCheck, label: "GAF Certified Contractor" },
-  { icon: BadgeCheck, label: "BBB Accredited · A Rating" },
+  { icon: Handshake, label: "BBB Accredited · A Rating" },
   { icon: Landmark, label: "Mississippi Licensed" },
   { icon: FileCheck, label: "Fully Insured & Bonded" },
   { icon: Banknote, label: "$0 Down Financing" },
-  { icon: Medal, label: "Lifetime Workmanship Warranty" },
+  { icon: Medal, label: "Lifetime Warranty" },
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -107,8 +102,8 @@ export const trustItems: TrustItem[] = [
   },
   {
     icon: Medal,
-    label: "Lifetime Workmanship Warranty",
-    detail: "We stand behind every roof we install",
+    label: "Lifetime Warranty",
+    detail: "Coverage that lasts the life of your roof",
   },
   {
     icon: Handshake,
@@ -281,21 +276,20 @@ export const stormSection = {
 /* ------------------------------------------------------------------ */
 
 /**
- * Owner refinement 2026-07-04: metal is presented as one of two roofing
- * systems with EQUAL prominence — never as a niche or separate division.
- * Matched cards: Asphalt Shingle Roofing and Metal Roofing, each covering
- * both divisions.
+ * Owner positioning (2026-07-04): we're experts in EVERY roofing system —
+ * shingle, metal, AND commercial flat/low-slope. No system is presented as
+ * the specialty with the others as afterthoughts.
  */
 export const systemsSection = {
   eyebrow: "Roofing systems",
-  title: "Two proven systems. One standard of installation.",
+  title: "Every system. One standard of installation.",
   description:
-    "Every roof we build is either architectural shingle or metal, chosen for the structure and the budget. We install both at the same standard, for homes and businesses alike.",
+    "Shingle, metal, or flat — we install and service them all, for homes and businesses alike. The right system for your structure and budget, never whatever we happen to sell.",
   systems: [
     {
       icon: Home,
       title: "Asphalt Shingle Roofing",
-      text: "The region's most popular roof, and for good reason. Affordable, storm-capable, and beautiful when installed to spec. GAF systems are our certified specialty.",
+      text: "The region's most popular roof, and for good reason. Affordable, storm-capable, and beautiful when installed to spec — GAF-certified installation.",
       chips: [
         "GAF certified installs",
         "Owens Corning products",
@@ -304,7 +298,7 @@ export const systemsSection = {
       ],
       links: [
         {
-          label: "Shingle roofing for homes",
+          label: "Shingle roofing",
           href: "/residential/asphalt-shingle-roofing",
         },
         { label: "Roof replacement", href: "/residential/roof-replacement" },
@@ -321,16 +315,28 @@ export const systemsSection = {
         "Residential & commercial",
       ],
       links: [
-        {
-          label: "Metal roofing for homes",
-          href: "/residential/metal-roofing",
-        },
+        { label: "Metal for homes", href: "/residential/metal-roofing" },
         { label: "Commercial metal", href: "/commercial/metal-roofing" },
+      ],
+    },
+    {
+      icon: Building2,
+      title: "Flat & Low-Slope Roofing",
+      text: "Commercial membrane and coating systems for facilities across the region — installed, restored, and maintained around your operations.",
+      chips: [
+        "TPO & EPDM",
+        "Modified bitumen",
+        "Roof coatings",
+        "Maintenance programs",
+      ],
+      links: [
+        { label: "Commercial roofing", href: "/commercial" },
+        { label: "Roof coatings", href: "/commercial/roof-coatings" },
       ],
     },
   ],
   hubNote: {
-    label: "Comparing the two? Read our honest metal vs. shingle breakdown",
+    label: "Comparing shingle and metal? Read our honest breakdown",
     href: "/metal-roofing",
   },
 } as const;
@@ -384,8 +390,8 @@ export const whyUs = {
     },
     {
       icon: Medal,
-      title: "Lifetime workmanship warranty",
-      text: "We stand behind our installation for the life of your roof.",
+      title: "Lifetime warranty",
+      text: "Our roofs are backed by lifetime warranty coverage.",
     },
     {
       icon: FileCheck,
@@ -433,7 +439,7 @@ export const processSection = {
     {
       icon: Medal,
       title: "Walkthrough & warranty",
-      text: "You walk the finished roof with us — backed by our lifetime workmanship warranty.",
+      text: "You walk the finished roof with us — backed by a lifetime warranty.",
     },
   ],
 } as const;
@@ -622,6 +628,12 @@ export const finalCta = {
   estimate: {
     label: "Get an Instant Estimate",
     href: siteConfig.links.instantEstimate,
+    external: true,
+  },
+  /** GoodLeap financing application — external */
+  financing: {
+    label: "Apply for Financing",
+    href: siteConfig.links.financing,
     external: true,
   },
   commercial: {
