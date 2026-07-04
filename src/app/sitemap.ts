@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { allServices } from "@/content/services";
+import { cities } from "@/content/cities";
 import { absoluteUrl } from "@/lib/seo";
 
 /**
@@ -20,6 +21,7 @@ const launchedStaticRoutes = [
   "/financing",
   "/free-inspection",
   "/contact",
+  "/service-areas",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -35,5 +37,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...serviceEntries];
+  const cityEntries = cities.map((city) => ({
+    url: absoluteUrl(`/service-areas/${city.slug}`),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticEntries, ...serviceEntries, ...cityEntries];
 }
