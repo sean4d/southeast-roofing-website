@@ -75,8 +75,8 @@ export const siteConfig = {
 
   /** [NEEDS: business hours + real 24/7 emergency availability] */
   hours: null as string | null,
-  /** [NEEDS: MS contractor license number in its public form] */
-  license: null as string | null,
+  /** MS contractor license number (owner-supplied 2026-07-04) */
+  license: "R22245" as string | null,
   /** [NEEDS: real founding year] */
   foundingYear: null as number | null,
 

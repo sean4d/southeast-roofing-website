@@ -7,7 +7,6 @@ import {
   Home,
   Layers,
   PanelTop,
-  Sun,
   TreePine,
   Wind,
   Wrench,
@@ -37,12 +36,12 @@ export interface HubServiceCard {
 export const residentialHub = {
   metaTitle: "Residential Roofing in Hattiesburg & South Mississippi",
   metaDescription:
-    "The full residential roofing lineup from Southeast Roofing: shingle and metal systems, replacement, repair, gutters, skylights, and ventilation — one local, GAF-certified team.",
+    "The full residential roofing lineup from Southeast Roofing: shingle and metal systems, replacement, repair, gutters, and ventilation — one local, GAF-certified team.",
   hero: {
     eyebrow: "Residential division",
     headline: "Your home's roof, handled completely",
     subhead:
-      "Every system that protects a South Mississippi home lives under this roof: GAF-certified shingle work, metal systems, repairs, storm response, gutters, skylights, and ventilation. One local team, one standard of craftsmanship.",
+      "Every system that protects a South Mississippi home lives under this roof: GAF-certified shingle work, metal systems, repairs, storm response, gutters, and ventilation. One local team, one standard of craftsmanship.",
     photo: stockPhotos.residentialHome,
     photoBadge: "Asphalt shingle roofing",
   },
@@ -83,13 +82,6 @@ export const residentialHub = {
         "Sized for Gulf-region rainfall and integrated with your roof edge.",
     },
     {
-      icon: Sun,
-      label: "Skylights",
-      href: "/residential/skylights",
-      description:
-        "Installation, replacement, and leak repair — flashed the roofer's way.",
-    },
-    {
       icon: Fan,
       label: "Ventilation",
       href: "/residential/ventilation",
@@ -106,7 +98,7 @@ export const residentialHub = {
     {
       question: "Do you only do full roofs, or smaller jobs too?",
       answer:
-        "Both. Repairs, gutter work, skylights, and ventilation fixes are everyday work for us, not favors. Small jobs done well are how we earn the big ones.",
+        "Both. Repairs, gutter work, and ventilation fixes are everyday work for us, not favors. Small jobs done well are how we earn the big ones.",
     },
     {
       question: "What brands do you install?",

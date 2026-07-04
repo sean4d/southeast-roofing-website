@@ -20,7 +20,6 @@ import {
   School,
   ShieldCheck,
   Star,
-  Sun,
   Warehouse,
   Wrench,
 } from "lucide-react";
@@ -198,7 +197,6 @@ export const servicesOverview = {
       },
       { icon: Wrench, label: "Roof Repair", href: "/residential/roof-repair" },
       { icon: Droplets, label: "Gutters", href: "/residential/gutters" },
-      { icon: Sun, label: "Skylights", href: "/residential/skylights" },
       { icon: Fan, label: "Ventilation", href: "/residential/ventilation" },
     ] satisfies ServiceLink[],
   },
@@ -394,14 +392,19 @@ export const whyUs = {
       text: "Our roofs are backed by lifetime warranty coverage.",
     },
     {
+      icon: ClipboardCheck,
+      title: "Transparent, itemized pricing",
+      text: "Digital proposals priced line by line, with upgrades you toggle yourself. No hidden fees.",
+    },
+    {
       icon: FileCheck,
       title: "Insurance claim experience",
-      text: "Thorough documentation and adjuster coordination when storms hit.",
+      text: "When storms hit, we assist through the entire claims process, start to finish.",
     },
     {
       icon: Handshake,
       title: "Clear communication",
-      text: "Straight answers, clean job sites, and a walkthrough before we call it done.",
+      text: "Straight answers, clean job sites, and a final review before we call it done.",
     },
   ],
 } as const;
@@ -423,13 +426,13 @@ export const processSection = {
     },
     {
       icon: FileCheck,
-      title: "Straight recommendation",
-      text: "Repair or replace, in writing, with a clear price. No upselling.",
+      title: "Itemized digital proposal",
+      text: "A proposal in your inbox, priced line by line, with upgrades you can toggle. No hidden fees.",
     },
     {
       icon: ClipboardCheck,
       title: "Insurance help, if it applies",
-      text: "Storm damage? We provide the documentation and can meet your adjuster.",
+      text: "Storm claim? We assist through the entire claims process, start to finish.",
     },
     {
       icon: Wrench,
@@ -438,10 +441,58 @@ export const processSection = {
     },
     {
       icon: Medal,
-      title: "Walkthrough & warranty",
-      text: "You walk the finished roof with us — backed by a lifetime warranty.",
+      title: "Final review & warranty",
+      text: "We review the completed project with you, photos included — backed by a lifetime warranty.",
     },
   ],
+} as const;
+
+/* ------------------------------------------------------------------ */
+/* 8b². Digital proposal — the retail experience (owner 2026-07-04)    */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Retail/insurance rebalance (owner directive 2026-07-04): the business is
+ * 50/50 insurance/retail. This section sells the retail experience —
+ * transparent, itemized digital proposals — written for a discerning,
+ * high-net-worth buyer: control, clarity, zero pressure.
+ */
+export const proposalSection = {
+  eyebrow: "Transparent pricing",
+  title: "Know exactly what you're paying for",
+  description:
+    "Every estimate arrives as a digital proposal in your email, itemized down to each product and component of your roof. No hidden fees. No surprises.",
+  points: [
+    {
+      title: "Priced line by line",
+      text: "Each component of the roof system is priced individually — you see where every dollar goes before you commit to anything.",
+    },
+    {
+      title: "Upgrades you control",
+      text: "Options like ridge vent or drip edge are toggles, not sales pressure. Turn them on or off and the total updates for you.",
+    },
+    {
+      title: "Reviewed on your time",
+      text: "It's in your inbox — study it, share it with whoever you trust, and approve it whenever you're ready.",
+    },
+  ],
+  /** Illustrative proposal mock — component names only, no invented prices */
+  mock: {
+    heading: "Your roofing proposal",
+    subheading: "Itemized · sent to your email",
+    included: [
+      "Architectural shingle system",
+      "Synthetic underlayment",
+      "Ice & water protection",
+      "Flashing & starter strips",
+      "Tear-off, haul-off & cleanup",
+    ],
+    toggles: [
+      { label: "Ridge vent upgrade", on: true },
+      { label: "Drip edge upgrade", on: true },
+    ],
+    totalLine: "Itemized total — no hidden fees",
+  },
 } as const;
 
 /* ------------------------------------------------------------------ */
@@ -566,7 +617,7 @@ export const reviewsSection = {
     {
       key: "msboc",
       title: "MSBOC Licensed",
-      subtitle: "Mississippi State Board of Contractors",
+      subtitle: `License #${siteConfig.license} · Mississippi State Board of Contractors`,
       href: null,
       cta: null,
     },
@@ -586,7 +637,7 @@ export const homeFaqs: HomeFaq[] = [
   {
     question: "Do you handle both residential and commercial roofing?",
     answer:
-      "Yes — they're our two core divisions. Residential covers shingle and metal roofing, replacement, repair, gutters, skylights, and ventilation. Commercial covers TPO, EPDM, modified bitumen, coatings, metal systems, and planned maintenance programs.",
+      "Yes — they're our two core divisions. Residential covers shingle and metal roofing, replacement, repair, gutters, and ventilation. Commercial covers TPO, EPDM, modified bitumen, coatings, metal systems, and planned maintenance programs.",
   },
   {
     question: "What areas do you serve?",

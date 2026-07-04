@@ -619,134 +619,6 @@ export const residentialServices: ServiceContent[] = [
     ],
   },
 
-  /* ------------------------------------------------------------------ */
-  /* Skylights                                                           */
-  /* ------------------------------------------------------------------ */
-  {
-    slug: "skylights",
-    path: "/residential/skylights",
-    name: "Skylight Installation & Replacement",
-    metaTitle: "Skylight Installation & Replacement in South Mississippi",
-    metaDescription:
-      "Skylight installation, replacement, and leak repair done the roofer's way — flashed and integrated into the roof system correctly. Southeast Roofing, Hattiesburg MS.",
-    hero: {
-      eyebrow: "Residential roofing",
-      headline: "Skylights that bring in light — not water",
-      subhead:
-        "A skylight is a hole in your roof, on purpose. Done right, it's years of natural light without a drop of trouble. Done wrong, it's the most common leak we get called about. We install, replace, and repair them the roofer's way.",
-      photo: stockPhotos.heroHome,
-      photoBadge: "Residential roofing",
-    },
-    intro: {
-      title: "Light done right starts with flashing",
-      paragraphs: [
-        "Skylights have a bad reputation in wet climates, and it's undeserved — modern units are excellent. What fails is almost never the skylight itself; it's the flashing and integration around it. That's roofing work, and it's why a skylight should be installed by the people who understand how water moves across your specific roof.",
-        "We install new skylights, replace aging or fogged units, and repair leaking ones — always by addressing the flashing kit, underlayment tie-in, and curb, not just caulking the glass and hoping. If your roof is being replaced, that's the perfect time to add or swap skylights, since the whole assembly gets built in cleanly.",
-      ],
-    },
-    signs: {
-      title: "Signs your skylight needs attention",
-      items: [
-        {
-          icon: Droplets,
-          title: "Leaks or stains around the opening",
-          text: "Water rings on the drywall around the skylight shaft mean the flashing or seals have failed.",
-        },
-        {
-          icon: Sun,
-          title: "Fogging between panes",
-          text: "Condensation inside the glass means the unit's seal is gone — replacement is the fix.",
-        },
-        {
-          icon: TriangleAlert,
-          title: "Cracked or hazed glazing",
-          text: "Hail and limb strikes crack skylights more often than people expect; UV slowly hazes older acrylic domes.",
-        },
-        {
-          icon: CalendarClock,
-          title: "A 15+ year old unit",
-          text: "If your roof is newer than your skylight, the skylight is the weak point in the system.",
-        },
-        {
-          icon: Thermometer,
-          title: "Heat pouring through",
-          text: "Older single-glazed units let in far more heat than modern low-E glass — noticeable in a Mississippi summer.",
-        },
-        {
-          icon: Wind,
-          title: "Whistling or drafts",
-          text: "Air movement around the curb means the seals are failing — water is next.",
-        },
-      ],
-    },
-    approach: {
-      title: "How we handle skylights",
-      steps: [
-        {
-          title: "Evaluate the unit and the roof around it",
-          text: "We check the glazing, seals, curb, flashing, and surrounding shingles — leaks usually live at the edges.",
-        },
-        {
-          title: "Repair, reflash, or replace",
-          text: "Sometimes new flashing saves a good unit; when the unit itself is done, we'll show you replacement options.",
-        },
-        {
-          title: "Install with the full flashing kit",
-          text: "Manufacturer flashing kits, ice-and-water membrane around the opening, and correct shingle integration — no caulk-and-pray.",
-        },
-        {
-          title: "Coordinate with your roof project",
-          text: "Adding or replacing skylights during a reroof is cleaner and more economical — we'll plan it into the build.",
-        },
-      ],
-    },
-    faqs: [
-      {
-        question: "Do skylights always leak eventually?",
-        answer:
-          "No — that reputation comes from bad installs. A quality unit with a proper flashing kit, integrated into the underlayment correctly, stays dry for its full service life. Nearly every skylight leak we repair traces to shortcut flashing work.",
-      },
-      {
-        question: "Should I replace skylights when I replace my roof?",
-        answer:
-          "If the units are more than about ten years old, yes — it's significantly cheaper to do during the reroof, and it means every part of the new roof system starts fresh together. Reusing old skylights on a new roof makes them the system's weakest point.",
-      },
-      {
-        question: "Can you repair a leaking skylight without replacing it?",
-        answer:
-          "Often, yes. If the glass and seals are sound, new flashing and membrane around the unit fix the leak. If the unit has failed internally — fogging, cracked glazing — replacement is the honest answer.",
-      },
-      {
-        question: "Does hail damage skylights?",
-        answer:
-          "Yes, and it's frequently covered in the same insurance claim as the roof. We document skylight damage alongside the roof when we inspect after a storm.",
-      },
-    ],
-    related: [
-      {
-        label: "Roof Replacement",
-        href: "/residential/roof-replacement",
-        description:
-          "The ideal moment to add or replace skylights is during a reroof.",
-      },
-      {
-        label: "Roof Repair",
-        href: "/residential/roof-repair",
-        description:
-          "Skylight leaks often travel — we trace and fix the whole water path.",
-      },
-      {
-        label: "Ventilation",
-        href: "/residential/ventilation",
-        description:
-          "Natural light and healthy attic airflow both come from smart roof design.",
-      },
-    ],
-  },
-
-  /* ------------------------------------------------------------------ */
-  /* Ventilation                                                         */
-  /* ------------------------------------------------------------------ */
   {
     slug: "ventilation",
     path: "/residential/ventilation",
@@ -861,10 +733,10 @@ export const residentialServices: ServiceContent[] = [
           "Every replacement we do includes a ventilation assessment — it's the cheapest time to fix it.",
       },
       {
-        label: "Skylights",
-        href: "/residential/skylights",
+        label: "Gutters",
+        href: "/residential/gutters",
         description:
-          "Light and airflow are both part of a healthy roof design.",
+          "Moisture management from the ridge to the ground — airflow and drainage together.",
       },
     ],
   },
