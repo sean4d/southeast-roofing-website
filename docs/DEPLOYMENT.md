@@ -41,6 +41,39 @@ new site is approved for launch. When that day comes:
    - `https://southeastroofing.llc` (at cutover)
 6. The Studio then works at `/studio` — log in with the same account.
 
+## 3. Lead pipeline (forms → your CRM)
+
+The /free-inspection and /contact forms deliver every lead through two
+channels — configure at least one in Vercel → Settings → Environment
+Variables (until then, the form tells visitors to call instead):
+
+**a) Webhook → Roofr CRM** (`LEAD_WEBHOOK_URL`)
+
+1. Recommended free route: [make.com](https://www.make.com) (free tier,
+   1,000 ops/month). Create a scenario: **Webhooks → Custom webhook** →
+   copy its URL → add a **Roofr** (or email/Google Sheets) module after it.
+   Zapier works identically but requires its paid plan for webhooks.
+2. Before wiring Make/Zapier, check Roofr's own settings for a direct
+   lead-intake webhook or email — if it has one, use that URL and skip the
+   middleman entirely.
+3. Paste the URL as `LEAD_WEBHOOK_URL` and redeploy. Leads arrive as flat
+   JSON: name, phone, email, city, address, service, storm, message,
+   source, page, submittedAt.
+
+**b) Email notification** (`RESEND_API_KEY`, optional `LEAD_NOTIFY_EMAIL`)
+
+1. Create a free [resend.com](https://resend.com) account (100 emails/day
+   free), verify the southeastroofing.llc domain, create an API key.
+2. Add `RESEND_API_KEY`; leads email to `LEAD_NOTIFY_EMAIL` (defaults to
+   the office address).
+
+**c) "Pick a time" booking button** (`NEXT_PUBLIC_BOOKING_URL`)
+
+1. Google Calendar → Create → **Appointment schedule** (free) → set your
+   inspection availability → copy the booking-page link.
+2. Add it as `NEXT_PUBLIC_BOOKING_URL`. The button appears on the form
+   thank-you screen automatically. (A Cal.com link works the same way.)
+
 ## Local development
 
 ```bash
