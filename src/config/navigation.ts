@@ -54,7 +54,6 @@ export const footerColumns: FooterColumn[] = [
       { label: "Roof Replacement", href: "/residential/roof-replacement" },
       { label: "Roof Repair", href: "/residential/roof-repair" },
       { label: "Gutters", href: "/residential/gutters" },
-      { label: "Skylights", href: "/residential/skylights" },
       { label: "Ventilation", href: "/residential/ventilation" },
     ],
   },

@@ -49,7 +49,7 @@ export default function ResidentialHubPage() {
         <SectionHeading
           eyebrow="Residential services"
           title="Everything a home's roof needs"
-          description="Seven services, one accountable local team — start where your roof needs you to."
+          description="Six services, one accountable local team — start where your roof needs you to."
         />
         <HubServiceGrid services={[...residentialHub.services]} />
       </Section>

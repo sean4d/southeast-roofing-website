@@ -12,6 +12,7 @@ import { ServicesOverview } from "@/components/home/services-overview";
 import { StormInsurance } from "@/components/home/storm-insurance";
 import { RoofingSystems } from "@/components/home/roofing-systems";
 import { ProcessTimeline } from "@/components/home/process-timeline";
+import { DigitalProposal } from "@/components/home/digital-proposal";
 import { ManufacturerStrip } from "@/components/home/manufacturer-strip";
 import { FeaturedProjects } from "@/components/home/featured-projects";
 import { WhyUs } from "@/components/home/why-us";
@@ -38,6 +39,7 @@ export default function HomePage() {
       <DivisionSplit />
       <ServicesOverview />
       <ProcessTimeline />
+      <DigitalProposal />
       <StormInsurance />
       <RoofingSystems />
       <ManufacturerStrip />
