@@ -75,11 +75,16 @@ export const siteConfig = {
    */
   trustFacts: {
     googleRating: "5-star Google rating",
+    googleGuaranteed: "Google Guaranteed",
     bbbRating: "BBB Accredited — A rating",
     licensed: "Mississippi licensed",
     insured: "Fully insured & bonded",
     financing: "$0 down financing available",
-    warranty: "Lifetime workmanship warranty",
+    /**
+     * Owner correction 2026-07-04: manufacturer warranty, NOT workmanship.
+     * Always word as just "lifetime warranty" — intentionally unspecific.
+     */
+    warranty: "Lifetime warranty",
   },
   /** Schema sameAs — official profiles (GBP, BBB, GAF). [NEEDS: social media URLs] */
   socialProfiles: [

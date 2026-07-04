@@ -31,10 +31,10 @@ export function FinalCta() {
           <p className="mt-4 text-lg text-steel-100">{finalCta.description}</p>
         </Reveal>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
+        <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
           <Button
-            size="lg"
-            className="bg-white text-base text-primary hover:bg-steel-100"
+            size="xl"
+            className="bg-white text-primary hover:bg-steel-100"
             render={<Link href={finalCta.primary.href} />}
             nativeButton={false}
           >
@@ -42,9 +42,9 @@ export function FinalCta() {
           </Button>
           {/* External Roofr instant estimator — opens in a new tab */}
           <Button
-            size="lg"
+            size="xl"
             variant="outline"
-            className="border-white/40 text-base text-white hover:border-white hover:bg-white/10"
+            className="border-white/35 bg-white/5 text-white hover:border-white hover:bg-white/15"
             render={
               <a
                 href={finalCta.estimate.href}
@@ -56,6 +56,24 @@ export function FinalCta() {
           >
             {finalCta.estimate.label}
           </Button>
+          {/* External GoodLeap financing application — opens in a new tab */}
+          <Button
+            size="xl"
+            variant="outline"
+            className="border-white/35 bg-white/5 text-white hover:border-white hover:bg-white/15"
+            render={
+              <a
+                href={finalCta.financing.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
+            nativeButton={false}
+          >
+            {finalCta.financing.label}
+          </Button>
+        </div>
+        <div className="mt-6 flex justify-center">
           <PhoneLink className="text-base text-white" />
         </div>
 

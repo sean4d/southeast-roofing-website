@@ -1,4 +1,4 @@
-import { ExternalLink, Landmark, ShieldCheck } from "lucide-react";
+import { ExternalLink, Landmark } from "lucide-react";
 
 import { reviewsSection } from "@/content/homepage";
 import { Section } from "@/components/shared/section";
@@ -40,21 +40,39 @@ function GoogleG({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Brand marks (owner-authorized 2026-07-04). Official GAF/BBB/MSBOC logo
+ * files can't be downloaded from this build environment (network policy),
+ * so these are brand-color wordmark tiles as faithful stand-ins — swap in
+ * the official artwork here when the owner supplies the files.
+ */
 const badgeMarks: Record<string, React.ReactNode> = {
   google: <GoogleG className="size-9" />,
   gaf: (
-    <span className="flex size-10 items-center justify-center rounded-lg bg-navy-900">
-      <ShieldCheck className="size-6 text-white" aria-hidden="true" />
+    <span
+      className="flex h-10 items-center justify-center rounded-md bg-[#d71920] px-2.5 font-display text-lg font-black tracking-tight text-white italic"
+      aria-label="GAF"
+    >
+      GAF
     </span>
   ),
   bbb: (
-    <span className="flex size-10 items-center justify-center rounded-lg bg-navy-900">
-      <ShieldCheck className="size-6 text-white" aria-hidden="true" />
+    <span
+      className="flex h-10 items-center justify-center rounded-md bg-[#00548b] px-2.5 font-display text-lg font-black tracking-tight text-white"
+      aria-label="Better Business Bureau"
+    >
+      BBB
     </span>
   ),
   msboc: (
-    <span className="flex size-10 items-center justify-center rounded-lg bg-navy-900">
-      <Landmark className="size-6 text-white" aria-hidden="true" />
+    <span
+      className="flex h-10 items-center justify-center gap-1.5 rounded-md bg-navy-900 px-2.5"
+      aria-label="Mississippi State Board of Contractors"
+    >
+      <Landmark className="size-4 text-white" aria-hidden="true" />
+      <span className="font-display text-sm font-bold tracking-tight text-white">
+        MSBOC
+      </span>
     </span>
   ),
 };

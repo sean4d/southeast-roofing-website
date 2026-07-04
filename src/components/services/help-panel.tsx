@@ -28,8 +28,8 @@ const panels = [
   },
   {
     icon: Medal,
-    title: "Lifetime workmanship warranty",
-    text: "We stand behind our installation for the life of your roof. If our workmanship fails, we make it right.",
+    title: "Lifetime warranty",
+    text: "Our roofs are backed by lifetime warranty coverage. Ask what applies to your roof at your free inspection.",
     href: "/free-inspection",
     cta: "Start with a free inspection",
   },
