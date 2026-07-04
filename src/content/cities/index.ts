@@ -1,15 +1,17 @@
 import type { CityContent } from "@/content/cities/types";
+import { citiesBatch2 } from "@/content/cities/batch-2";
 
 /**
- * Launched city pages (PRD §5, batch 1 — Tier 1 + hub cities). Cities not
- * in this list stay reserved (branded 404) until their unique copy ships:
- * anti-doorway rule, never thin content. Every claim here is either
- * general local knowledge, documented storm history, or backed by the real
- * project photos in content/photos.ts (cities without photos never claim
- * completed local work).
+ * Launched city pages (PRD §5). Batch 1 below (Tier 1 + hub cities);
+ * batch 2 (Pine Belt + corridor towns) appends from batch-2.ts. Cities
+ * not yet launched stay reserved (branded 404) until their unique copy
+ * ships: anti-doorway rule, never thin content. Every claim is either
+ * general local knowledge, documented storm history, or backed by the
+ * real project photos in content/photos.ts (cities without photos never
+ * claim completed local work).
  */
 
-export const cities: CityContent[] = [
+const citiesBatch1: CityContent[] = [
   /* ------------------------------------------------------------------ */
   /* Hattiesburg — home base                                             */
   /* ------------------------------------------------------------------ */
@@ -605,6 +607,8 @@ export const cities: CityContent[] = [
     ],
   },
 ];
+
+export const cities: CityContent[] = [...citiesBatch1, ...citiesBatch2];
 
 export function getCity(slug: string): CityContent | undefined {
   return cities.find((city) => city.slug === slug);
