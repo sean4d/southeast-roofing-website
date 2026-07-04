@@ -15,6 +15,8 @@ const launchedStaticRoutes = [
   "/metal-roofing",
   "/storm-damage",
   "/financing",
+  "/free-inspection",
+  "/contact",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
