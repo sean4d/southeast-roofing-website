@@ -477,31 +477,32 @@ export const proposalSection = {
     },
   ],
   /**
-   * Interactive EXAMPLE proposal (owner-supplied example figures,
-   * 2026-07-04). Clearly labeled illustrative — real proposals are priced
-   * from the actual roof. baseTotal = sum of priced line items.
+   * Interactive EXAMPLE proposal. Line structure and unit economics mirror
+   * the owner's real Roofr proposals (owner-supplied screenshot,
+   * 2026-07-04), scaled to a smaller typical roof so the base lands just
+   * over $8k. EVERY line carries a price — no "included" (owner: hidden-
+   * cost smell). Clearly labeled example; real proposals are priced from
+   * the actual roof.
    */
   example: {
     heading: "Example roofing proposal",
     subheading: "Itemized · sent to your email",
     lineItems: [
-      { label: "Roof replacement", price: 7120 },
-      { label: "Synthetic underlayment", price: 345 },
-      { label: "Starter shingles", price: 218 },
-      { label: "Architectural shingles", price: null },
-      { label: "Ridge cap", price: 270 },
-      { label: "Permit", price: 150 },
-      { label: "Cleanup", price: null },
-      { label: "Dumpster", price: 375 },
+      { label: "Tear-off & disposal of existing roof", price: 1360 },
+      { label: "GAF Timberline HDZ architectural shingles", price: 5400 },
+      { label: "Synthetic underlayment", price: 180 },
+      { label: "Ice & water shield", price: 255 },
+      { label: "Starter strip", price: 315 },
+      { label: "Hip & ridge cap", price: 370 },
+      { label: "Dump charge", price: 550 },
     ] as { label: string; price: number | null }[],
-    /** Sum of priced line items — $8,478.00 (owner-specified) */
-    baseTotal: 8478,
-    /** All off by default: customers start at the $8,478 base and watch
-     *  the total climb as they flip upgrades — that's the lesson. */
+    /** Sum of line items — $8,430.00 */
+    baseTotal: 8430,
+    /** All off by default: customers start at the real base and watch the
+     *  total climb as they flip upgrades themselves — that's the lesson. */
     upgrades: [
       { label: "Premium drip edge", price: 180, defaultOn: false },
       { label: "Ridge vent upgrade", price: 420, defaultOn: false },
-      { label: "Premium synthetic underlayment", price: 350, defaultOn: false },
       { label: "Gutter replacement", price: 1850, defaultOn: false },
       { label: "Leaf guard", price: 850, defaultOn: false },
     ],
