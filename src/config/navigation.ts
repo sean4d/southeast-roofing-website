@@ -95,6 +95,7 @@ export const footerColumns: FooterColumn[] = [
       { label: "Get a Quote", href: "/quote" },
       { label: "About Us", href: "/about" },
       { label: "Storm Damage", href: "/storm-damage" },
+      { label: "Storm Center", href: "/storm-center" },
       { label: "Metal Roofing", href: "/metal-roofing" },
       { label: "Project Gallery", href: "/projects" },
       { label: "Reviews", href: "/reviews" },
