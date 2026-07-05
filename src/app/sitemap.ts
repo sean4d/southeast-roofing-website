@@ -22,6 +22,12 @@ const launchedStaticRoutes = [
   "/free-inspection",
   "/contact",
   "/service-areas",
+  "/projects",
+  "/reviews",
+  "/about",
+  "/careers",
+  "/privacy-policy",
+  "/terms-of-service",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
