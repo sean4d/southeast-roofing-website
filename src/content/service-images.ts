@@ -41,8 +41,8 @@ export const serviceImages: Record<string, ServiceImage | null> = {
   // Interim licensed stock (owner 2026-07-05: service cards never use
   // gallery photos; Higgsfield replacements queued in OWNER-FEEDBACK doc)
   "/residential/asphalt-shingle-roofing": {
-    src: stockPhotos.heroHome.src,
-    alt: stockPhotos.heroHome.alt,
+    src: "/images/services/asphalt-shingle-roof.webp",
+    alt: "Architectural asphalt shingle roof on an upscale home",
   },
   "/residential/roof-replacement": {
     src: stockPhotos.roofTearOff.src,
@@ -54,7 +54,7 @@ export const serviceImages: Record<string, ServiceImage | null> = {
   },
   "/residential/metal-roofing": {
     src: "/images/services/residential-standing-seam-home.webp",
-    alt: "Farmhouse-style home with a charcoal standing seam metal roof and wraparound porch",
+    alt: "Homes with dark standing seam metal roofs",
   },
   "/residential/metal-roofing/standing-seam": {
     src: "/images/services/standing-seam-closeup.webp",
@@ -66,19 +66,19 @@ export const serviceImages: Record<string, ServiceImage | null> = {
   },
   "/residential/gutters": {
     src: "/images/services/seamless-gutter-installation.webp",
-    alt: "White seamless aluminum gutter and downspout on a brick home",
+    alt: "New white painted seamless metal gutter and downspout on a home",
   },
   "/residential/leaf-guard": {
     src: "/images/services/leaf-guard-mesh.webp",
-    alt: "Mesh gutter guard keeping leaves out of a gutter beneath a shingle roof edge",
+    alt: "New micro-mesh gutter guard installed on a clean gutter and shingle roof",
   },
   "/residential/fascia": {
-    src: "/images/services/fascia-capping.webp",
-    alt: "White aluminum fascia capping where the roofline meets the gutter",
+    src: "/images/services/wood-fascia.webp",
+    alt: "Clean white painted wood fascia along a home's roofline",
   },
   "/residential/soffit": {
-    src: "/images/services/vented-soffit.webp",
-    alt: "Vented soffit panels under a home's eave",
+    src: "/images/services/wood-soffit.webp",
+    alt: "Clean painted wood soffit under a home's eave",
   },
   "/residential/ventilation": {
     src: "/images/services/ridge-vent.webp",
@@ -138,7 +138,7 @@ export const serviceImages: Record<string, ServiceImage | null> = {
   },
   "/commercial/metal-roofing": {
     src: "/images/services/commercial-metal-building.webp",
-    alt: "Commercial building with a light gray metal roof",
+    alt: "Commercial metal building with a standing seam roof",
   },
   "/commercial/metal-roofing/standing-seam": {
     src: "/images/services/architectural-standing-seam.webp",

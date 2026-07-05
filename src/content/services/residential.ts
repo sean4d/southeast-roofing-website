@@ -722,6 +722,25 @@ export const residentialServices: ServiceContent[] = [
         },
       ],
     },
+    gallery: {
+      title: "The exhaust vents we install",
+      description:
+        "The right exhaust type depends on your roof's shape and existing intake. Ridge vents lead for balanced airflow; turbines, box vents, and powered fans each earn their place on the right home.",
+      photos: [
+        {
+          src: "/images/services/turbine-vent.webp",
+          alt: "Wind-driven turbine attic vent on a shingle roof",
+        },
+        {
+          src: "/images/services/box-vent.webp",
+          alt: "Low-profile box vent (turtle vent) on a shingle roof",
+        },
+        {
+          src: "/images/services/power-attic-vent.webp",
+          alt: "Powered attic fan vent mounted on a shingle roof",
+        },
+      ],
+    },
     faqs: [
       {
         question: "Does attic ventilation really affect shingle life?",
