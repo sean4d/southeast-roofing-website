@@ -33,6 +33,7 @@ const launchedStaticRoutes = [
   "/learn",
   "/blog",
   "/quote",
+  "/storm-center",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
