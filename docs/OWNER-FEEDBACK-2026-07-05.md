@@ -16,21 +16,21 @@ Real offers (screenshot from GoodLeap portal): 5yr / 10yr / 15yr, all **12.99% A
 
 ## Batch 3 — image regeneration (Higgsfield/online ONLY — never project-gallery photos for service slots)
 Residential:
-- [ ] asphalt-shingle-roofing: current blurry/unprofessional → crisp professional architectural shingle roof
-- [ ] residential metal-roofing: looks like white paint stains → clean replacement
+- [x] asphalt-shingle-roofing: current blurry/unprofessional → crisp professional architectural shingle roof
+- [x] residential metal-roofing: looks like white paint stains → clean replacement
 - [ ] roof-replacement: blurry → new
-- [ ] gutters: downspout looks like PVC tube → white PAINTED SEAMLESS METAL K-style gutter + metal downspout, looks like ours
-- [ ] leaf-guard: dirty guard + dirty shingles → clean new guard on clean shingles
+- [x] gutters: downspout looks like PVC tube → white PAINTED SEAMLESS METAL K-style gutter + metal downspout, looks like ours
+- [x] leaf-guard: dirty guard + dirty shingles → clean new guard on clean shingles
 - [ ] REMOVE SIDING ENTIRELY: we do NOT do siding (only fascia + soffit). Delete /residential/vinyl-siding + /residential/fiber-cement-siding pages, registry entries, footer links, images, copy mentions
-- [ ] fascia + soffit photos look like metal → we mainly do WOOD: clean painted wood fascia + wood soffit photos
-- [ ] ventilation: photo shows no ridge vent → proper black plastic ridge vent with ridge cap shingled over. ALSO add photos + copy for: turbines, box vents, power attic vents (gallery on ventilation page)
+- [x] fascia + soffit photos look like metal → we mainly do WOOD: clean painted wood fascia + wood soffit photos
+- [~] ventilation: turbine/box/power gallery ADDED; ridge-vent main photo still needs a non-GAF source. ORIG: photo shows no ridge vent → proper black plastic ridge vent with ridge cap shingled over. ALSO add photos + copy for: turbines, box vents, power attic vents (gallery on ventilation page)
 - [ ] While changing cards, add photos to each corresponding service PAGE too (visual learners, product knowledge)
 
 Commercial:
 - [ ] TPO: weird grid lines → flat rolls look
 - [ ] EPDM: janky lines → cleaner
 - [ ] PVC: way too many lines → large sheets
-- [ ] commercial metal-roofing: ugly/dirty → nicer color, black
+- [x] commercial metal-roofing: ugly/dirty → nicer color, black
 - [ ] commercial roof-replacement: horrible → crew blow-torching/working (torch-down scene)
 - [ ] warehouse (industries): looks fake → more realistic, NO vehicles
 
