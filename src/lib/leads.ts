@@ -68,9 +68,24 @@ async function sendEmail(lead: Lead): Promise<boolean> {
   const to = process.env.LEAD_NOTIFY_EMAIL ?? siteConfig.email;
   if (!apiKey || !to) return false;
 
+  // Support multiple recipients (comma-separated) so one lead can reach the
+  // office inbox AND a Zapier Email Parser mailbox that feeds Roofr.
+  const recipients = to
+    .split(",")
+    .map((address) => address.trim())
+    .filter(Boolean);
+
+  // Split the full name so an email parser can map Roofr's required
+  // First Name / Last Name fields directly (last name falls back to first
+  // when only one word is given, so Roofr's required field is never blank).
+  const [firstName, ...restName] = lead.name.trim().split(/\s+/);
+  const lastName = restName.join(" ") || firstName;
+
   const lines = [
     `Source: ${lead.source}${lead.page ? ` (${lead.page})` : ""}`,
     `Name: ${lead.name}`,
+    `First name: ${firstName}`,
+    `Last name: ${lastName}`,
     `Phone: ${lead.phone}`,
     lead.email && `Email: ${lead.email}`,
     lead.company && `Company: ${lead.company}`,
@@ -96,7 +111,7 @@ async function sendEmail(lead: Lead): Promise<boolean> {
     },
     body: JSON.stringify({
       from: `Website Leads <leads@${new URL(siteConfig.url).hostname}>`,
-      to: [to],
+      to: recipients,
       reply_to: lead.email,
       subject: `New lead: ${lead.name} — ${lead.service ?? lead.source}${lead.storm ? " (storm/insurance)" : ""}`,
       text: lines.join("\n"),
