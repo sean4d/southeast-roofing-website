@@ -61,6 +61,14 @@ export async function submitLead(
   if (lead.email && !EMAIL_RE.test(lead.email))
     errors.email = "That email doesn't look right.";
 
+  // The free-inspection ("short") form needs a property address + city so the
+  // lead can create a proper job (with a roof to measure) in the CRM. The
+  // "full" contact form stays low-friction — general questions don't need one.
+  if (text(formData, "variant") === "short") {
+    if (!lead.address) errors.address = "Please add the property address.";
+    if (!lead.city) errors.city = "Please add the city or ZIP.";
+  }
+
   if (Object.keys(errors).length > 0) {
     return {
       status: "error",

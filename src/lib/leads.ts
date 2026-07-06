@@ -81,8 +81,20 @@ async function sendEmail(lead: Lead): Promise<boolean> {
   const [firstName, ...restName] = lead.name.trim().split(/\s+/);
   const lastName = restName.join(" ") || firstName;
 
+  // Single-line summary for the CRM's "Details/notes" field — bundles the
+  // context (service, storm flag, message) so a parser can map it in one shot.
+  const details = [
+    `Website ${lead.source} lead`,
+    lead.service ? `— ${lead.service}` : null,
+    lead.storm ? "(storm/insurance)" : null,
+    lead.message ? `— ${lead.message.replace(/\s+/g, " ").trim()}` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const lines = [
     `Source: ${lead.source}${lead.page ? ` (${lead.page})` : ""}`,
+    `Details: ${details}`,
     `Name: ${lead.name}`,
     `First name: ${firstName}`,
     `Last name: ${lastName}`,

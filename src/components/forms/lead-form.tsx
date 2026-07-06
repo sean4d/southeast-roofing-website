@@ -137,6 +137,7 @@ export function LeadForm({
     >
       <input type="hidden" name="source" value={source} />
       <input type="hidden" name="page" value={pathname} />
+      <input type="hidden" name="variant" value={variant} />
       {/* Honeypot — hidden from humans, tempting to bots */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
         <label htmlFor="website">Website</label>
@@ -185,29 +186,41 @@ export function LeadForm({
             placeholder="you@example.com"
           />
         </Field>
-        <Field label="City or ZIP" name="city" optional>
+        <Field
+          label="City or ZIP"
+          name="city"
+          error={state.errors?.city}
+          optional={variant === "full"}
+        >
           <input
             id="city"
             name="city"
             type="text"
             autoComplete="postal-code"
+            required={variant === "short"}
+            aria-invalid={state.errors?.city ? true : undefined}
             className={inputClass}
             placeholder="Hattiesburg"
           />
         </Field>
 
-        {variant === "full" && (
-          <Field label="Street address" name="address" optional>
-            <input
-              id="address"
-              name="address"
-              type="text"
-              autoComplete="street-address"
-              className={inputClass}
-              placeholder="123 Hardy St"
-            />
-          </Field>
-        )}
+        <Field
+          label="Street address"
+          name="address"
+          error={state.errors?.address}
+          optional={variant === "full"}
+        >
+          <input
+            id="address"
+            name="address"
+            type="text"
+            autoComplete="street-address"
+            required={variant === "short"}
+            aria-invalid={state.errors?.address ? true : undefined}
+            className={inputClass}
+            placeholder="123 Hardy St"
+          />
+        </Field>
 
         <Field label="What do you need?" name="service">
           <select id="service" name="service" className={inputClass}>
