@@ -48,12 +48,10 @@ export const siteConfig = {
   links: {
     googleBusiness: "https://share.google/8jfoy7nN9HyddPKDb",
     /**
-     * "Write a review" target for Leave-a-Review CTAs. Points at the public
-     * profile (where "Write a review" is one tap away) until the owner pastes
-     * the dedicated Google review short link from the GBP dashboard
-     * ("Ask for reviews" → g.page/r/…/review). [NEEDS: direct write-review link]
+     * Direct "write a review" deep link (owner-supplied 2026-07-05) — opens
+     * the Google review dialog straight away, no extra taps.
      */
-    googleReview: "https://share.google/8jfoy7nN9HyddPKDb",
+    googleReview: "https://g.page/r/CZ5YiwvqNReNEBM/review",
     bbbProfile:
       "https://www.bbb.org/us/ms/hattiesburg/profile/roofing-contractors/southeast-roofing-llc-0523-235902892",
     gafProfile:
