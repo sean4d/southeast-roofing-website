@@ -15,6 +15,7 @@ export type LearnCategorySlug =
   | "storm-prep"
   | "materials"
   | "maintenance"
+  | "hiring"
   | "commercial"
   | "cost-guides";
 
@@ -26,9 +27,7 @@ export interface LearnCategory {
 
 /** GAF partner-portal widgets we embed (see components/learn/gaf-widget). */
 export type GafWidgetKey =
-  | "hdz-widget"
-  | "parts-of-a-roof-widget"
-  | "shingle-comparison-chart";
+  "hdz-widget" | "parts-of-a-roof-widget" | "shingle-comparison-chart";
 
 export type ArticleBlock =
   | { type: "p"; text: string }

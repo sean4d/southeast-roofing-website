@@ -44,6 +44,12 @@ export const learnCategories: LearnCategory[] = [
       "Simple habits that add years to a roof in the Pine Belt's heat, humidity, and pine straw.",
   },
   {
+    slug: "hiring",
+    label: "Hiring a Roofer",
+    description:
+      "How to vet a contractor, read a proposal, and avoid the storm-chasing crews that follow every Mississippi storm.",
+  },
+  {
     slug: "commercial",
     label: "Commercial Roofing",
     description:
@@ -926,6 +932,321 @@ export const learnArticles: LearnArticle[] = [
       { label: "Roof Repair", href: "/residential/roof-repair" },
       { label: "Roof Replacement", href: "/residential/roof-replacement" },
       { label: "Storm Damage & Insurance", href: "/storm-damage" },
+    ],
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Hiring: how to choose a contractor / avoid storm chasers            */
+  /* ------------------------------------------------------------------ */
+  {
+    slug: "how-to-choose-a-roofing-contractor",
+    category: "hiring",
+    title: "How to choose a roofing contractor in Mississippi",
+    metaTitle:
+      "How to Choose a Roofing Contractor in Mississippi | Southeast Roofing",
+    metaDescription:
+      "How to vet a roofer in Mississippi and steer clear of storm-chasing scams — license, insurance, local reputation, itemized proposals, and the red flags worth walking away from.",
+    excerpt:
+      "License, insurance, local reputation, and the red flags — how to hire a roofer you won't regret, and spot the storm chasers.",
+    updated: "2026-07-05",
+    readMinutes: 7,
+    hero: {
+      headline:
+        "How to choose a roofing contractor (and dodge the storm chasers)",
+      subhead:
+        "After a big storm, out-of-town crews flood the Pine Belt, collect checks, and vanish. Here's how to tell a roofer worth hiring from one you'll never find again.",
+    },
+    body: [
+      {
+        type: "p",
+        text: "Your roof is one of the most expensive things you own, and hiring the wrong contractor to work on it can cost you twice — once for the bad job, and again to fix it. In Mississippi, the risk spikes after every hurricane and hail event, when storm-chasing crews descend on the area, knock doors, collect money, and disappear the moment the check clears. A little vetting up front protects you from all of it.",
+      },
+      { type: "h2", text: "Start with license and insurance" },
+      {
+        type: "p",
+        text: "Commercial roofing and larger residential jobs in Mississippi fall under the Mississippi State Board of Contractors (MSBOC). Ask for the license number and confirm it's current. Then ask for proof of both general liability insurance and workers' compensation — if an uninsured worker is hurt on your roof, or your home is damaged, you don't want that liability landing on you. A legitimate contractor hands these over without flinching.",
+      },
+      {
+        type: "list",
+        title: "Ask every roofer for",
+        items: [
+          "Their MSBOC license number (and confirm it's current)",
+          "A certificate of general liability insurance",
+          "Proof of workers' compensation coverage",
+          "A physical local address — not just a cell number and a magnetic sign",
+        ],
+      },
+      { type: "h2", text: "The storm-chaser red flags" },
+      {
+        type: "list",
+        items: [
+          "They knocked on your door uninvited right after a storm and pressured you to sign today.",
+          "Out-of-state plates, no local office, and a phone number that isn't a Mississippi business line.",
+          "They want a large payment up front, or ask for the insurance check to be signed over to them.",
+          "They offer to 'waive your deductible' — which is insurance fraud, and a preview of how they do business.",
+          "No written, itemized proposal — just a number scribbled on a business card.",
+          "Reviews you can't verify, or none at all.",
+        ],
+      },
+      { type: "h2", text: "Signs of a roofer worth hiring" },
+      {
+        type: "list",
+        items: [
+          "A standing local address you can drive to, and a track record in your area.",
+          "Manufacturer certification — a GAF Certified Contractor, for example, is vetted and trained by the manufacturer.",
+          "Verifiable reviews on Google and a real BBB profile you can check yourself.",
+          "A written, itemized proposal that prices each part of the job — shingle, underlayment, flashing, disposal — so you see exactly what you're paying for.",
+          "No high-pressure tactics: a good roofer is fine with you taking time to decide.",
+        ],
+      },
+      { type: "h2", text: "Questions to ask before you sign" },
+      {
+        type: "list",
+        items: [
+          "Who does the work — your own crews, or subcontractors?",
+          "What does the manufacturer warranty cover, and what does your workmanship warranty cover?",
+          "How do you handle unexpected decking damage found during tear-off?",
+          "Will you meet my insurance adjuster on site if this is a storm claim?",
+          "Can I see the itemized proposal in writing before I commit?",
+        ],
+      },
+      {
+        type: "callout",
+        title: "Vet us the same way",
+        text: "We're glad to be checked: MSBOC license #R22245, GAF Certified Contractor, BBB A-rated, and 5-star reviewed on Google — every credential links to a record we can't edit. Our office is on US-98 in Hattiesburg.",
+        href: "/reviews",
+        linkLabel: "Verify our credentials",
+      },
+    ],
+    faqs: [
+      {
+        question: "Do roofers in Mississippi have to be licensed?",
+        answer:
+          "Commercial work and larger residential projects fall under the Mississippi State Board of Contractors (MSBOC). Always ask for the license number and confirm it's current — and ask for liability and workers' comp insurance too, regardless of the job size.",
+      },
+      {
+        question: "What's wrong with a roofer offering to waive my deductible?",
+        answer:
+          "It's a red flag. Your deductible is your share of the claim by contract with your insurer; a contractor 'eating' it usually means inflating the estimate or cutting corners elsewhere — and in many cases it crosses into insurance fraud. Walk away.",
+      },
+      {
+        question: "Why does a local address matter so much?",
+        answer:
+          "Because a roof problem can surface months later. A contractor with a standing local office and reputation is still here to stand behind the work — storm-chasing crews are three states away by then.",
+      },
+      {
+        question: "What is a GAF Certified Contractor?",
+        answer:
+          "GAF certifies contractors it has vetted and trained to install its systems to specification. It's a manufacturer's stamp that the roofer meets a standard — and it's something you can verify directly on GAF's website.",
+      },
+    ],
+    related: [
+      { label: "About Southeast Roofing", href: "/about" },
+      { label: "Reviews & Credentials", href: "/reviews" },
+      { label: "Free Inspection", href: "/free-inspection" },
+    ],
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Maintenance: how long does a roof last                              */
+  /* ------------------------------------------------------------------ */
+  {
+    slug: "how-long-does-a-roof-last",
+    category: "maintenance",
+    title: "How long does a roof last in South Mississippi?",
+    metaTitle:
+      "How Long Does a Roof Last in South Mississippi? | Southeast Roofing",
+    metaDescription:
+      "Typical roof lifespans by material in South Mississippi — asphalt shingle, metal, and commercial systems — plus what actually shortens or extends the years you get.",
+    excerpt:
+      "Typical lifespans by material, why our climate shortens them, and what actually decides how many years you get.",
+    updated: "2026-07-05",
+    readMinutes: 6,
+    hero: {
+      headline: "How long does a roof last in South Mississippi?",
+      subhead:
+        "The honest answer is 'it depends' — but here are the real ranges by material, and the factors that push your roof to the top or bottom of them.",
+    },
+    body: [
+      {
+        type: "p",
+        text: "Roof lifespan charts online almost always quote national averages — and South Mississippi is not average. Our heat, humidity, UV, and hurricane season all age a roof faster than a mild northern climate. Here's what to realistically expect, and what separates a roof that hits the top of its range from one that fails early.",
+      },
+      { type: "h2", text: "Typical lifespans by material" },
+      {
+        type: "list",
+        items: [
+          "3-tab asphalt shingles: roughly 15–20 years, often less on hot southern exposures.",
+          "Architectural (dimensional) shingles: about 15–25 years here — the workhorse residential roof.",
+          "Metal (standing seam or quality exposed-fastener): commonly 40 years or more.",
+          "Commercial flat systems (TPO, EPDM, modified bitumen): roughly 20–30 years depending on the system and maintenance.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Notice these are ranges, not guarantees. Two identical shingle roofs on the same street can be a decade apart in service life — and the difference is rarely the shingle itself.",
+      },
+      { type: "h2", text: "Why South Mississippi is hard on roofs" },
+      {
+        type: "list",
+        items: [
+          "Heat and UV: long, intense summers bake asphalt and dry out shingles from above.",
+          "Humidity and rain: some of the heaviest annual rainfall in the country keeps roofs wet and feeds rot wherever water gets in.",
+          "Storms: hurricane-season wind and hail can take years off a roof in a single afternoon.",
+          "Trees: the Pine Belt's canopy means shade, moisture, dropped limbs, and pine straw damming your gutters.",
+        ],
+      },
+      { type: "h2", text: "What actually decides how long your roof lasts" },
+      {
+        type: "list",
+        items: [
+          "Attic ventilation: an overheated attic cooks shingles from the underside and is one of the biggest — and most overlooked — factors.",
+          "Installation quality: nailing pattern, starter strips, flashing, and underlayment decide whether a roof reaches its rated life.",
+          "Maintenance: catching a small leak or a lifted flashing early prevents the damage that ends roofs prematurely.",
+          "Storm exposure and luck: a direct hail hit doesn't care how well the roof was built.",
+        ],
+      },
+      {
+        type: "callout",
+        title: "Not sure where your roof stands?",
+        text: "Our free inspection tells you honestly how much life your roof has left — with photos — so you can plan instead of guess. Sometimes the answer is 'years left, do nothing yet.'",
+        href: "/free-inspection",
+        linkLabel: "Schedule a free inspection",
+      },
+    ],
+    faqs: [
+      {
+        question: "Does ventilation really affect how long my roof lasts?",
+        answer:
+          "Yes, significantly — especially in the South. Trapped attic heat ages shingles from the underside, and manufacturers require adequate ventilation as a condition of their coverage. It's one of the cheapest ways to add years to a roof.",
+      },
+      {
+        question: "Will a metal roof really last twice as long as shingles?",
+        answer:
+          "Often, yes. A quality metal roof can last 40 years or more, versus about 15–25 for architectural shingles in our climate — which is why some homeowners treat metal as the last roof they'll buy.",
+      },
+      {
+        question: "Can I extend the life of my current roof?",
+        answer:
+          "Usually. Keeping gutters clear, fixing small leaks and flashing promptly, correcting ventilation, and having the roof looked at after major storms all add years. A roof rarely fails all at once — it's neglected small problems that end it early.",
+      },
+      {
+        question: "How do I know how many years my roof has left?",
+        answer:
+          "A proper inspection — shingle condition, granule loss, flashing, decking, and ventilation together tell the story. Ours is free, and we'll give you a straight answer, including when the honest answer is 'plenty of life left.'",
+      },
+    ],
+    related: [
+      { label: "Roof & Attic Ventilation", href: "/residential/ventilation" },
+      {
+        label: "Roof Repair vs. Replacement",
+        href: "/learn/maintenance/roof-repair-vs-replacement",
+      },
+      { label: "Roof Replacement", href: "/residential/roof-replacement" },
+    ],
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Maintenance: signs you need a new roof                              */
+  /* ------------------------------------------------------------------ */
+  {
+    slug: "signs-you-need-a-new-roof",
+    category: "maintenance",
+    title: "Signs you need a new roof",
+    metaTitle: "Signs You Need a New Roof | Southeast Roofing",
+    metaDescription:
+      "The warning signs your roof is failing — from the attic, the ground, and after storms — and which ones mean 'call now' versus 'keep an eye on it.'",
+    excerpt:
+      "What to look for from the attic, the ground, and after a storm — and which signs mean call now.",
+    updated: "2026-07-05",
+    readMinutes: 6,
+    hero: {
+      headline: "Signs you need a new roof",
+      subhead:
+        "Most roofs give plenty of warning before they fail. Here's what to watch for — and which signs mean it's time to call.",
+    },
+    body: [
+      {
+        type: "p",
+        text: "A roof rarely fails overnight. It tells you it's wearing out for years, if you know what to look for. Some signs you can spot from the driveway; others hide in the attic or only show up after a storm. Here's a plain-language rundown — none of it requires climbing on the roof, which we'd rather you didn't do anyway.",
+      },
+      { type: "h2", text: "From the ground" },
+      {
+        type: "list",
+        items: [
+          "Curling, cupping, or clawing shingle edges — the shingles have dried out and lost their seal.",
+          "Bald patches where the protective granules have worn away, exposing the black asphalt underneath.",
+          "Shingles missing entirely, especially after wind — every gap is an open door for water.",
+          "A sagging or wavy roofline, which can point to decking or structural moisture damage.",
+          "Dark streaks, moss, or growth that traps moisture against the roof.",
+        ],
+      },
+      { type: "h2", text: "From the attic" },
+      {
+        type: "list",
+        items: [
+          "Daylight coming through the roof boards — if light gets in, so does water.",
+          "Water stains, streaks, or damp insulation on the underside of the decking.",
+          "A musty smell or visible mildew, which points to a moisture or ventilation problem.",
+          "Rusty nail tips, a sign of condensation from poor attic ventilation.",
+        ],
+      },
+      { type: "h2", text: "Inside the house" },
+      {
+        type: "list",
+        items: [
+          "Water stains or brown rings on ceilings and upper walls.",
+          "Paint peeling near the roofline or on ceilings.",
+          "Energy bills creeping up as a heat-soaked attic works your AC harder.",
+        ],
+      },
+      { type: "h2", text: "After a storm" },
+      {
+        type: "p",
+        text: "Wind and hail don't always leave obvious holes. Hail can bruise shingles and knock granules loose without leaking right away, and lifted shingles may reseal enough to hide the damage. If a significant storm has come through — and South Mississippi gets its share — it's worth having the roof looked at while the insurance window is still open, even if nothing is dripping yet.",
+      },
+      { type: "h2", text: "One sign doesn't always mean 'replace'" },
+      {
+        type: "p",
+        text: "A single lifted shingle or one small stain is often a repair, not a new roof. It's the combination — age plus several of these signs across the whole roof — that points to replacement. If you're not sure which camp you're in, that's exactly what a free inspection settles.",
+      },
+      {
+        type: "callout",
+        title: "Get a straight answer, with photos",
+        text: "We'll document what your roof is actually doing and tell you honestly whether it's a repair, a replacement, or nothing yet.",
+        href: "/free-inspection",
+        linkLabel: "Schedule a free inspection",
+      },
+    ],
+    faqs: [
+      {
+        question: "How many of these signs mean I need a new roof?",
+        answer:
+          "There's no magic number — it's the pattern that matters. Several signs across the whole roof, especially on an older roof, point to replacement; one isolated issue is usually a repair. An inspection tells you which it is.",
+      },
+      {
+        question: "Should I go up on my roof to check?",
+        answer:
+          "We'd rather you didn't — it's dangerous and easy to cause damage. Almost everything on this list can be spotted from the ground, the attic, or inside the house. Leave the roof itself to us.",
+      },
+      {
+        question: "My ceiling has a stain but no active drip. Is that urgent?",
+        answer:
+          "It means water has been getting in at some point, even if it's not actively dripping now. The sooner the source is traced, the smaller the repair — a stain that's ignored through a wet season tends to become decking rot.",
+      },
+      {
+        question: "Do I need a new roof after every storm?",
+        answer:
+          "No. Many roofs come through storms fine, and we'll tell you when yours did. But wind and hail damage can be hidden and time-sensitive for insurance, so a free post-storm inspection is worth it even when nothing is obviously wrong.",
+      },
+    ],
+    related: [
+      {
+        label: "Roof Repair vs. Replacement",
+        href: "/learn/maintenance/roof-repair-vs-replacement",
+      },
+      { label: "Roof Repair", href: "/residential/roof-repair" },
+      { label: "Roof Replacement", href: "/residential/roof-replacement" },
     ],
   },
 ];
