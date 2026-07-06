@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -39,6 +39,12 @@ export const metadata: Metadata = {
         },
       }
     : {}),
+};
+
+// Tints the mobile browser UI and the installed-app status bar with the brand
+// navy (matches the manifest theme_color).
+export const viewport: Viewport = {
+  themeColor: "#123b63",
 };
 
 export default function RootLayout({
