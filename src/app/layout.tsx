@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
+import { ICON_BACKGROUND } from "@/config/brand-icon";
 import { siteConfig } from "@/config/site";
 
 import "./globals.css";
@@ -39,6 +40,12 @@ export const metadata: Metadata = {
         },
       }
     : {}),
+};
+
+// Tints the mobile browser UI and the installed-app status bar with the brand
+// navy (matches the manifest theme_color / home-screen tile).
+export const viewport: Viewport = {
+  themeColor: ICON_BACKGROUND,
 };
 
 export default function RootLayout({
