@@ -25,6 +25,9 @@ export function Hero() {
         alt={hero.photo.alt}
         fill
         priority
+        // Heavy navy overlay hides compression detail — lower quality trims the
+        // mobile LCP transfer with no perceptible loss (PageSpeed image-delivery).
+        quality={65}
         sizes="100vw"
         className="object-cover object-[center_38%]"
       />
