@@ -247,6 +247,11 @@ export const metalHub = {
     subhead:
       "Metal isn't a separate trade for us — it's a roofing system we install across both of our divisions, matched to the structure it protects. Start with the path that fits your building.",
     chips: ["Standing seam", "Exposed fastener", "R-panel", "26 & 29 gauge"],
+    photo: {
+      src: "/images/projects/29-gauge-galvalume-metal-roof-mccomb-ms-002.webp",
+      alt: "29-gauge Galvalume metal roof installed by Southeast Roofing in McComb, Mississippi",
+    },
+    photoBadge: "Metal roofing",
   },
   paths: {
     residential: {

@@ -16,10 +16,10 @@ export const mainNav: NavLink[] = [
   { label: "Residential Roofing", href: "/residential" },
   { label: "Commercial Roofing", href: "/commercial" },
   { label: "Storm Damage", href: "/storm-damage" },
+  { label: "Learning Center", href: "/learn" },
   { label: "About", href: "/about" },
   { label: "Financing", href: "/financing" },
   { label: "Projects", href: "/projects" },
-  { label: "Learning Center", href: "/learn" },
   { label: "Contact", href: "/contact" },
 ];
 

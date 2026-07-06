@@ -8,8 +8,6 @@
  * ON HOLD (kept on disk, excluded here pending an owner label):
  *   /images/projects/residential-roof-replacement-ocean-springs-ms-001.webp
  *   — "same roof as deleted #13, different angle"; needs product/city.
- *   A GAF HDZ Birchwood roof (shingle + rolled patio) was supplied in the
- *   2026-07-06 batch with no city; excluded until the owner names the town.
  */
 
 export type PhotoKind = "completed" | "in-progress";
@@ -191,6 +189,8 @@ export const projectPhotos: ProjectPhoto[] = [
   completed("gaf-timberline-hdz-hickory-wiggins-ms-002.webp", "Wiggins", "wiggins", gafHDZ, "Hickory"),
   // Columbia
   completed("gaf-timberline-hdz-charcoal-columbia-ms.webp", "Columbia", "columbia", gafHDZ, "Charcoal"),
+  // Bay St. Louis
+  completed("gaf-timberline-hdz-birchwood-bay-st-louis-ms.webp", "Bay St. Louis", "bay-st-louis", gafHDZ, "Birchwood"),
   // McComb — 29-gauge Galvalume exposed-fastener metal
   metalRoof("29-gauge-galvalume-metal-roof-mccomb-ms-001.webp", "McComb", "mccomb", "29-gauge Galvalume exposed-fastener metal roof installed by Southeast Roofing in McComb, Mississippi."),
   metalRoof("29-gauge-galvalume-metal-roof-mccomb-ms-002.webp", "McComb", "mccomb", "29-gauge Galvalume exposed-fastener metal roof installed by Southeast Roofing in McComb, Mississippi."),
