@@ -14,6 +14,7 @@ import {
 } from "@/components/services/service-sections";
 import { HelpPanel } from "@/components/services/help-panel";
 import { RoofAnatomy } from "@/components/services/roof-anatomy";
+import { VentilationAirflow } from "@/components/services/ventilation-airflow";
 import { ServiceFaq } from "@/components/services/service-faq";
 import { CommercialCta } from "@/components/services/commercial-cta";
 import { FinalCta } from "@/components/home/final-cta";
@@ -51,6 +52,7 @@ export function ServicePage({
       {service.signs && <ServiceSigns signs={service.signs} />}
       <ServiceApproach approach={service.approach} />
       {service.anatomy && <RoofAnatomy />}
+      {service.ventDiagram && <VentilationAirflow />}
       {service.materials && <ServiceMaterials materials={service.materials} />}
       {service.checklist && <ServiceChecklist checklist={service.checklist} />}
       {service.gallery && <ServiceGallery gallery={service.gallery} />}

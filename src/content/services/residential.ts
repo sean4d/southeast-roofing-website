@@ -510,8 +510,11 @@ export const residentialServices: ServiceContent[] = [
       headline: "Seamless gutters, built for Gulf-region rain",
       subhead:
         "Custom-formed on site in continuous runs — no seams to split, no joints to drip. South Mississippi gets some of the heaviest rainfall in the country, and seamless gutters are what stand between that water and your fascia, walls, and foundation.",
-      photo: stockPhotos.residentialHome,
-      photoBadge: "Residential exterior",
+      photo: {
+        src: "/images/services/seamless-gutter-installation.webp",
+        alt: "New white seamless metal gutter and downspout on a home",
+      },
+      photoBadge: "Seamless gutters",
     },
     intro: {
       title: "The system that protects everything below the roof",
@@ -656,9 +659,13 @@ export const residentialServices: ServiceContent[] = [
       headline: "Ventilation: the quiet system that saves your roof",
       subhead:
         "In a climate this hot and humid, an unventilated attic cooks your shingles from below, strains your AC, and breeds moisture problems. Balanced intake and exhaust is one of the highest-value upgrades a South Mississippi roof can get.",
-      photo: stockPhotos.residentialHome,
-      photoBadge: "Residential roofing",
+      photo: {
+        src: "/images/services/ridge-vent.webp",
+        alt: "Black shingle-over ridge vent installed at the peak of an architectural shingle roof",
+      },
+      photoBadge: "Attic ventilation",
     },
+    ventDiagram: true,
     intro: {
       title: "Why ventilation matters more here than almost anywhere",
       paragraphs: [
@@ -727,6 +734,10 @@ export const residentialServices: ServiceContent[] = [
       description:
         "The right exhaust type depends on your roof's shape and existing intake. Ridge vents lead for balanced airflow; turbines, box vents, and powered fans each earn their place on the right home.",
       photos: [
+        {
+          src: "/images/services/ridge-vent.webp",
+          alt: "Black shingle-over ridge vent running the peak of an architectural shingle roof",
+        },
         {
           src: "/images/services/turbine-vent.webp",
           alt: "Wind-driven turbine attic vent on a shingle roof",

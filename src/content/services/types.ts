@@ -114,6 +114,9 @@ export interface ServiceContent {
   /** Visual education: render the roof-system anatomy diagram. */
   anatomy?: boolean;
 
+  /** Visual education: render the attic-airflow (intake/exhaust) diagram. */
+  ventDiagram?: boolean;
+
   /** §4.1.8 — service-specific FAQ (also emitted as FAQPage schema). */
   faqs: FaqEntry[];
 
