@@ -37,6 +37,7 @@ function DivisionPanel({
         src={photo.src}
         alt={photo.alt}
         fill
+        quality={70}
         sizes="(min-width: 1024px) 50vw, 100vw"
         className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
       />
