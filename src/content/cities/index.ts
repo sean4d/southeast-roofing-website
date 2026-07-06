@@ -1,6 +1,7 @@
 import type { CityContent } from "@/content/cities/types";
 import { citiesBatch2 } from "@/content/cities/batch-2";
 import { citiesBatch3 } from "@/content/cities/batch-3";
+import { citiesBatch4 } from "@/content/cities/batch-4";
 
 /**
  * Launched city pages (PRD §5). Batch 1 below (Tier 1 + hub cities);
@@ -613,6 +614,7 @@ export const cities: CityContent[] = [
   ...citiesBatch1,
   ...citiesBatch2,
   ...citiesBatch3,
+  ...citiesBatch4,
 ];
 
 export function getCity(slug: string): CityContent | undefined {

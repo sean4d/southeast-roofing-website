@@ -17,34 +17,34 @@ export function TrustBar() {
       className="border-y border-border bg-secondary py-12"
     >
       <div className="container-site">
-        <StaggerGroup as="ul" className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <StaggerGroup as="ul" className="grid grid-cols-4 gap-2 sm:gap-4">
           {reviewsSection.badges.map((badge) => {
             const inner = (
               <>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-center sm:justify-between">
                   {brandMarks[badge.key as keyof typeof brandMarks]}
                   {badge.href && (
                     <ExternalLink
-                      className="size-4 text-slate-400 transition-colors group-hover:text-steel-500"
+                      className="hidden size-4 text-slate-400 transition-colors group-hover:text-steel-500 sm:block"
                       aria-hidden="true"
                     />
                   )}
                 </div>
-                <h3 className="mt-4 font-display text-sm font-bold text-navy-900 sm:text-base">
+                <h3 className="mt-2 font-display text-[11px] leading-tight font-bold text-navy-900 sm:mt-4 sm:text-base">
                   {badge.title}
                 </h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                <p className="mt-1 hidden text-xs leading-relaxed text-slate-600 sm:block sm:text-sm">
                   {badge.subtitle}
                 </p>
                 {badge.cta && (
-                  <span className="mt-3 inline-block text-xs font-semibold text-steel-500 underline-offset-4 transition-colors group-hover:text-navy-900 group-hover:underline">
+                  <span className="mt-3 hidden text-xs font-semibold text-steel-500 underline-offset-4 transition-colors group-hover:text-navy-900 group-hover:underline sm:inline-block">
                     {badge.cta} ↗
                   </span>
                 )}
               </>
             );
             const card =
-              "group flex h-full flex-col rounded-2xl border border-border bg-white p-5 shadow-premium transition-all duration-300 sm:p-6";
+              "group flex h-full flex-col items-center text-center rounded-2xl border border-border bg-white p-2.5 shadow-premium transition-all duration-300 sm:items-start sm:p-6 sm:text-left";
             return (
               <StaggerItem as="li" key={badge.key} className="h-full">
                 {badge.href ? (

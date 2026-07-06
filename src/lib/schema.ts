@@ -23,6 +23,9 @@ function compact(obj: JsonLdObject): JsonLdObject {
 /** Site-wide RoofingContractor (LocalBusiness) schema — rendered on every page. */
 export function roofingContractorSchema(): JsonLdObject {
   const { address, geo } = siteConfig;
+  const logoUrl = absoluteUrl(
+    "/images/brand/southeast-roofing-logo-navy-trimmed.png",
+  );
 
   return compact({
     "@context": "https://schema.org",
@@ -31,7 +34,10 @@ export function roofingContractorSchema(): JsonLdObject {
     name: siteConfig.name,
     legalName: siteConfig.legalName,
     description: siteConfig.description,
+    slogan: siteConfig.tagline,
     url: siteConfig.url,
+    logo: logoUrl,
+    image: logoUrl,
     telephone: siteConfig.phone.tel, // omitted until the real number is supplied
     email: siteConfig.email,
     address: compact({
@@ -47,6 +53,22 @@ export function roofingContractorSchema(): JsonLdObject {
       latitude: geo.latitude,
       longitude: geo.longitude,
     },
+    openingHoursSpecification: siteConfig.hours.spec.map((slot) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [...slot.days],
+      opens: slot.opens,
+      closes: slot.closes,
+    })),
+    // Phone-based contact point (omitted entirely if no real number exists).
+    contactPoint: siteConfig.phone.tel
+      ? {
+          "@type": "ContactPoint",
+          telephone: siteConfig.phone.tel,
+          contactType: "customer service",
+          areaServed: "US-MS",
+          availableLanguage: "English",
+        }
+      : null,
     areaServed: siteConfig.serviceArea.map(({ city }) => ({
       "@type": "City",
       name: `${city}, MS`,

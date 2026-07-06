@@ -73,12 +73,35 @@ export const siteConfig = {
   /** Hattiesburg, MS city center — refine when street address is confirmed */
   geo: { latitude: 31.3271, longitude: -89.2903 },
 
-  /** [NEEDS: business hours + real 24/7 emergency availability] */
-  hours: null as string | null,
+  /**
+   * Business hours (Google Business Profile, owner-confirmed 2026-07-05):
+   * open 24 hours, 7 days a week. `spec` feeds schema.org
+   * openingHoursSpecification (00:00–23:59 all days = 24/7); `display`/`note`
+   * are for visible surfaces (footer, contact page).
+   */
+  hours: {
+    display: "Open 24 hours, 7 days a week",
+    note: "Call anytime — nights and weekends included",
+    spec: [
+      {
+        days: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ] as const,
+        opens: "00:00",
+        closes: "23:59",
+      },
+    ],
+  },
   /** MS contractor license number (owner-supplied 2026-07-04) */
   license: "R22245" as string | null,
-  /** [NEEDS: real founding year] */
-  foundingYear: null as number | null,
+  /** Founding year (BBB: business started & incorporated 9/25/2023) */
+  foundingYear: 2023 as number | null,
 
   /**
    * Trust facts (owner-confirmed 2026-07-04, Phase 4 directive). These are
@@ -98,7 +121,11 @@ export const siteConfig = {
      */
     warranty: "Lifetime warranty",
   },
-  /** Schema sameAs — official profiles (GBP, BBB, GAF, socials — owner-supplied 2026-07-04) */
+  /**
+   * Schema sameAs — official profiles that strengthen entity recognition.
+   * GBP, BBB, GAF, socials (owner-supplied 2026-07-04) + review/directory
+   * profiles Yelp, MapQuest, Trustpilot (owner-supplied 2026-07-05).
+   */
   socialProfiles: [
     "https://share.google/8jfoy7nN9HyddPKDb",
     "https://www.bbb.org/us/ms/hattiesburg/profile/roofing-contractors/southeast-roofing-llc-0523-235902892",
@@ -107,6 +134,9 @@ export const siteConfig = {
     "https://www.instagram.com/southeastroofing.llc",
     "https://www.tiktok.com/@southeastroofing.llc",
     "https://nextdoor.com/pages/southeast-roofing-hattiesburg-ms/",
+    "https://www.yelp.com/biz/southeast-roofing-hattiesburg",
+    "https://www.mapquest.com/us/mississippi/southeast-roofing-778746474",
+    "https://www.trustpilot.com/review/southeastroofing.llc",
   ] as string[],
 
   /**
@@ -135,6 +165,7 @@ export const siteConfig = {
     { city: "Collins", slug: "collins", tier: 2, hub: false },
     { city: "Ellisville", slug: "ellisville", tier: 2, hub: false },
     { city: "Richton", slug: "richton", tier: 2, hub: false },
+    { city: "Waynesboro", slug: "waynesboro", tier: 2, hub: false },
     { city: "Columbia", slug: "columbia", tier: 2, hub: false },
     // South toward the Coast
     { city: "Poplarville", slug: "poplarville", tier: 2, hub: false },
@@ -152,7 +183,8 @@ export const siteConfig = {
     { city: "Ocean Springs", slug: "ocean-springs", tier: 2, hub: false },
     { city: "Moss Point", slug: "moss-point", tier: 2, hub: false },
     { city: "Pascagoula", slug: "pascagoula", tier: 2, hub: false },
-    // Larger metros at the edge of the radius
+    // I-55 corridor + larger metros at the edge of the radius
+    { city: "Crystal Springs", slug: "crystal-springs", tier: 2, hub: false },
     { city: "Jackson", slug: "jackson", tier: 2, hub: false },
     { city: "Meridian", slug: "meridian", tier: 2, hub: false },
   ],

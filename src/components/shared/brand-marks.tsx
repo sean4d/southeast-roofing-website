@@ -34,18 +34,13 @@ export function GoogleG({ className }: { className?: string }) {
 }
 
 export type BrandMarkKey =
-  | "google"
-  | "gaf"
-  | "bbb"
-  | "msboc"
-  | "warranty"
-  | "insured";
+  "google" | "gaf" | "bbb" | "msboc" | "warranty" | "insured";
 
 export const brandMarks: Record<BrandMarkKey, React.ReactNode> = {
-  google: <GoogleG className="size-9" />,
+  google: <GoogleG className="size-7 sm:size-9" />,
   gaf: (
     <span
-      className="flex h-10 items-center justify-center rounded-md bg-[#d71920] px-2.5 font-display text-lg font-black tracking-tight text-white italic"
+      className="flex h-7 items-center justify-center rounded-md bg-[#d71920] px-2 font-display text-sm font-black tracking-tight text-white italic sm:h-10 sm:px-2.5 sm:text-lg"
       aria-label="GAF"
     >
       GAF
@@ -53,7 +48,7 @@ export const brandMarks: Record<BrandMarkKey, React.ReactNode> = {
   ),
   bbb: (
     <span
-      className="flex h-10 items-center justify-center rounded-md bg-[#00548b] px-2.5 font-display text-lg font-black tracking-tight text-white"
+      className="flex h-7 items-center justify-center rounded-md bg-[#00548b] px-2 font-display text-sm font-black tracking-tight text-white sm:h-10 sm:px-2.5 sm:text-lg"
       aria-label="Better Business Bureau"
     >
       BBB
@@ -61,11 +56,14 @@ export const brandMarks: Record<BrandMarkKey, React.ReactNode> = {
   ),
   msboc: (
     <span
-      className="flex h-10 items-center justify-center gap-1.5 rounded-md bg-navy-900 px-2.5"
+      className="flex h-7 items-center justify-center gap-0.5 rounded-md bg-navy-900 px-1 sm:h-10 sm:gap-1.5 sm:px-2.5"
       aria-label="Mississippi State Board of Contractors"
     >
-      <Landmark className="size-4 text-white" aria-hidden="true" />
-      <span className="font-display text-sm font-bold tracking-tight text-white">
+      <Landmark
+        className="hidden size-3 text-white sm:block sm:size-4"
+        aria-hidden="true"
+      />
+      <span className="font-display text-[10px] font-bold tracking-tight text-white sm:text-sm">
         MSBOC
       </span>
     </span>
