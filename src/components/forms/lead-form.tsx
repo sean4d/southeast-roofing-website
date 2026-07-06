@@ -79,7 +79,8 @@ export function LeadForm({
 }) {
   const [state, formAction, pending] = useActionState(submitLead, initialState);
   const pathname = usePathname();
-  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
+  const bookingUrl =
+    process.env.NEXT_PUBLIC_BOOKING_URL ?? siteConfig.links.booking;
 
   useEffect(() => {
     if (state.status === "success") {

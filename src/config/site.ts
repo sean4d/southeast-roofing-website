@@ -52,6 +52,8 @@ export const siteConfig = {
      * the Google review dialog straight away, no extra taps.
      */
     googleReview: "https://g.page/r/CZ5YiwvqNReNEBM/review",
+    /** Google Calendar appointment-schedule booking page (owner-supplied 2026-07-06) */
+    booking: "https://calendar.app.google/NmeXnyWoE8hmU27Z9",
     bbbProfile:
       "https://www.bbb.org/us/ms/hattiesburg/profile/roofing-contractors/southeast-roofing-llc-0523-235902892",
     gafProfile:
