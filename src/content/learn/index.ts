@@ -1249,6 +1249,305 @@ export const learnArticles: LearnArticle[] = [
       { label: "Roof Replacement", href: "/residential/roof-replacement" },
     ],
   },
+
+  /* ------------------------------------------------------------------ */
+  /* Cost: roof financing options                                        */
+  /* ------------------------------------------------------------------ */
+  {
+    slug: "roof-financing-options-mississippi",
+    category: "cost-guides",
+    title: "Roof financing in Mississippi: how to pay for a new roof",
+    metaTitle:
+      "Roof Financing in Mississippi | $0-Down Options | Southeast Roofing",
+    metaDescription:
+      "How to pay for a new roof in Mississippi — insurance, cash, and $0-down financing through our partner GoodLeap — plus honest ways to keep the total down.",
+    excerpt:
+      "Insurance, cash, or financing — the real ways to pay for a roof, including $0-down options through our partner GoodLeap.",
+    updated: "2026-07-05",
+    readMinutes: 6,
+    hero: {
+      headline: "How to pay for a new roof in Mississippi",
+      subhead:
+        "A roof rarely fails at a convenient time. Here are the honest ways to cover it — including $0-down financing — without overpaying.",
+    },
+    body: [
+      {
+        type: "p",
+        text: "A new roof is a major investment, and it almost never comes at a convenient moment. The good news: you usually have more ways to pay for it than you think. Here's a straight rundown of the options for South Mississippi homeowners, and how to keep the total honest along the way.",
+      },
+      { type: "h2", text: "The ways to pay for a roof" },
+      {
+        type: "list",
+        items: [
+          "Insurance: if a covered storm caused the damage, your homeowner's policy may pay for most of the roof, minus your deductible.",
+          "Cash: simplest if you have it, and sometimes the strongest negotiating position — but few people keep a roof's worth of cash on hand.",
+          "Financing: spreads the cost into monthly payments, often with $0 down, so a roof that can't wait doesn't have to.",
+          "Home equity (HELOC or loan): another route some homeowners use, arranged through their own bank.",
+        ],
+      },
+      { type: "h2", text: "Financing through GoodLeap" },
+      {
+        type: "p",
+        text: "We partner with GoodLeap to offer roof financing, including $0-down options, so you can move forward on a roof that can't wait and pay over time. You apply directly through GoodLeap — a quick online application — and we'll gladly walk through it with your estimate. We don't quote rates or terms here because they depend on your application; GoodLeap presents your real options.",
+      },
+      {
+        type: "callout",
+        title: "Apply for financing",
+        text: "Applying through our partner GoodLeap takes just a few minutes, and you can do it before or after your free inspection.",
+        href: "/financing",
+        linkLabel: "See financing options",
+      },
+      { type: "h2", text: "When insurance covers it" },
+      {
+        type: "p",
+        text: "If wind or hail damaged your roof, the cost equation changes: you may owe only your deductible while your insurer covers the rest of a covered claim. We document the damage thoroughly, provide the reports adjusters expect, and can meet your adjuster on site. The decision always rests with your insurer — but thorough documentation gives your claim its best footing.",
+      },
+      { type: "h2", text: "How to keep the cost honest" },
+      {
+        type: "list",
+        items: [
+          "Insist on an itemized proposal: ours prices the shingle, underlayment, flashing, ventilation, and disposal separately, so you see exactly what you're paying for and can adjust.",
+          "Don't over-buy: sometimes a repair genuinely beats a replacement — we'll tell you when.",
+          "Beware 'we'll waive your deductible' offers: that's usually a padded estimate or outright fraud, and it costs you in the end.",
+          "Time it before failure: an emergency replacement after a leak is always more expensive and stressful than a planned one.",
+        ],
+      },
+      {
+        type: "callout",
+        title: "Start with a free inspection",
+        text: "You can't budget for a roof you haven't had measured. Our inspection and itemized proposal are free — the number you get is real, line by line.",
+        href: "/free-inspection",
+        linkLabel: "Schedule a free inspection",
+      },
+    ],
+    faqs: [
+      {
+        question: "Do you really offer $0-down roof financing?",
+        answer:
+          "Yes — $0-down financing is available through our partner GoodLeap. You apply directly with them (a short online application), and your actual rate and term depend on your application, so we don't quote numbers up front.",
+      },
+      {
+        question: "Will insurance pay for my whole roof?",
+        answer:
+          "If a covered event like wind or hail caused the damage, your policy may cover the roof minus your deductible. The insurer decides scope and coverage; we make sure the damage is documented thoroughly to support the claim.",
+      },
+      {
+        question: "Is it cheaper to repair than replace?",
+        answer:
+          "Often, when the damage is localized and the roof has life left — and we'll recommend the repair when it's genuinely enough. When a roof is failing across the board, repeated repairs usually cost more over time than one replacement.",
+      },
+      {
+        question: "How much does a new roof cost in South Mississippi?",
+        answer:
+          "It depends on size, pitch, and the system you choose, which is why we quote from an actual inspection rather than an online average. The inspection and itemized estimate are free.",
+      },
+    ],
+    related: [
+      { label: "Financing Options", href: "/financing" },
+      { label: "Roof Replacement", href: "/residential/roof-replacement" },
+      { label: "Free Inspection", href: "/free-inspection" },
+    ],
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Storm prep: what to do after storm damage                           */
+  /* ------------------------------------------------------------------ */
+  {
+    slug: "what-to-do-after-storm-damage",
+    category: "storm-prep",
+    title: "What to do after storm damage to your roof",
+    metaTitle:
+      "What to Do After Roof Storm Damage in Mississippi | Southeast Roofing",
+    metaDescription:
+      "A step-by-step guide to the first hours and days after roof storm damage in Mississippi — staying safe, documenting damage, the insurance clock, and choosing the right roofer.",
+    excerpt:
+      "The first steps after wind or hail hits your roof — stay safe, document, and protect your insurance options.",
+    updated: "2026-07-05",
+    readMinutes: 6,
+    hero: {
+      headline: "What to do after storm damage to your roof",
+      subhead:
+        "The hours and days after a storm decide how smoothly the repair and claim go. Here's the order to do things in.",
+    },
+    body: [
+      {
+        type: "p",
+        text: "South Mississippi gets its share of hail, straight-line winds, and hurricane-season storms, and roofs take the brunt of them. If a storm has come through, the steps you take next protect both your home and your insurance options. Here's the order we'd tell our own family to follow.",
+      },
+      { type: "h2", text: "1. Stay safe first" },
+      {
+        type: "p",
+        text: "Don't climb on the roof — wet, storm-damaged roofs are dangerous, and you can cause more damage looking for it. Watch for downed power lines. If water is coming in, contain it inside with buckets and move belongings out of the way; if you have a bulging, water-filled ceiling spot, a small drain hole at the low point relieves the pressure before it collapses.",
+      },
+      { type: "h2", text: "2. Document everything" },
+      {
+        type: "list",
+        items: [
+          "Photograph the damage you can see safely from the ground and inside — shingles in the yard, dented gutters, interior stains.",
+          "Note the date and the storm, and keep any local weather or news reports.",
+          "Save damaged belongings and any pieces of roof that ended up in the yard.",
+          "Keep receipts for anything you spend on emergency protection, like tarps.",
+        ],
+      },
+      { type: "h2", text: "3. Get a professional inspection" },
+      {
+        type: "p",
+        text: "A lot of storm damage is invisible from the ground — hail bruises, lifted-and-resealed shingles, hairline decking cracks — and it can quietly shorten your roof's life without leaking right away. A thorough inspection documents what's really there, which is exactly what an insurance claim needs. Ours is free, and if the opening is active we can tarp it to stop the damage while the permanent repair is scheduled.",
+      },
+      {
+        type: "callout",
+        title: "Active leak or opening?",
+        text: "Emergency tarping and rapid response come first — we stabilize the roof, then handle the permanent repair.",
+        href: "/storm-damage/emergency-roofing",
+        linkLabel: "Emergency roofing help",
+      },
+      { type: "h2", text: "4. Understand the insurance clock" },
+      {
+        type: "p",
+        text: "Most policies expect you to report damage promptly, and claim windows don't stay open forever. That doesn't mean rushing into a contract — it means getting the damage documented early so your options stay open. We provide the reports and photos your insurer needs and can meet your adjuster on site; the coverage decision is always the insurer's, but thorough documentation gives your claim its best chance.",
+      },
+      { type: "h2", text: "5. Choose the right contractor" },
+      {
+        type: "p",
+        text: "Storms bring out-of-town crews who knock doors, pressure you to sign, and disappear after the check clears. Take a beat and vet whoever you hire — license, insurance, a local address, and verifiable reviews. A roof problem can resurface months later, and you want a contractor who's still here to stand behind the work.",
+      },
+      {
+        type: "callout",
+        title: "Not sure who to trust?",
+        text: "Our full guide walks through how to vet a roofer and spot the storm chasers.",
+        href: "/learn/hiring/how-to-choose-a-roofing-contractor",
+        linkLabel: "How to choose a roofing contractor",
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I file an insurance claim for every storm?",
+        answer:
+          "Not necessarily. Minor damage may cost less than your deductible, in which case a claim isn't worth it — and we'll tell you honestly when that's the case. But get the damage documented first, because some of it is hidden and time-sensitive.",
+      },
+      {
+        question: "How soon do I need to act after a storm?",
+        answer:
+          "Promptly, but not frantically. Contain any active leak, document the damage, and get an inspection within a few days — before hidden damage worsens and before your claim window tightens.",
+      },
+      {
+        question: "Can you tarp my roof right after a storm?",
+        answer:
+          "Yes — emergency tarping is part of our storm response. We stabilize the roof to stop water intrusion, then schedule the permanent repair once the weather clears.",
+      },
+      {
+        question: "Do I have to use the contractor my insurance suggests?",
+        answer:
+          "No. You choose your own roofer. We work with insurers constantly — documentation, adjuster meetings, and reports in the format they expect — while representing your interests, not theirs.",
+      },
+    ],
+    related: [
+      { label: "Storm Damage & Insurance", href: "/storm-damage" },
+      { label: "Insurance Claim Help", href: "/storm-damage/insurance-claims" },
+      { label: "Emergency Roofing", href: "/storm-damage/emergency-roofing" },
+    ],
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* Commercial: building owner's guide to roof replacement              */
+  /* ------------------------------------------------------------------ */
+  {
+    slug: "commercial-roof-replacement-guide",
+    category: "commercial",
+    title: "A building owner's guide to commercial roof replacement",
+    metaTitle:
+      "Commercial Roof Replacement Guide for Building Owners | Southeast Roofing",
+    metaDescription:
+      "What South Mississippi building owners should know before a commercial roof replacement — repair vs. restore vs. replace, choosing a system, minimizing disruption, and budgeting.",
+    excerpt:
+      "Repair, restore, or replace? Choosing a system, minimizing downtime, and budgeting a commercial roof — for building owners and managers.",
+    updated: "2026-07-05",
+    readMinutes: 7,
+    hero: {
+      headline: "A building owner's guide to commercial roof replacement",
+      subhead:
+        "A commercial roof is a business decision as much as a construction one. Here's how to weigh repair, restoration, and replacement — and keep the doors open while it happens.",
+    },
+    body: [
+      {
+        type: "p",
+        text: "A commercial roof protects everything underneath it — inventory, equipment, tenants, and the business itself. Replacing one is a bigger decision than a residential roof, with more systems to choose from and real pressure to avoid disrupting operations. Here's how we help South Mississippi building owners and property managers think it through.",
+      },
+      { type: "h2", text: "First question: repair, restore, or replace?" },
+      {
+        type: "p",
+        text: "Not every aging commercial roof needs tearing off. A roof with localized problems but a sound membrane may only need targeted repairs. A weathered but structurally intact roof can sometimes be restored with a coating system that adds years and reflectivity for a fraction of replacement cost. Full replacement is the answer when the membrane is failing widely, moisture has saturated the insulation, or repeated leaks have taken over your maintenance budget. We assess which stage your roof is in before recommending the biggest spend.",
+      },
+      { type: "h2", text: "Choosing a system" },
+      {
+        type: "list",
+        title: "Common low-slope systems",
+        items: [
+          "TPO: a reflective single-ply membrane popular for its energy performance and value.",
+          "EPDM: a durable rubber membrane with a long track record on flat roofs.",
+          "Modified bitumen: a tough, multi-ply asphalt system suited to high-traffic roofs.",
+          "Roof coatings: restoration over an existing sound roof, extending its life and reflectivity.",
+          "Metal: standing seam and structural panels for the right buildings, with excellent longevity.",
+        ],
+      },
+      {
+        type: "p",
+        text: "The right system depends on your roof's slope, deck, exposure, budget, and how long you plan to hold the building. We match the system to the structure — not to whatever we'd rather install.",
+      },
+      { type: "h2", text: "Minimizing business disruption" },
+      {
+        type: "p",
+        text: "For most commercial clients, downtime is the real cost. We plan around your operations — phasing the work by section, scheduling noisy or disruptive stages for off-hours where possible, and keeping entrances and critical areas protected and accessible. A clear schedule and communication up front keep surprises out of your workday.",
+      },
+      { type: "h2", text: "Budgeting and planned maintenance" },
+      {
+        type: "p",
+        text: "Commercial roofs reward planning. A maintenance program — scheduled inspections, minor repairs, and drain clearing — catches small problems before they become five-figure ones and helps a roof reach the top of its service life. When replacement does come, an itemized proposal and an honest timeline let you budget it as a capital project instead of an emergency.",
+      },
+      {
+        type: "callout",
+        title: "Commercial roof consultation",
+        text: "Commercial projects start with a consultation, not a template — we assess the building, the system, and your operations before we recommend anything.",
+        href: "/commercial/request-consultation",
+        linkLabel: "Request a consultation",
+      },
+    ],
+    faqs: [
+      {
+        question:
+          "How do I know if our commercial roof can be restored instead of replaced?",
+        answer:
+          "If the membrane and insulation are still sound and the problems are surface-level, a coating restoration can add years for far less than replacement. If moisture has saturated the insulation or the membrane is failing widely, replacement is the sounder investment. An inspection tells us which.",
+      },
+      {
+        question:
+          "Can you replace our roof without shutting down the business?",
+        answer:
+          "In most cases, yes. We phase the work by section, protect entrances and critical areas, and schedule disruptive stages around your operations. We'll lay out the plan before we start.",
+      },
+      {
+        question: "Which commercial roofing system is best?",
+        answer:
+          "There's no single best — it depends on your slope, deck, exposure, budget, and how long you'll hold the building. TPO, EPDM, modified bitumen, coatings, and metal each fit different situations, and we match the system to the structure.",
+      },
+      {
+        question: "Is a maintenance program really worth it?",
+        answer:
+          "For most buildings, yes. Scheduled inspections and minor repairs catch small issues before they become major ones and help the roof reach its full service life — usually far cheaper than reacting to leaks and premature failure.",
+      },
+    ],
+    related: [
+      { label: "Commercial Roofing", href: "/commercial" },
+      {
+        label: "Commercial Roof Maintenance",
+        href: "/commercial/roof-maintenance",
+      },
+      {
+        label: "Request a Consultation",
+        href: "/commercial/request-consultation",
+      },
+    ],
+  },
 ];
 
 export function getArticle(
