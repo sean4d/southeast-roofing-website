@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import {
   articlePath,
@@ -8,26 +8,28 @@ import {
   learnArticles,
   learnCategories,
 } from "@/content/learn";
-import { buildMetadata } from "@/lib/seo";
+import type { LearnCategorySlug } from "@/content/learn/types";
+import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { breadcrumbSchema } from "@/lib/schema";
+import type { JsonLdObject } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Breadcrumbs } from "@/components/services/breadcrumbs";
+import { LearningHub } from "@/components/learn/learning-hub";
 import { Section } from "@/components/shared/section";
-import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal } from "@/components/motion/reveal";
-import { StaggerGroup, StaggerItem } from "@/components/motion/stagger";
 import { FinalCta } from "@/components/home/final-cta";
 
 /**
- * Learning Center hub (PRD §13 Phase 7): guides grouped by category.
- * Categories without published articles yet are listed as "coming soon"
- * — visible roadmap, no thin pages.
+ * Interactive Learning Center hub (PRD §13 Phase 7, upgraded). Real articles
+ * become a filterable, searchable, visual card grid. Category thumbnails use
+ * real Southeast Roofing photos. Emits an ItemList of the articles so AI
+ * assistants can enumerate the guides.
  */
 
 export const metadata: Metadata = buildMetadata({
   title: "Roofing Learning Center | Southeast Roofing",
   description:
-    "Plain-English roofing guides from a Mississippi contractor: shingles and materials, insurance claims, storm prep, metal roofing, maintenance, and honest cost guides.",
+    "Plain-English roofing guides from a Mississippi contractor: shingles and materials, insurance claims, storm prep, metal roofing, maintenance, and honest cost guides. Filter and search by topic.",
   path: "/learn",
 });
 
@@ -36,12 +38,53 @@ const breadcrumbs = [
   { name: "Learning Center", path: "/learn" },
 ];
 
+/** Category → representative real photo (thumbnail). Commercial has no photo
+ *  yet, so its cards fall back to a branded gradient. */
+const CATEGORY_THUMB: Partial<Record<LearnCategorySlug, string>> = {
+  materials: "/images/projects/gaf-timberline-hdz-pewter-gray-hattiesburg-ms-001.webp",
+  "insurance-claims": "/images/storm/hail-damage-roof-hattiesburg-ms.webp",
+  "storm-prep": "/images/storm/wind-damage-missing-shingles-hattiesburg-ms.webp",
+  "metal-roofing": "/images/projects/29-gauge-galvalume-metal-roof-mccomb-ms-001.webp",
+  maintenance: "/images/projects/roof-synthetic-underlayment-lucedale-ms.webp",
+  hiring: "/images/projects/gaf-timberline-hdz-slate-hattiesburg-ms-001.webp",
+  "cost-guides": "/images/projects/owens-corning-duration-driftwood-waynesboro-ms-001.webp",
+};
+
+const categoryLabel = (slug: LearnCategorySlug) =>
+  learnCategories.find((c) => c.slug === slug)?.label ?? slug;
+
+const hubArticles = learnArticles.map((a) => ({
+  slug: a.slug,
+  category: a.category,
+  categoryLabel: categoryLabel(a.category),
+  title: a.title,
+  excerpt: a.excerpt,
+  readMinutes: a.readMinutes,
+  path: articlePath(a),
+  thumb: CATEGORY_THUMB[a.category],
+}));
+
+const hubCategories = learnCategories
+  .filter((c) => articlesByCategory(c.slug).length > 0)
+  .map((c) => ({ slug: c.slug, label: c.label }));
+
+const itemListSchema: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Southeast Roofing Learning Center guides",
+  itemListElement: hubArticles.map((a, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: absoluteUrl(a.path),
+    name: a.title,
+  })),
+};
+
 export default function LearnHubPage() {
   return (
     <>
-      <JsonLd data={breadcrumbSchema(breadcrumbs)} />
+      <JsonLd data={[breadcrumbSchema(breadcrumbs), itemListSchema]} />
 
-      {/* Hero */}
       <section className="border-b border-border bg-secondary">
         <div className="container-site py-14 sm:py-16 lg:py-20">
           <Reveal>
@@ -50,66 +93,18 @@ export default function LearnHubPage() {
               Understand your roof before you spend a dollar on it
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-              Plain-English guides written by the people who actually build
-              roofs here — including interactive tools from GAF, our shingle
-              manufacturer. No jargon, no scare tactics, no teaser pricing.
+              Plain-English guides written by the people who actually build roofs here —
+              including interactive tools from GAF, our shingle manufacturer. Filter by
+              topic or search for exactly what you need.
             </p>
           </Reveal>
         </div>
       </section>
 
-      {/* Categories */}
-      {learnCategories.map((category, index) => {
-        const articles = articlesByCategory(category.slug);
-        if (articles.length === 0) return null;
-        return (
-          <Section
-            key={category.slug}
-            tone={index % 2 === 0 ? "white" : "surface"}
-          >
-            <SectionHeading
-              eyebrow={category.label}
-              title={category.description}
-            />
-            <StaggerGroup
-              as="ul"
-              className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
-            >
-              {articles.map((article) => (
-                <StaggerItem as="li" key={article.slug} className="h-full">
-                  <Link
-                    href={articlePath(article)}
-                    className="group shadow-premium flex h-full flex-col rounded-2xl border border-border bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-steel-500 hover:shadow-xl"
-                  >
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                      <Clock
-                        className="size-3.5 text-steel-500"
-                        aria-hidden="true"
-                      />
-                      {article.readMinutes} min read
-                    </span>
-                    <h3 className="mt-3 font-display text-xl font-bold text-navy-900">
-                      {article.title}
-                    </h3>
-                    <p className="mt-2.5 flex-1 leading-relaxed text-slate-600">
-                      {article.excerpt}
-                    </p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-steel-500 group-hover:text-navy-900">
-                      Read the guide
-                      <ArrowRight
-                        className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Link>
-                </StaggerItem>
-              ))}
-            </StaggerGroup>
-          </Section>
-        );
-      })}
+      <section className="container-site py-12 sm:py-16">
+        <LearningHub articles={hubArticles} categories={hubCategories} />
+      </section>
 
-      {/* Growing library note */}
       <Section tone="navy">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
@@ -117,9 +112,9 @@ export default function LearnHubPage() {
               {learnArticles.length} guides and growing
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-steel-100">
-              New guides publish regularly. Have a roofing question you
-              can&apos;t find answered here? Ask us directly — the questions
-              homeowners actually ask are where our next guides come from.
+              New guides publish regularly. Have a roofing question you can&apos;t find
+              answered here? Ask us directly — the questions homeowners actually ask are
+              where our next guides come from.
             </p>
             <div className="mt-8">
               <Link
