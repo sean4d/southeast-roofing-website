@@ -216,7 +216,7 @@ export function ProjectMap({ jobs }: { jobs: GalleryJob[] }) {
       </div>
 
       {openJob && (
-        <JobCard job={openJob} startIndex={0} onClose={() => setOpenJob(null)} />
+        <JobCard job={openJob} onClose={() => setOpenJob(null)} />
       )}
     </div>
   );

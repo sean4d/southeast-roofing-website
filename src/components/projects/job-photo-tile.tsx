@@ -27,9 +27,7 @@ export function JobPhotoTile({
 }) {
   const [open, setOpen] = useState(false);
   const job = staticJobForSrc(src);
-  const startIndex = job
-    ? Math.max(0, job.photos.findIndex((p) => p.src === src))
-    : 0;
+  const startPhotoId = job?.photos.find((p) => p.src === src)?.id;
   const cityLabel = city ?? job?.city;
 
   return (
@@ -59,7 +57,7 @@ export function JobPhotoTile({
         )}
       </button>
       {open && job && (
-        <JobCard job={job} startIndex={startIndex} onClose={() => setOpen(false)} />
+        <JobCard job={job} startPhotoId={startPhotoId} onClose={() => setOpen(false)} />
       )}
     </>
   );
