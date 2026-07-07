@@ -18,9 +18,52 @@ import {
 } from "@/lib/job-content";
 import { polishCaption } from "@/lib/ai-caption";
 import { syndicate } from "@/lib/syndicate";
+import { badgeImage } from "@/lib/social-badge";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+/** Install-timeline order so social carousels read before -> during -> after. */
+const PHASE_RANK: Record<string, number> = { before: 0, progress: 1, after: 2 };
+
+function jpgUrl(assetId: string): string {
+  return urlFor({ _type: "image", asset: { _type: "reference", _ref: assetId } })
+    .width(1200)
+    .format("jpg")
+    .url();
+}
+
+/**
+ * Public JPEG URLs for the social fan-out. On a genuine before/after job every
+ * photo gets a burned-in BEFORE/DURING/AFTER badge so a single image can't be
+ * mistaken for fresh work. Best-effort per photo — any failure (or a non
+ * before/after job) falls back to the plain, unbadged photo so a social post is
+ * never blocked.
+ */
+async function socialImageUrls(
+  media: MediaEntry[],
+  client: ReturnType<typeof getWriteClient>,
+  labelPhotos: boolean,
+): Promise<string[]> {
+  if (!labelPhotos) return media.map((m) => jpgUrl(m.assetId)).filter(Boolean);
+  const urls: string[] = [];
+  for (const m of media) {
+    const plain = jpgUrl(m.assetId);
+    try {
+      const res = await fetch(plain);
+      if (!res.ok) throw new Error(`fetch ${res.status}`);
+      const badged = await badgeImage(Buffer.from(await res.arrayBuffer()), m.phase);
+      const asset = await client.assets.upload("image", badged, {
+        filename: `social-${m.phase}-${m.filename}`,
+        contentType: "image/jpeg",
+      });
+      urls.push(jpgUrl(asset._id));
+    } catch {
+      urls.push(plain); // fall back to the unbadged photo
+    }
+  }
+  return urls.filter(Boolean);
+}
 
 /**
  * Two-step upload to stay under the per-request body limit:
@@ -97,9 +140,17 @@ async function handleCreate(request: Request) {
     submission: JobSubmission;
     media: MediaEntry[];
   };
-  const { submission, media } = body;
+  const { submission, media: rawMedia } = body;
   const client = getWriteClient();
   const jt = getJobType(submission.jobType);
+
+  // Order photos before -> during -> after everywhere (Sanity doc + social).
+  const media = [...rawMedia].sort(
+    (a, b) => (PHASE_RANK[a.phase] ?? 1) - (PHASE_RANK[b.phase] ?? 1),
+  );
+  const hasBefore = media.some((m) => m.phase === "before");
+  const hasAfter = media.some((m) => m.phase === "after");
+  const labelPhotos = hasBefore && hasAfter;
 
   const title = jobTitle(submission);
   const slug = `${slugify(title)}-${Date.now().toString(36).slice(-4)}`;
@@ -125,11 +176,13 @@ async function handleCreate(request: Request) {
   }));
 
   // Polished caption: AI when a key is set, deterministic template otherwise.
-  // Never the owner's raw notes verbatim.
-  const aiBody = await polishCaption(submission);
-  const caption = aiBody
-    ? assembleCaption(submission, aiBody)
-    : assembleCaption(submission, deterministicBody(submission));
+  // Never the owner's raw notes verbatim. Before/after jobs get an explicit
+  // "before & after" lead so viewers know the old roof isn't fresh work.
+  const aiBody = (await polishCaption(submission)) ?? deterministicBody(submission);
+  const captionBody = labelPhotos
+    ? `📸 Swipe to see the BEFORE & AFTER 👉\n\n${aiBody}`
+    : aiBody;
+  const caption = assembleCaption(submission, captionBody);
   const tags = jobTags(submission);
 
   const doc = await client.create({
@@ -149,15 +202,9 @@ async function handleCreate(request: Request) {
   });
 
   // Public CDN URLs for social fan-out (photos are hosted by Sanity now).
-  // Force JPEG — Instagram's publishing API rejects WebP/PNG.
-  const imageUrls = media
-    .map((m) =>
-      urlFor({ _type: "image", asset: { _type: "reference", _ref: m.assetId } })
-        .width(1200)
-        .format("jpg")
-        .url(),
-    )
-    .filter(Boolean);
+  // Force JPEG — Instagram's publishing API rejects WebP/PNG. Before/after
+  // jobs get per-photo BEFORE/AFTER badges burned in.
+  const imageUrls = await socialImageUrls(media, client, labelPhotos);
   const projectUrl = `${siteConfig.url}/projects`;
 
   const results = await syndicate({ caption, imageUrls, title, projectUrl });

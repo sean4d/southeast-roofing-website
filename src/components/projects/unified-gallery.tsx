@@ -4,7 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, MapPin, X } from "lucide-react";
 
-import { hidesColor, type GalleryCategory, type GalleryJob } from "@/lib/gallery";
+import {
+  hidesColor,
+  type GalleryCategory,
+  type GalleryJob,
+  type GalleryPhoto,
+} from "@/lib/gallery";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +35,27 @@ interface GridPhoto {
   id: string;
   src: string;
   alt: string;
+  phase?: string;
   job: GalleryJob;
+  /** How many showcase (non-before) photos this job has. */
+  showcaseCount: number;
+}
+
+/** Phase badge styling — only "before/after" jobs show these (owner rule:
+ *  old "before" roofs must never read as fresh work). */
+const PHASE_BADGE: Record<string, { label: string; cls: string }> = {
+  before: { label: "Before", cls: "bg-amber-500 text-white" },
+  progress: { label: "During", cls: "bg-steel-500 text-white" },
+  after: { label: "After", cls: "bg-emerald-600 text-white" },
+};
+
+/** Photos shown in the grid + carousel — everything except "before" shots. */
+function showcaseOf(job: GalleryJob) {
+  const showcase = job.photos.filter((p) => p.phase !== "before");
+  return showcase.length > 0 ? showcase : job.photos;
+}
+function beforeOf(job: GalleryJob) {
+  return job.photos.filter((p) => p.phase === "before");
 }
 
 export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
@@ -43,7 +68,7 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
   const [color, setColor] = useState<string | null>(null);
   const [storm, setStorm] = useState<string | null>(null);
   const [showHiddenColors, setShowHiddenColors] = useState(false);
-  const [openJob, setOpenJob] = useState<{ job: GalleryJob; index: number } | null>(null);
+  const [openJob, setOpenJob] = useState<{ job: GalleryJob; photoId: string } | null>(null);
 
   // Reset facets when the category changes.
   function switchCategory(next: GalleryCategory) {
@@ -84,8 +109,14 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
     [inCategory, city, product, color, storm],
   );
 
+  // Grid shows only showcase (after / during) photos — "before" shots are
+  // hidden here and surface only inside the job card, clearly labelled.
   const photos: GridPhoto[] = useMemo(
-    () => filtered.flatMap((j) => j.photos.map((p) => ({ ...p, job: j }))),
+    () =>
+      filtered.flatMap((j) => {
+        const showcase = showcaseOf(j);
+        return showcase.map((p) => ({ ...p, job: j, showcaseCount: showcase.length }));
+      }),
     [filtered],
   );
 
@@ -192,12 +223,11 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
       </p>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {photos.map((p) => {
-          const idx = p.job.photos.findIndex((x) => x.id === p.id);
           return (
             <button
               key={p.id}
               type="button"
-              onClick={() => setOpenJob({ job: p.job, index: Math.max(0, idx) })}
+              onClick={() => setOpenJob({ job: p.job, photoId: p.id })}
               className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -207,9 +237,9 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              {p.job.photos.length > 1 && (
+              {p.showcaseCount > 1 && (
                 <span className="absolute right-2 top-2 rounded-full bg-navy-950/70 px-2 py-0.5 text-xs font-semibold text-white">
-                  {p.job.photos.length} photos
+                  {p.showcaseCount} photos
                 </span>
               )}
               {p.job.city && (
@@ -226,7 +256,7 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
       {openJob && (
         <JobCard
           job={openJob.job}
-          startIndex={openJob.index}
+          startPhotoId={openJob.photoId}
           onClose={() => setOpenJob(null)}
         />
       )}
@@ -240,27 +270,47 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
  */
 export function JobCard({
   job,
-  startIndex = 0,
+  startPhotoId,
   onClose,
 }: {
   job: GalleryJob;
-  startIndex?: number;
+  startPhotoId?: string;
   onClose: () => void;
 }) {
+  const showcase = showcaseOf(job);
+  const before = beforeOf(job);
+  // Phase badges only appear on genuine before/after jobs, so an "After" tag
+  // always has a "Before" to pair with.
+  const showPhase = before.length > 0;
+
+  const startIndex = Math.max(
+    0,
+    showcase.findIndex((p) => p.id === startPhotoId),
+  );
   const [index, setIndex] = useState(startIndex);
-  const photo = job.photos[index];
+  // Lets a "before" thumbnail take over the main viewer without joining the
+  // showcase carousel.
+  const [beforeView, setBeforeView] = useState<GalleryPhoto | null>(null);
+  const photo = beforeView ?? showcase[index] ?? job.photos[0];
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") setIndex((i) => (i + 1) % job.photos.length);
-      if (e.key === "ArrowLeft") setIndex((i) => (i - 1 + job.photos.length) % job.photos.length);
+      if (e.key === "ArrowRight") {
+        setBeforeView(null);
+        setIndex((i) => (i + 1) % showcase.length);
+      }
+      if (e.key === "ArrowLeft") {
+        setBeforeView(null);
+        setIndex((i) => (i - 1 + showcase.length) % showcase.length);
+      }
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [job.photos.length, onClose]);
+  }, [showcase.length, onClose]);
 
   const chips = [job.product, job.color, job.stormType].filter(Boolean) as string[];
+  const badge = photo.phase ? PHASE_BADGE[photo.phase] : undefined;
 
   return (
     <div
@@ -280,6 +330,16 @@ export function JobCard({
             alt={photo.alt}
             className="max-h-[60vh] w-full object-contain"
           />
+          {showPhase && badge && (
+            <span
+              className={cn(
+                "absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide",
+                badge.cls,
+              )}
+            >
+              {badge.label}
+            </span>
+          )}
           <button
             type="button"
             onClick={onClose}
@@ -288,12 +348,12 @@ export function JobCard({
           >
             <X className="size-5" />
           </button>
-          {job.photos.length > 1 && (
+          {showcase.length > 1 && !beforeView && (
             <>
-              <NavBtn side="left" onClick={() => setIndex((i) => (i - 1 + job.photos.length) % job.photos.length)} />
-              <NavBtn side="right" onClick={() => setIndex((i) => (i + 1) % job.photos.length)} />
+              <NavBtn side="left" onClick={() => setIndex((i) => (i - 1 + showcase.length) % showcase.length)} />
+              <NavBtn side="right" onClick={() => setIndex((i) => (i + 1) % showcase.length)} />
               <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-navy-950/70 px-3 py-1 text-xs font-semibold text-white">
-                {index + 1} / {job.photos.length}
+                {index + 1} / {showcase.length}
               </span>
             </>
           )}
@@ -314,22 +374,50 @@ export function JobCard({
             ))}
           </div>
 
-          {job.photos.length > 1 && (
+          {showcase.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {job.photos.map((p, i) => (
+              {showcase.map((p, i) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setIndex(i)}
+                  onClick={() => {
+                    setBeforeView(null);
+                    setIndex(i);
+                  }}
                   className={cn(
                     "size-16 flex-none overflow-hidden rounded-lg border-2",
-                    i === index ? "border-navy-900" : "border-transparent",
+                    !beforeView && i === index ? "border-navy-900" : "border-transparent",
                   )}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.src} alt={p.alt} className="h-full w-full object-cover" />
                 </button>
               ))}
+            </div>
+          )}
+
+          {before.length > 0 && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
+              <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-700">
+                <span className="rounded-full bg-amber-500 px-2 py-0.5 text-white">Before</span>
+                What this roof looked like before we started
+              </p>
+              <div className="mt-2.5 flex gap-2 overflow-x-auto pb-1">
+                {before.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setBeforeView(p)}
+                    className={cn(
+                      "relative size-16 flex-none overflow-hidden rounded-lg border-2",
+                      beforeView?.id === p.id ? "border-amber-500" : "border-transparent",
+                    )}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.src} alt={p.alt} className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
