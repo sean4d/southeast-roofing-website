@@ -1,6 +1,9 @@
 import type { BreadcrumbItem } from "@/lib/schema";
 import type { ServiceContent } from "@/content/services/types";
 import { serviceImageFor } from "@/content/service-images";
+import { defaultServiceTools } from "@/config/tools";
+import { Section } from "@/components/shared/section";
+import { ToolStrip } from "@/components/tools/tool-strip";
 import { ServiceHero } from "@/components/services/service-hero";
 import {
   RelatedServices,
@@ -39,6 +42,12 @@ export function ServicePage({
 }) {
   const commercial = audience === "commercial";
 
+  // Contextual tools: explicit override wins; otherwise residential pages
+  // auto-pick from the slug and commercial pages stay opted out.
+  const tools =
+    service.tools ??
+    (commercial ? [] : defaultServiceTools(`${service.slug} ${service.path}`));
+
   // Visual-first: heroes without dedicated photography automatically pick
   // up the image registry slot for their route the moment one is filled.
   const hero = service.hero.photo
@@ -62,6 +71,11 @@ export function ServicePage({
         title={`${service.name} questions, answered`}
       />
       <RelatedServices related={service.related} />
+      {tools.length > 0 && (
+        <Section>
+          <ToolStrip tools={tools} heading={`Plan your ${service.name.toLowerCase()}`} />
+        </Section>
+      )}
       <ServiceAreaLinks serviceName={service.name} />
       {commercial ? <CommercialCta /> : <FinalCta />}
     </>

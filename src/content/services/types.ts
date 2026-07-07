@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
 import type { FaqEntry } from "@/lib/schema";
+import type { ToolKey } from "@/config/tools";
 
 /**
  * Content model for the core service-page template (PRD §4.1 — 11 sections).
@@ -122,4 +123,11 @@ export interface ServiceContent {
 
   /** §4.1.9 — related services (3 cards). */
   related: RelatedService[];
+
+  /**
+   * Interactive tools to surface on this page. Omit to auto-pick relevant
+   * ones from the slug (see config/tools defaultServiceTools); set to []
+   * to suppress the tool strip entirely.
+   */
+  tools?: ToolKey[];
 }
