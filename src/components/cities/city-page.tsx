@@ -4,6 +4,7 @@ import { ArrowRight, Clock, MapPin } from "lucide-react";
 
 import type { BreadcrumbItem } from "@/lib/schema";
 import type { CityContent } from "@/content/cities/types";
+import { nearbyCities } from "@/content/cities/nearby";
 import { projectPhotos } from "@/content/photos";
 import { JobPhotoTile } from "@/components/projects/job-photo-tile";
 import { ToolStrip } from "@/components/tools/tool-strip";
@@ -49,6 +50,7 @@ export function CityPage({
       photo.kind === "completed" && photo.citySlug === cityContent.slug,
   );
   const heroPhoto = localPhotos[0];
+  const nearby = nearbyCities(cityContent.slug);
 
   return (
     <>
@@ -222,6 +224,39 @@ export function CityPage({
           </Reveal>
         </div>
       </Section>
+
+      {/* Nearby communities — weave the service-area hub together */}
+      {nearby.length > 0 && (
+        <Section>
+          <SectionHeading
+            eyebrow="Across South Mississippi"
+            title={`Roofing near ${cityContent.city}`}
+            description="Same local crews, same accountability, throughout the communities around us."
+          />
+          <StaggerGroup as="ul" className="mt-10 flex flex-wrap gap-3">
+            {nearby.map((city) => (
+              <StaggerItem as="li" key={city.slug}>
+                <Link
+                  href={`/service-areas/${city.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-5 py-2.5 text-sm font-semibold text-navy-900 transition-all duration-200 hover:-translate-y-0.5 hover:border-steel-500 hover:shadow-md"
+                >
+                  <MapPin className="size-3.5 text-steel-500" aria-hidden="true" />
+                  {city.city}
+                </Link>
+              </StaggerItem>
+            ))}
+            <StaggerItem as="li">
+              <Link
+                href="/service-areas"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-5 py-2.5 text-sm font-semibold text-navy-900 transition-all duration-200 hover:-translate-y-0.5 hover:border-steel-500 hover:shadow-md"
+              >
+                All service areas
+                <ArrowRight className="size-3.5 text-steel-500" aria-hidden="true" />
+              </Link>
+            </StaggerItem>
+          </StaggerGroup>
+        </Section>
+      )}
 
       <ServiceFaq
         faqs={cityContent.faqs}
