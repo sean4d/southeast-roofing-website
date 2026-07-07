@@ -88,3 +88,21 @@ export const TOOLS = {
 } satisfies Record<string, ToolDef>;
 
 export type ToolKey = keyof typeof TOOLS;
+
+/**
+ * Picks the interactive tools that fit a residential service page from its
+ * slug/path — shingle & metal get the color visualizer, repair/leak/storm get
+ * the damage analyzer, and every page gets the instant estimate + calculator.
+ * Capped at three so the strip stays quiet. Pages may override via
+ * ServiceContent.tools. Commercial pages opt in explicitly instead (their
+ * audience and pricing differ), so this intentionally returns residential
+ * tools only.
+ */
+export function defaultServiceTools(slugAndPath: string): ToolKey[] {
+  const s = slugAndPath.toLowerCase();
+  const picks: ToolKey[] = [];
+  if (/shingle|metal/.test(s)) picks.push("color-visualizer");
+  if (/repair|leak|storm|hail|wind|damage/.test(s)) picks.push("damage-analyzer");
+  picks.push("instant-estimate", "cost-calculator");
+  return [...new Set(picks)].slice(0, 3);
+}
