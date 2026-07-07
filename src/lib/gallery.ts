@@ -1,0 +1,195 @@
+import {
+  projectPhotos,
+  stormPhotos,
+  STORM_CATEGORY_LABELS,
+  type ProjectPhoto,
+  type StormPhoto,
+} from "@/content/photos";
+import { urlFor } from "@/sanity/lib/image";
+import type { LiveProject } from "@/sanity/lib/queries";
+
+/**
+ * Unified gallery model. Both the existing static photos (content/photos.ts)
+ * and new Sanity job uploads are normalized into GalleryJobs so the projects
+ * gallery — and, later, the job map — share one shape. Every photo shows in the
+ * grid (gallery looks full); clicking one opens its job's card with sibling
+ * photos. The same GalleryJob is what a map pin will open.
+ */
+
+export type GalleryCategory = "completed" | "storm";
+export type MaterialClass = "shingle" | "metal" | "gutters" | "other";
+
+export interface GalleryPhoto {
+  id: string;
+  src: string;
+  alt: string;
+  phase?: string;
+}
+
+export interface GalleryJob {
+  id: string;
+  category: GalleryCategory;
+  title: string;
+  city?: string;
+  citySlug?: string;
+  /** "GAF Timberline HDZ", "Seamless 6\" Gutters"… — the product filter chip. */
+  product?: string;
+  color?: string;
+  material: MaterialClass;
+  /** Storm damage label for the storm filter. */
+  stormType?: string;
+  photos: GalleryPhoto[];
+  /** /projects/[slug] for Sanity jobs (static jobs have no dedicated page). */
+  href?: string;
+  source: "static" | "sanity";
+}
+
+/** Colors are hidden (behind a toggle) for these materials — owner rule. */
+export function hidesColor(job: GalleryJob): boolean {
+  return job.material === "metal" || job.material === "gutters";
+}
+
+/** Group same-roof static photos: filename base minus the trailing -### index. */
+function baseKey(src: string): string {
+  const file = src.split("/").pop() ?? src;
+  return file.replace(/\.[a-z0-9]+$/i, "").replace(/-\d+$/, "");
+}
+
+function groupBy<T>(items: T[], key: (t: T) => string): Map<string, T[]> {
+  const map = new Map<string, T[]>();
+  for (const item of items) {
+    const k = key(item);
+    const list = map.get(k);
+    if (list) list.push(item);
+    else map.set(k, [item]);
+  }
+  return map;
+}
+
+function staticCompletedJobs(): GalleryJob[] {
+  const completed = projectPhotos.filter((p) => p.kind === "completed");
+  const jobs: GalleryJob[] = [];
+
+  for (const [key, photos] of groupBy(completed, (p) => baseKey(p.src))) {
+    const f = photos[0] as ProjectPhoto;
+    const isMetal = f.material === "metal";
+    jobs.push({
+      id: `static-${key}`,
+      category: "completed",
+      title: isMetal
+        ? `Metal roof — ${f.city}, MS`
+        : `${f.manufacturer ?? ""} ${f.line ?? ""} in ${f.color ?? ""} — ${f.city}, MS`.trim(),
+      city: f.city,
+      citySlug: f.citySlug,
+      product: isMetal
+        ? "Metal Roof"
+        : f.manufacturer && f.line
+          ? `${f.manufacturer} ${f.line}`
+          : undefined,
+      color: isMetal ? undefined : f.color,
+      material: isMetal ? "metal" : "shingle",
+      photos: photos.map((p, i) => ({ id: `${key}-${i}`, src: p.src, alt: p.alt })),
+      source: "static",
+    });
+  }
+
+  // In-progress shots — kept in Completed (proof of work); no product/color
+  // so they don't clutter those filters, still filterable by city.
+  projectPhotos
+    .filter((p) => p.kind === "in-progress")
+    .forEach((p, i) => {
+      jobs.push({
+        id: `static-progress-${i}`,
+        category: "completed",
+        title: `${p.stage ?? "Roof work"} — ${p.city}, MS`,
+        city: p.city,
+        citySlug: p.citySlug,
+        material: "other",
+        photos: [{ id: `progress-${i}`, src: p.src, alt: p.alt }],
+        source: "static",
+      });
+    });
+
+  return jobs;
+}
+
+function staticStormJobs(): GalleryJob[] {
+  const jobs: GalleryJob[] = [];
+  for (const [key, photos] of groupBy(stormPhotos, (p) => baseKey(p.src))) {
+    const f = photos[0] as StormPhoto;
+    const label = STORM_CATEGORY_LABELS[f.category];
+    jobs.push({
+      id: `static-storm-${key}`,
+      category: "storm",
+      title: `${label} — ${f.city}, MS`,
+      city: f.city,
+      citySlug: f.citySlug,
+      stormType: label,
+      material: "other",
+      photos: photos.map((p, i) => ({ id: `${key}-${i}`, src: p.src, alt: p.alt })),
+      source: "static",
+    });
+  }
+  return jobs;
+}
+
+export function staticGalleryJobs(): GalleryJob[] {
+  return [...staticCompletedJobs(), ...staticStormJobs()];
+}
+
+const MATERIAL_BY_JOBTYPE: Record<string, MaterialClass> = {
+  shingle: "shingle",
+  metal: "metal",
+  gutters: "gutters",
+  "leaf-guard": "gutters",
+  siding: "other",
+  tpo: "other",
+  "rolled-roofing": "other",
+  epdm: "other",
+  pvc: "other",
+};
+
+function detailValue(p: LiveProject, key: string): string | undefined {
+  return p.details?.find((d) => d.key === key)?.value || undefined;
+}
+
+/** Normalize a Sanity job into the shared GalleryJob shape. */
+export function sanityGalleryJob(p: LiveProject): GalleryJob {
+  const isStorm = p.jobType === "storm-damage";
+  const product =
+    detailValue(p, "product") ?? detailValue(p, "productType") ?? undefined;
+  const color = detailValue(p, "color");
+  const material = (p.jobType && MATERIAL_BY_JOBTYPE[p.jobType]) || "other";
+
+  const photos: GalleryPhoto[] = (p.media ?? [])
+    .filter((m) => m.ref)
+    .map((m, i) => ({
+      id: `${p._id}-${i}`,
+      src: urlFor({ _type: "image", asset: { _ref: m.ref! } })
+        .width(1000)
+        .url(),
+      alt: m.alt ?? p.title,
+      phase: m.phase,
+    }));
+
+  return {
+    id: `sanity-${p._id}`,
+    category: isStorm ? "storm" : "completed",
+    title: p.title,
+    city: p.city,
+    product: isStorm ? undefined : product,
+    color: isStorm ? undefined : color,
+    material,
+    stormType: isStorm ? "Storm damage" : undefined,
+    photos,
+    href: p.slug ? `/projects/${p.slug}` : undefined,
+    source: "sanity",
+  };
+}
+
+/** Full unified job list: Sanity uploads first (newest), then static proof. */
+export function buildGalleryJobs(sanity: LiveProject[]): GalleryJob[] {
+  return [...sanity.map(sanityGalleryJob), ...staticGalleryJobs()].filter(
+    (j) => j.photos.length > 0,
+  );
+}

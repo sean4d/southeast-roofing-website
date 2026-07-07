@@ -2,14 +2,16 @@ import { client } from "./client";
 
 /** Published projects (drafts excluded) for the live gallery section. */
 const LIVE_PROJECTS_QUERY = `*[_type == "project" && !(_id in path("drafts.**"))]
-  | order(_createdAt desc)[0...60]{
+  | order(_createdAt desc)[0...200]{
     _id,
     title,
     "slug": slug.current,
     city,
     channel,
+    jobType,
     summary,
     tags,
+    "details": details[]{ key, label, value },
     "media": media[]{ phase, alt, title, "ref": image.asset._ref }
   }`;
 
@@ -26,8 +28,10 @@ export interface LiveProject {
   slug?: string;
   city?: string;
   channel?: string;
+  jobType?: string;
   summary?: string;
   tags?: string[];
+  details?: { key?: string; label?: string; value?: string }[];
   media?: LiveProjectMedia[];
 }
 

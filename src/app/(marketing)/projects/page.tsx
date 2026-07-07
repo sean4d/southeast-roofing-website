@@ -7,35 +7,29 @@ import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Breadcrumbs } from "@/components/services/breadcrumbs";
-import { ProjectGallery } from "@/components/projects/project-gallery";
-import { LiveProjects } from "@/components/projects/live-projects";
+import { UnifiedGallery } from "@/components/projects/unified-gallery";
 import { getLiveProjects } from "@/sanity/lib/queries";
-import { Section } from "@/components/shared/section";
+import { buildGalleryJobs } from "@/lib/gallery";
 import { Reveal } from "@/components/motion/reveal";
 import { FinalCta } from "@/components/home/final-cta";
 
 /**
- * Project gallery (PRD §13 Phase 6 — the proof layer). Integrity rule:
- * every photo on this page comes from the owner-supplied manifests in
- * content/photos.ts — real Southeast Roofing job sites only, never stock.
+ * Project gallery (PRD §13 Phase 6 — the proof layer). One unified gallery for
+ * both the static proof photos and new /upload jobs. Integrity rule: every
+ * photo is a real Southeast Roofing job site, never stock.
  */
 
-const completedCount = projectPhotos.filter(
-  (photo) => photo.kind === "completed",
-).length;
+const completedCount = projectPhotos.filter((p) => p.kind === "completed").length;
 const cityCount = new Set(
-  projectPhotos
-    .filter((photo) => photo.kind === "completed")
-    .map((photo) => photo.citySlug),
+  projectPhotos.filter((p) => p.kind === "completed").map((p) => p.citySlug),
 ).size;
-// Every community we've either roofed or documented storm damage in.
 const allCityCount = new Set(
-  [...projectPhotos, ...stormPhotos].map((photo) => photo.citySlug),
+  [...projectPhotos, ...stormPhotos].map((p) => p.citySlug),
 ).size;
 
 export const metadata: Metadata = buildMetadata({
   title: "Project Gallery | Real Roofs by Southeast Roofing",
-  description: `Browse ${completedCount} completed Southeast Roofing roofs across ${cityCount} South Mississippi communities — filter by shingle line and color — plus real storm-damage documentation. No stock photos.`,
+  description: `Browse ${completedCount}+ completed Southeast Roofing roofs across ${cityCount} South Mississippi communities — filter by city, product line, and color — plus real storm-damage documentation. No stock photos.`,
   path: "/projects",
 });
 
@@ -45,16 +39,14 @@ const breadcrumbs = [
 ];
 
 const proofChips = [
-  {
-    icon: Camera,
-    label: `${projectPhotos.length + stormPhotos.length} real job-site photos`,
-  },
+  { icon: Camera, label: `${projectPhotos.length + stormPhotos.length}+ real job-site photos` },
   { icon: MapPin, label: `${allCityCount} Mississippi communities` },
   { icon: BadgeCheck, label: "Zero stock photos in this gallery" },
 ];
 
 export default async function ProjectsPage() {
   const liveProjects = await getLiveProjects();
+  const jobs = buildGalleryJobs(liveProjects);
 
   return (
     <>
@@ -69,10 +61,10 @@ export default async function ProjectsPage() {
               Our work, unfiltered
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-              Every photo below was taken on a real Southeast Roofing job site
-              in South Mississippi — completed roofs our crews installed and
-              storm damage we documented during inspections. Filter by
-              community or damage type, tap any photo to view it full-screen.
+              Every photo below was taken on a real Southeast Roofing job site in
+              South Mississippi — completed roofs our crews installed and storm
+              damage we documented during inspections. Filter by city, product, or
+              damage type, and tap any photo to open the full job.
             </p>
             <ul className="mt-7 flex flex-wrap gap-2.5">
               {proofChips.map((chip) => (
@@ -80,10 +72,7 @@ export default async function ProjectsPage() {
                   key={chip.label}
                   className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-navy-900"
                 >
-                  <chip.icon
-                    className="size-4 text-steel-500"
-                    aria-hidden="true"
-                  />
+                  <chip.icon className="size-4 text-steel-500" aria-hidden="true" />
                   {chip.label}
                 </li>
               ))}
@@ -92,17 +81,13 @@ export default async function ProjectsPage() {
         </div>
       </section>
 
-      {/* Live feed — jobs posted via /upload (renders nothing when empty) */}
-      <LiveProjects projects={liveProjects} />
+      {/* Unified gallery */}
+      <section className="container-site py-12 sm:py-16">
+        <UnifiedGallery jobs={jobs} />
 
-      {/* Gallery */}
-      <Section>
-        <ProjectGallery />
-        <Reveal className="mt-12 rounded-2xl border border-border bg-secondary p-6 sm:p-8">
+        <div className="mt-12 rounded-2xl border border-border bg-secondary p-6 sm:p-8">
           <p className="text-base leading-relaxed text-slate-600">
-            <span className="font-semibold text-navy-900">
-              Want to see roofs near you?
-            </span>{" "}
+            <span className="font-semibold text-navy-900">Want to see roofs near you?</span>{" "}
             Our{" "}
             <Link
               href="/service-areas"
@@ -110,9 +95,8 @@ export default async function ProjectsPage() {
             >
               city pages
             </Link>{" "}
-            show completed local projects for many of the communities we
-            serve — or ask us for references from your neighborhood during
-            your{" "}
+            show completed local projects for many communities we serve — or ask for
+            references from your neighborhood during your{" "}
             <Link
               href="/free-inspection"
               className="inline-flex items-center gap-1 font-medium text-navy-900 underline underline-offset-4 hover:text-steel-500"
@@ -122,8 +106,8 @@ export default async function ProjectsPage() {
             </Link>
             .
           </p>
-        </Reveal>
-      </Section>
+        </div>
+      </section>
 
       <FinalCta />
     </>
