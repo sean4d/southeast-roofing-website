@@ -1,4 +1,5 @@
-import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ExternalLink } from "lucide-react";
 
 import { reviewsSection } from "@/content/homepage";
 import { brandMarks } from "@/components/shared/brand-marks";
@@ -92,6 +93,15 @@ export function ReviewsTrust() {
           {reviewsSection.googleCta.label}
           <ExternalLink className="size-4" aria-hidden="true" />
         </Button>
+        <div className="mt-5">
+          <Link
+            href="/reviews"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-900 underline-offset-4 hover:text-steel-500 hover:underline"
+          >
+            Read customer reviews on our site
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+        </div>
       </Reveal>
     </Section>
   );
