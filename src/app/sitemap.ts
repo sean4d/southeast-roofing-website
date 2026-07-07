@@ -36,6 +36,7 @@ const launchedStaticRoutes = [
   "/quote",
   "/storm-center",
   "/roof-cost-calculator",
+  "/roof-color-visualizer",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
