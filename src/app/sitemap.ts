@@ -4,6 +4,7 @@ import { allServices } from "@/content/services";
 import { cities } from "@/content/cities";
 import { articlePath, learnArticles } from "@/content/learn";
 import { blogPosts } from "@/content/blog";
+import { getProjectSlugs } from "@/sanity/lib/queries";
 import { absoluteUrl } from "@/lib/seo";
 
 /**
@@ -34,9 +35,10 @@ const launchedStaticRoutes = [
   "/blog",
   "/quote",
   "/storm-center",
+  "/roof-cost-calculator",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = launchedStaticRoutes.map((path) => ({
     url: absoluteUrl(path),
     changeFrequency: "weekly" as const,
@@ -67,11 +69,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }));
 
+  // Individual project pages (from Sanity). Falls back to none if unreachable.
+  const projectSlugs = await getProjectSlugs();
+  const projectEntries = projectSlugs.map((slug) => ({
+    url: absoluteUrl(`/projects/${slug}`),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   return [
     ...staticEntries,
     ...serviceEntries,
     ...cityEntries,
     ...learnEntries,
     ...blogEntries,
+    ...projectEntries,
   ];
 }
