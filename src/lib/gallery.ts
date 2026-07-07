@@ -137,6 +137,19 @@ export function staticGalleryJobs(): GalleryJob[] {
   return [...staticCompletedJobs(), ...staticStormJobs()];
 }
 
+/** Index of static photo src → its job, so any page can make a photo clickable
+ *  (opens the job card) and show its city tag. Built once, memoized. */
+let staticIndex: Map<string, GalleryJob> | null = null;
+export function staticJobForSrc(src: string): GalleryJob | undefined {
+  if (!staticIndex) {
+    staticIndex = new Map();
+    for (const job of staticGalleryJobs()) {
+      for (const photo of job.photos) staticIndex.set(photo.src, job);
+    }
+  }
+  return staticIndex.get(src);
+}
+
 const MATERIAL_BY_JOBTYPE: Record<string, MaterialClass> = {
   shingle: "shingle",
   metal: "metal",

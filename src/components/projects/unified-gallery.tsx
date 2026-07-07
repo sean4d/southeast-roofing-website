@@ -212,6 +212,12 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
                   {p.job.photos.length} photos
                 </span>
               )}
+              {p.job.city && (
+                <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-navy-950/70 px-2 py-0.5 text-xs font-semibold text-white">
+                  <MapPin className="size-3" aria-hidden="true" />
+                  {p.job.city}
+                </span>
+              )}
             </button>
           );
         })}

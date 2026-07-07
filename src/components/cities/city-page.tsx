@@ -5,6 +5,7 @@ import { ArrowRight, Clock, MapPin } from "lucide-react";
 import type { BreadcrumbItem } from "@/lib/schema";
 import type { CityContent } from "@/content/cities/types";
 import { projectPhotos } from "@/content/photos";
+import { JobPhotoTile } from "@/components/projects/job-photo-tile";
 import { Breadcrumbs } from "@/components/services/breadcrumbs";
 import { ServiceFaq } from "@/components/services/service-faq";
 import { HelpPanel } from "@/components/services/help-panel";
@@ -132,13 +133,11 @@ export function CityPage({
           <StaggerGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {localPhotos.slice(0, 4).map((photo) => (
               <StaggerItem as="div" key={photo.src}>
-                <Image
+                <JobPhotoTile
                   src={photo.src}
                   alt={photo.alt}
-                  width={600}
-                  height={450}
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  className="aspect-[4/3] w-full rounded-2xl border border-border object-cover"
+                  city={cityContent.city}
+                  className="aspect-[4/3] w-full rounded-2xl border border-border"
                 />
               </StaggerItem>
             ))}

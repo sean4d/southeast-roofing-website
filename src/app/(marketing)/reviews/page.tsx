@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink, ShieldCheck, Star } from "lucide-react";
 
@@ -10,6 +9,7 @@ import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Breadcrumbs } from "@/components/services/breadcrumbs";
+import { JobPhotoTile } from "@/components/projects/job-photo-tile";
 import { ReviewsTrust } from "@/components/home/reviews-trust";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
@@ -241,17 +241,12 @@ export default function ReviewsPage() {
         <StaggerGroup className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {recentWork.map((photo) => (
             <StaggerItem as="div" key={photo.src} className="relative">
-              <Image
+              <JobPhotoTile
                 src={photo.src}
                 alt={photo.alt}
-                width={600}
-                height={450}
-                sizes="(min-width: 1024px) 25vw, 50vw"
-                className="aspect-[4/3] w-full rounded-2xl border border-border object-cover"
+                city={photo.city}
+                className="aspect-[4/3] w-full rounded-2xl border border-border"
               />
-              <span className="absolute bottom-2.5 left-2.5 rounded-full bg-navy-950/80 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur sm:bottom-3 sm:left-3 sm:px-3 sm:text-xs">
-                {photo.city}, MS
-              </span>
             </StaggerItem>
           ))}
         </StaggerGroup>
