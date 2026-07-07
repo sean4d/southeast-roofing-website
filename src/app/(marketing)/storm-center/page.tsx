@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -20,6 +19,7 @@ import {
 import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/json-ld";
+import { JobPhotoTile } from "@/components/projects/job-photo-tile";
 import { Breadcrumbs } from "@/components/services/breadcrumbs";
 import { StormAlerts } from "@/components/storm/storm-alerts";
 import { Section } from "@/components/shared/section";
@@ -218,15 +218,13 @@ export default function StormCenterPage() {
         <StaggerGroup className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {damageCards.map((card) => (
             <StaggerItem as="div" key={card.category} className="relative">
-              <Image
+              <JobPhotoTile
                 src={card.photo.src}
                 alt={card.photo.alt}
-                width={600}
-                height={450}
-                sizes="(min-width: 1024px) 33vw, 50vw"
-                className="aspect-[4/3] w-full rounded-2xl border border-border object-cover"
+                city={card.photo.city}
+                className="aspect-[4/3] w-full rounded-2xl border border-border"
               />
-              <span className="absolute bottom-2.5 left-2.5 rounded-full bg-navy-950/80 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur sm:bottom-3 sm:left-3 sm:px-3 sm:text-xs">
+              <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-navy-950/80 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur sm:px-3 sm:text-xs">
                 {card.label}
               </span>
             </StaggerItem>
