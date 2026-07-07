@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { whyUs } from "@/content/homepage";
 import { Section } from "@/components/shared/section";
@@ -36,6 +38,16 @@ export function WhyUs() {
               </StaggerItem>
             ))}
           </StaggerGroup>
+
+          <Reveal className="mt-8">
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-1.5 font-semibold text-primary underline-offset-4 hover:underline"
+            >
+              More about Southeast Roofing
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </Reveal>
         </div>
 
         <Reveal as="figure">
