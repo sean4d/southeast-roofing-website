@@ -2,9 +2,10 @@ import { client } from "./client";
 
 /** Published projects (drafts excluded) for the live gallery section. */
 const LIVE_PROJECTS_QUERY = `*[_type == "project" && !(_id in path("drafts.**"))]
-  | order(completedAt desc, _createdAt desc)[0...60]{
+  | order(_createdAt desc)[0...60]{
     _id,
     title,
+    "slug": slug.current,
     city,
     channel,
     summary,
@@ -22,6 +23,7 @@ export interface LiveProjectMedia {
 export interface LiveProject {
   _id: string;
   title: string;
+  slug?: string;
   city?: string;
   channel?: string;
   summary?: string;
@@ -40,6 +42,54 @@ export async function getLiveProjects(): Promise<LiveProject[]> {
   } catch {
     // If Sanity is unreachable, the live section simply doesn't render —
     // the existing static gallery below is unaffected.
+    return [];
+  }
+}
+
+/* ---- Single project (its own indexable page at /projects/[slug]) ---- */
+
+const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug && !(_id in path("drafts.**"))][0]{
+  _id, title, city, channel, jobType, summary, description, tags,
+  "details": details[]{ key, label, value },
+  "media": media[]{ phase, alt, title, metaDescription, "ref": image.asset._ref }
+}`;
+
+export interface ProjectDetailMedia extends LiveProjectMedia {
+  metaDescription?: string;
+}
+
+export interface ProjectDetail {
+  _id: string;
+  title: string;
+  city?: string;
+  channel?: string;
+  jobType?: string;
+  summary?: string;
+  description?: string;
+  tags?: string[];
+  details?: { key?: string; label?: string; value?: string }[];
+  media?: ProjectDetailMedia[];
+}
+
+export async function getProjectBySlug(slug: string): Promise<ProjectDetail | null> {
+  try {
+    return await client.fetch(
+      PROJECT_BY_SLUG_QUERY,
+      { slug },
+      { next: { revalidate: 600 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+/** All published project slugs — for generateStaticParams. */
+export async function getProjectSlugs(): Promise<string[]> {
+  try {
+    return await client.fetch(
+      `*[_type == "project" && defined(slug.current) && !(_id in path("drafts.**"))].slug.current`,
+    );
+  } catch {
     return [];
   }
 }

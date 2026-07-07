@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 import { urlFor } from "@/sanity/lib/image";
 import type { LiveProject } from "@/sanity/lib/queries";
@@ -86,8 +87,8 @@ function ProjectCard({ project }: { project: LiveProject }) {
         .url()
     : null;
 
-  return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+  const inner = (
+    <>
       <div className="aspect-[4/3] bg-secondary">
         {src && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -95,7 +96,7 @@ function ProjectCard({ project }: { project: LiveProject }) {
             src={src}
             alt={photo?.alt ?? project.title}
             loading="lazy"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         )}
       </div>
@@ -105,7 +106,18 @@ function ProjectCard({ project }: { project: LiveProject }) {
           <p className="mt-1 line-clamp-2 text-sm text-slate-600">{project.summary}</p>
         )}
       </div>
-    </article>
+    </>
+  );
+
+  const cardClass =
+    "group block overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-shadow hover:shadow-md";
+
+  return project.slug ? (
+    <Link href={`/projects/${project.slug}`} className={cardClass}>
+      {inner}
+    </Link>
+  ) : (
+    <article className={cardClass}>{inner}</article>
   );
 }
 
