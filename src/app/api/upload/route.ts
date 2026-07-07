@@ -129,10 +129,12 @@ async function handleCreate(request: Request) {
   });
 
   // Public CDN URLs for social fan-out (photos are hosted by Sanity now).
+  // Force JPEG — Instagram's publishing API rejects WebP/PNG.
   const imageUrls = media
     .map((m) =>
       urlFor({ _type: "image", asset: { _type: "reference", _ref: m.assetId } })
         .width(1200)
+        .format("jpg")
         .url(),
     )
     .filter(Boolean);
