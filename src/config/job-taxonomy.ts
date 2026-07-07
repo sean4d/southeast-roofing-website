@@ -41,25 +41,36 @@ export const PHASES = [
 
 export type PhaseKey = (typeof PHASES)[number]["key"];
 
-const SHINGLE_BRANDS = [
-  "GAF",
-  "Owens Corning",
-  "CertainTeed",
-  "Atlas",
-  "Malarkey",
-  "TAMKO",
-  "IKO",
+// Specific product LINES — these become the gallery's "product" filter chips.
+const SHINGLE_LINES = [
+  "GAF Timberline HDZ",
+  "GAF Timberline Natural Shadow",
+  "GAF Timberline UHDZ",
+  "GAF Grand Sequoia",
+  "Owens Corning Duration",
+  "Owens Corning Oakridge",
+  "Owens Corning Supreme",
+  "Owens Corning TruDefinition Duration",
+  "CertainTeed Landmark",
+  "Atlas Pinnacle",
   "Other",
 ];
 
-const METAL_BRANDS = [
-  "McElroy Metal",
-  "Central States",
-  "ABC (American Building Components)",
-  "Union Corrugating",
-  "Fabral",
-  "MBCI",
+const METAL_PRODUCTS = [
+  '29ga Gibraltar Rib',
+  '26ga Gibraltar Rib',
+  "Standing Seam",
+  "5V Crimp",
+  "Metal Shingle",
+  "Corrugated",
   "Other",
+];
+
+const GUTTER_PRODUCTS = [
+  'Seamless 6" Gutters',
+  'Seamless 5" Gutters',
+  "Half-round",
+  "Box gutters",
 ];
 
 /**
@@ -72,14 +83,7 @@ export const JOB_TYPES: JobType[] = [
     label: "Shingle Roof",
     noun: "shingle roof",
     fields: [
-      { key: "brand", label: "Shingle brand", kind: "select", options: SHINGLE_BRANDS, filterable: true },
-      {
-        key: "productType",
-        label: "Shingle type",
-        kind: "select",
-        options: ["Architectural / Dimensional", "3-Tab", "Designer / Luxury", "Impact-Resistant (Class 4)"],
-        filterable: true,
-      },
+      { key: "product", label: "Shingle line", kind: "select", options: SHINGLE_LINES, filterable: true },
       { key: "color", label: "Shingle color", kind: "text", filterable: true, placeholder: "e.g. Pewter Gray" },
     ],
   },
@@ -88,14 +92,7 @@ export const JOB_TYPES: JobType[] = [
     label: "Metal Roof",
     noun: "metal roof",
     fields: [
-      { key: "brand", label: "Metal brand", kind: "select", options: METAL_BRANDS, filterable: true },
-      {
-        key: "productType",
-        label: "Metal type",
-        kind: "select",
-        options: ["Standing Seam", "Exposed Fastener (R-Panel)", "Metal Shingle", "Corrugated"],
-        filterable: true,
-      },
+      { key: "product", label: "Metal product", kind: "select", options: METAL_PRODUCTS, filterable: true },
       { key: "color", label: "Metal color", kind: "text", filterable: true, placeholder: "e.g. Galvalume, Burnished Slate" },
     ],
   },
@@ -118,8 +115,8 @@ export const JOB_TYPES: JobType[] = [
     label: "Gutters",
     noun: "gutters",
     fields: [
-      { key: "productType", label: "Gutter style", kind: "select", options: ['Seamless 5" K-style', 'Seamless 6" K-style', "Half-round"], filterable: true },
-      { key: "material", label: "Material", kind: "select", options: ["Aluminum", "Copper", "Steel"], filterable: true },
+      { key: "product", label: "Gutter type", kind: "select", options: GUTTER_PRODUCTS, filterable: true },
+      { key: "material", label: "Material", kind: "select", options: ["Aluminum", "Copper", "Steel"] },
       { key: "color", label: "Color", kind: "text", filterable: true, placeholder: "e.g. White, Musket Brown" },
     ],
   },

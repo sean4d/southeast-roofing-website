@@ -55,8 +55,11 @@ function shortOption(s: string): string {
   return s.split("/")[0].split("(")[0].trim();
 }
 
-/** Descriptive lead like "GAF Architectural" (brand + short product type). */
+/** Descriptive lead — the specific product line (e.g. "GAF Timberline HDZ"),
+ *  falling back to brand + type for older/other job types. */
 function productLead(sub: JobSubmission): string {
+  const product = str(sub.details.product);
+  if (product) return product;
   const brand = str(sub.details.brand);
   const productType = shortOption(str(sub.details.productType));
   return [brand, productType].filter(Boolean).join(" ").trim();

@@ -33,11 +33,23 @@ export async function POST(request: Request) {
   try {
     if (step === "asset") return await handleAsset(request);
     if (step === "create") return await handleCreate(request);
+    if (step === "delete") return await handleDelete(request);
     return Response.json({ error: "Unknown step" }, { status: 400 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
     return Response.json({ error: message }, { status: 500 });
   }
+}
+
+/** Delete a project by id (password-gated via proxy). For removing a bad or
+ *  test upload. Leaves image assets unreferenced (harmless). */
+async function handleDelete(request: Request) {
+  const { id } = (await request.json()) as { id?: string };
+  if (!id) return Response.json({ error: "No id provided" }, { status: 400 });
+  const client = getWriteClient();
+  await client.delete(id);
+  revalidatePath("/projects");
+  return Response.json({ ok: true, deleted: id });
 }
 
 /** Upload a single photo and return its generated SEO + asset id. */
