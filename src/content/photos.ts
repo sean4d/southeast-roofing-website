@@ -83,12 +83,17 @@ function inProgress(
   };
 }
 
-/** Completed metal roof (no shingle manufacturer/line/color). */
+/**
+ * Completed metal roof (no shingle manufacturer/line). An optional metal
+ * finish/color lets the color visualizer surface the real roof for that
+ * metal finish; the gallery still hides metal colors from its filters.
+ */
 function metalRoof(
   src: string,
   city: string,
   citySlug: string,
   alt: string,
+  color?: string,
 ): ProjectPhoto {
   return {
     src: `/images/projects/${src}`,
@@ -96,6 +101,7 @@ function metalRoof(
     citySlug,
     kind: "completed",
     material: "metal",
+    color,
     alt,
   };
 }
@@ -126,9 +132,9 @@ export const projectPhotos: ProjectPhoto[] = [
   completed("gaf-timberline-hdz-charcoal-ellisville-ms-003.webp", "Ellisville", "ellisville", gafHDZ, "Charcoal"),
   // Richton
   completed("gaf-timberline-hdz-barkwood-richton-ms.webp", "Richton", "richton", gafHDZ, "Barkwood"),
-  // Saucier
-  completed("gaf-timberline-hdz-birchwood-saucier-ms-001.jpg", "Saucier", "saucier", gafHDZ, "Birchwood"),
-  completed("gaf-timberline-hdz-birchwood-saucier-ms-002.jpg", "Saucier", "saucier", gafHDZ, "Birchwood"),
+  // Saucier — owner correction 2026-07-07: this roof is Slate, not Birchwood.
+  completed("gaf-timberline-hdz-slate-saucier-ms-001.jpg", "Saucier", "saucier", gafHDZ, "Slate"),
+  completed("gaf-timberline-hdz-slate-saucier-ms-002.jpg", "Saucier", "saucier", gafHDZ, "Slate"),
   // Petal
   completed("gaf-timberline-hdz-slate-petal-ms.jpg", "Petal", "petal", gafHDZ, "Slate"),
   // Picayune
@@ -192,8 +198,8 @@ export const projectPhotos: ProjectPhoto[] = [
   // Bay St. Louis
   completed("gaf-timberline-hdz-birchwood-bay-st-louis-ms.webp", "Bay St. Louis", "bay-st-louis", gafHDZ, "Birchwood"),
   // McComb — 29-gauge Galvalume exposed-fastener metal
-  metalRoof("29-gauge-galvalume-metal-roof-mccomb-ms-001.webp", "McComb", "mccomb", "29-gauge Galvalume exposed-fastener metal roof installed by Southeast Roofing in McComb, Mississippi."),
-  metalRoof("29-gauge-galvalume-metal-roof-mccomb-ms-002.webp", "McComb", "mccomb", "29-gauge Galvalume exposed-fastener metal roof installed by Southeast Roofing in McComb, Mississippi."),
+  metalRoof("29-gauge-galvalume-metal-roof-mccomb-ms-001.webp", "McComb", "mccomb", "29-gauge Galvalume exposed-fastener metal roof installed by Southeast Roofing in McComb, Mississippi.", "Galvalume"),
+  metalRoof("29-gauge-galvalume-metal-roof-mccomb-ms-002.webp", "McComb", "mccomb", "29-gauge Galvalume exposed-fastener metal roof installed by Southeast Roofing in McComb, Mississippi.", "Galvalume"),
 
   // During install
   inProgress("roof-tear-off-decking-brooklyn-ms.webp", "Brooklyn", "brooklyn", "Tear-off down to the decking"),
