@@ -3,14 +3,28 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
-import { ArrowRight, BadgeCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, Image as ImageIcon } from "lucide-react";
 
 import { ROOF_PRODUCTS } from "@/config/roof-colors";
 import { projectPhotos } from "@/content/photos";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-export function ColorVisualizer() {
+/** A real color photo sourced from a live Sanity job upload (passed by the page). */
+export interface VisualizerRealPhoto {
+  material: string;
+  product?: string;
+  color?: string;
+  src: string;
+  alt: string;
+  city?: string;
+}
+
+export function ColorVisualizer({
+  sanityPhotos = [],
+}: {
+  sanityPhotos?: VisualizerRealPhoto[];
+}) {
   const [productKey, setProductKey] = useState(ROOF_PRODUCTS[0].key);
   const product = useMemo(
     () => ROOF_PRODUCTS.find((p) => p.key === productKey) ?? ROOF_PRODUCTS[0],
@@ -26,18 +40,46 @@ export function ColorVisualizer() {
   const activeColor =
     product.colors.find((c) => c.name === colorName) ?? product.colors[0];
 
-  // Real Southeast Roofing photo of this exact product + color, if we have one.
-  const realPhoto = useMemo(
-    () =>
-      projectPhotos.find(
-        (p) =>
-          p.kind === "completed" &&
-          p.manufacturer === product.manufacturer &&
-          p.line === product.line &&
-          p.color === activeColor.name,
-      ),
-    [product, activeColor],
-  );
+  // Photo priority: real static job photo → real Sanity upload → product
+  // sample placeholder → flat swatch. Real photos always win, so placeholders
+  // self-retire the moment we log a roof in that color.
+  const preview = useMemo(() => {
+    const isMetal = product.material === "metal";
+    const name = activeColor.name.toLowerCase();
+
+    const staticReal = projectPhotos.find(
+      (p) =>
+        p.kind === "completed" &&
+        p.manufacturer === product.manufacturer &&
+        p.line === product.line &&
+        p.color?.toLowerCase() === name,
+    );
+    if (staticReal)
+      return { src: staticReal.src, alt: staticReal.alt, city: staticReal.city, real: true as const };
+
+    const sanityReal = sanityPhotos.find((s) => {
+      if (s.color?.toLowerCase() !== name) return false;
+      if (isMetal) return s.material === "metal";
+      return (
+        s.material === "shingle" &&
+        !!s.product &&
+        !!product.line &&
+        s.product.toLowerCase().includes(product.line.toLowerCase())
+      );
+    });
+    if (sanityReal)
+      return { src: sanityReal.src, alt: sanityReal.alt, city: sanityReal.city, real: true as const };
+
+    if (activeColor.sample)
+      return {
+        src: activeColor.sample.src,
+        alt: activeColor.sample.alt,
+        city: undefined,
+        real: false as const,
+      };
+
+    return null;
+  }, [product, activeColor, sanityPhotos]);
 
   function pickColor(name: string) {
     setColorName(name);
@@ -49,17 +91,23 @@ export function ColorVisualizer() {
       {/* Preview */}
       <div className="overflow-hidden rounded-2xl border border-border bg-white">
         <div className="relative aspect-[4/3] bg-secondary">
-          {realPhoto ? (
+          {preview ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={realPhoto.src}
-                alt={realPhoto.alt}
+                src={preview.src}
+                alt={preview.alt}
                 className="h-full w-full object-cover"
               />
-              <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-navy-950/75 px-3 py-1 text-xs font-semibold text-white">
-                <BadgeCheck className="size-3.5" /> Real job — {realPhoto.city}, MS
-              </span>
+              {preview.real ? (
+                <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-navy-950/75 px-3 py-1 text-xs font-semibold text-white">
+                  <BadgeCheck className="size-3.5" /> Real job — {preview.city}, MS
+                </span>
+              ) : (
+                <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-navy-950/75 px-3 py-1 text-xs font-semibold text-white">
+                  <ImageIcon className="size-3.5" /> Product sample
+                </span>
+              )}
             </>
           ) : (
             <div
@@ -155,9 +203,10 @@ export function ColorVisualizer() {
         </div>
 
         <p className="text-xs text-slate-500">
-          Swatches are close digital approximations — actual shingle color varies with
-          light and pitch. Ask {siteConfig.name} for a physical sample and to see it on
-          real {product.material === "metal" ? "metal roofs" : "roofs"} near you.
+          Photos marked &ldquo;Real job&rdquo; are actual {siteConfig.name} roofs near you;
+          &ldquo;Product sample&rdquo; images are manufacturer swatches shown until we log
+          that color locally. Actual color varies with light and pitch — ask us for a
+          physical sample.
         </p>
       </div>
     </div>

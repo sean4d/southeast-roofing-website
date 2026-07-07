@@ -5,8 +5,10 @@ import { breadcrumbSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Breadcrumbs } from "@/components/services/breadcrumbs";
 import { CTASection } from "@/components/tools/cta-section";
+import { getLiveProjects } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
 
-import { ColorVisualizer } from "./visualizer";
+import { ColorVisualizer, type VisualizerRealPhoto } from "./visualizer";
 
 /**
  * Roof Color Visualizer (tool #3). Data-driven swatches (config/roof-colors.ts)
@@ -27,7 +29,42 @@ const breadcrumbs = [
   { name: "Roof Color Visualizer", path: "/roof-color-visualizer" },
 ];
 
-export default function RoofColorVisualizerPage() {
+const MATERIAL_BY_JOBTYPE: Record<string, VisualizerRealPhoto["material"]> = {
+  shingle: "shingle",
+  metal: "metal",
+};
+
+/**
+ * Real color photos from live form/Sanity uploads — so a newly-installed roof
+ * (e.g. a burgundy metal roof shot on the job) auto-replaces the manufacturer
+ * sample in the visualizer with zero code changes.
+ */
+async function sanityColorPhotos(): Promise<VisualizerRealPhoto[]> {
+  const live = await getLiveProjects();
+  return live.flatMap((p) => {
+    const color = p.details?.find((d) => d.key === "color")?.value;
+    const productName =
+      p.details?.find((d) => d.key === "product")?.value ??
+      p.details?.find((d) => d.key === "productType")?.value;
+    const first = p.media?.find((m) => m.ref);
+    if (!color || !first?.ref || !p.jobType) return [];
+    const material = MATERIAL_BY_JOBTYPE[p.jobType];
+    if (!material) return [];
+    return [
+      {
+        material,
+        product: productName ?? undefined,
+        color,
+        src: urlFor({ _type: "image", asset: { _ref: first.ref } }).width(1000).url(),
+        alt: first.alt ?? p.title,
+        city: p.city,
+      },
+    ];
+  });
+}
+
+export default async function RoofColorVisualizerPage() {
+  const sanityPhotos = await sanityColorPhotos();
   return (
     <>
       <JsonLd data={breadcrumbSchema(breadcrumbs)} />
@@ -47,7 +84,7 @@ export default function RoofColorVisualizerPage() {
       </section>
 
       <section className="container-site py-12 sm:py-16">
-        <ColorVisualizer />
+        <ColorVisualizer sanityPhotos={sanityPhotos} />
       </section>
 
       <CTASection
