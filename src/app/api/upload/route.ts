@@ -137,7 +137,10 @@ interface ProjectDoc {
  * caption and photos (re-badging before/after just like the original post).
  */
 async function handleMetricool(request: Request) {
-  const { id } = (await request.json()) as { id?: string };
+  const { id, networks } = (await request.json()) as {
+    id?: string;
+    networks?: Array<"google-business" | "tiktok">;
+  };
   if (!id) return Response.json({ error: "No id provided" }, { status: 400 });
 
   const client = getWriteClient();
@@ -168,7 +171,7 @@ async function handleMetricool(request: Request) {
   const imageUrls = await socialImageUrls(media, client, labelPhotos);
   const caption = doc.socialCaption ?? doc.title ?? "";
 
-  const results = await postViaMetricool({ text: caption, imageUrls });
+  const results = await postViaMetricool({ text: caption, imageUrls }, networks);
 
   // Merge into the syndication log: keep FB/IG (and anything else) untouched,
   // replace only the google-business + tiktok entries with this run's outcome.
