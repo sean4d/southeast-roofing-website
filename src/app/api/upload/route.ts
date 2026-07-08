@@ -114,6 +114,7 @@ export async function POST(request: Request) {
     if (step === "metricool") return await handleMetricool(request);
     if (step === "metricool-clean") return await handleMetricoolClean(request);
     if (step === "check") return await handleCheck();
+    if (step === "revalidate") return handleRevalidate();
     return Response.json({ error: "Unknown step" }, { status: 400 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
@@ -281,6 +282,14 @@ async function handleMetricool(request: Request) {
   await client.patch(id).set({ syndication: merged }).commit();
 
   return Response.json({ ok: true, id, title: doc.title, photos: imageUrls.length, results });
+}
+
+/** Force-refresh the pages that surface live Google review data (they're
+ *  cached ~24h). Handy right after connecting/rotating the Places API key. */
+function handleRevalidate() {
+  const paths = ["/", "/reviews"];
+  for (const p of paths) revalidatePath(p);
+  return Response.json({ ok: true, revalidated: paths });
 }
 
 /** Upload a single photo and return its generated SEO + asset id. */
