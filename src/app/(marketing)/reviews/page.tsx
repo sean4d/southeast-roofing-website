@@ -5,6 +5,7 @@ import { ArrowRight, ExternalLink, ShieldCheck, Star } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { projectPhotos } from "@/content/photos";
 import { googleReviews } from "@/content/reviews";
+import { getGoogleReviewData } from "@/lib/google-reviews";
 import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -47,7 +48,25 @@ const recentWork = Object.values(
   ),
 ).slice(0, 4);
 
-export default function ReviewsPage() {
+export default async function ReviewsPage() {
+  // Live Google data when GOOGLE_PLACES_API_KEY is set; otherwise falls back
+  // to the curated reviews. Live reviews show first (freshest), then any
+  // curated reviews from reviewers not already covered — so the page stays
+  // rich AND auto-updates.
+  const live = await getGoogleReviewData();
+  const liveMapped = (live?.reviews ?? []).map((r) => ({
+    name: r.author,
+    when: r.when,
+    text: r.text,
+    services: undefined as string | undefined,
+  }));
+  const firstName = (n: string) => n.trim().toLowerCase().split(/\s+/)[0];
+  const seen = new Set(liveMapped.map((r) => firstName(r.name)));
+  const displayReviews = [
+    ...liveMapped,
+    ...googleReviews.filter((r) => !seen.has(firstName(r.name))),
+  ];
+
   return (
     <>
       <JsonLd data={breadcrumbSchema(breadcrumbs)} />
@@ -63,7 +82,9 @@ export default function ReviewsPage() {
                   className="size-3.5 fill-amber-400 text-amber-400"
                   aria-hidden="true"
                 />
-                {siteConfig.trustFacts.googleRating}
+                {live
+                  ? `${live.rating.toFixed(1)} from ${live.count} Google reviews`
+                  : siteConfig.trustFacts.googleRating}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3.5 py-1.5 text-xs font-medium text-slate-600">
                 <ShieldCheck
@@ -138,7 +159,7 @@ export default function ReviewsPage() {
           description="Quoted word-for-word from our public Google reviews — typos and all, because editing reviews is where trust dies. Every one is verifiable on our live profile."
         />
         <StaggerGroup className="mt-12 columns-1 gap-5 md:columns-2 lg:columns-3 [&>*]:mb-5 [&>*]:break-inside-avoid">
-          {googleReviews.map((review) => (
+          {displayReviews.map((review) => (
             <StaggerItem
               key={review.name + review.when}
               className="shadow-premium rounded-2xl border border-border bg-white p-6"
