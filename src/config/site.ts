@@ -77,8 +77,8 @@ export const siteConfig = {
     nextdoor: "https://nextdoor.com/pages/southeast-roofing-hattiesburg-ms/",
   },
 
-  /** Hattiesburg, MS city center — refine when street address is confirmed */
-  geo: { latitude: 31.3271, longitude: -89.2903 },
+  /** Exact office location, 6668 US-98 Suite F (owner-supplied 2026-07-07). */
+  geo: { latitude: 31.315671890677386, longitude: -89.42934598516973 },
 
   /**
    * Business hours (owner-confirmed 2026-07-07): office staffed Monday–Friday

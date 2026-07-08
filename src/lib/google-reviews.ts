@@ -1,21 +1,25 @@
-import { siteConfig } from "@/config/site";
-
 /**
- * Live Google reviews via the Places API (New). Activates the moment
- * GOOGLE_PLACES_API_KEY is set in the environment; until then every function
- * returns null and the site falls back to the curated reviews in
- * content/reviews.ts — so nothing breaks before the key is added.
+ * Live Google reviews for the site, rendered natively (no third-party script).
  *
- * The place is resolved from GOOGLE_PLACE_ID if set, otherwise looked up once
- * from the business name + address. Responses are cached (daily for details,
- * weekly for the place lookup) so this costs a trivial number of API calls.
+ * Source priority:
+ *   1. Featurable — free, needs only a published widget id (baked in below or
+ *      FEATURABLE_WIDGET_ID). This is the owner's connected source.
+ *   2. Google Places API (New) — used only if GOOGLE_PLACES_API_KEY is set;
+ *      place id is baked in / GOOGLE_PLACE_ID.
+ *   3. null → the site falls back to the curated reviews in content/reviews.ts.
  *
- * Integrity note: we display the live rating/reviews but still emit NO
- * schema.org AggregateRating/Review markup — Google treats self-published
- * review markup of third-party reviews as self-serving.
+ * Everything is cached daily and fails soft (any error → null), so the page
+ * never breaks and simply shows the curated reviews until a live source
+ * responds. Integrity: we display live reviews but emit NO schema.org
+ * AggregateRating/Review markup (Google treats self-published third-party
+ * review markup as self-serving).
  */
 
-const PLACES = "https://places.googleapis.com/v1";
+/** Owner-supplied identifiers (2026-07-07). Public values — safe to inline. */
+const FEATURABLE_WIDGET_ID =
+  process.env.FEATURABLE_WIDGET_ID ?? "dd7a34c6-f6cb-4661-8edb-e9e0ab6fddfd";
+const GOOGLE_PLACE_ID =
+  process.env.GOOGLE_PLACE_ID ?? "ChIJxf_jHarfnIgRnliLC-o1F40";
 
 export interface LiveReview {
   author: string;
@@ -31,46 +35,81 @@ export interface GoogleReviewData {
   reviews: LiveReview[];
 }
 
-async function resolvePlaceId(key: string): Promise<string | null> {
-  if (process.env.GOOGLE_PLACE_ID) return process.env.GOOGLE_PLACE_ID;
-  const { legalName, address } = siteConfig;
-  const query = `${legalName}, ${address.streetAddress}, ${address.addressLocality}, ${address.addressRegion} ${address.postalCode}`;
+/** ISO timestamp → coarse "N months/years ago" (best-effort). */
+function relativeWhen(iso?: string): string {
+  if (!iso) return "recently";
+  const then = Date.parse(iso);
+  if (Number.isNaN(then)) return "recently";
+  const days = Math.floor((Date.now() - then) / 86_400_000);
+  if (days < 21) return "recently";
+  if (days < 45) return "a month ago";
+  if (days < 335) return `${Math.round(days / 30)} months ago`;
+  const years = Math.round(days / 365);
+  return years <= 1 ? "a year ago" : `${years} years ago`;
+}
+
+/** Coerce a star rating that may be a number or Google's word enum. */
+function toStars(v: unknown): number {
+  if (typeof v === "number") return v;
+  const words: Record<string, number> = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4, FIVE: 5 };
+  return words[String(v).toUpperCase()] ?? 5;
+}
+
+/** Featurable widget → normalized reviews. Public API, widget must be published. */
+async function fromFeaturable(): Promise<GoogleReviewData | null> {
+  if (!FEATURABLE_WIDGET_ID) return null;
   try {
-    const res = await fetch(`${PLACES}/places:searchText`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": key,
-        "X-Goog-FieldMask": "places.id",
-      },
-      body: JSON.stringify({ textQuery: query }),
-      next: { revalidate: 604800 }, // a week
-    });
+    const res = await fetch(
+      `https://api.featurable.com/v1/widgets/${FEATURABLE_WIDGET_ID}`,
+      { next: { revalidate: 86400 } },
+    );
     if (!res.ok) return null;
-    const data = (await res.json()) as { places?: { id?: string }[] };
-    return data.places?.[0]?.id ?? null;
+    const data = (await res.json()) as {
+      success?: boolean;
+      averageRating?: number;
+      totalReviewCount?: number;
+      reviews?: Array<{
+        reviewer?: { displayName?: string; profilePhotoUrl?: string };
+        starRating?: number | string;
+        comment?: string;
+        createTime?: string;
+      }>;
+    };
+    if (data.success === false || typeof data.averageRating !== "number") return null;
+
+    const reviews: LiveReview[] = (data.reviews ?? [])
+      .map((r) => ({
+        author: r.reviewer?.displayName ?? "Google customer",
+        rating: toStars(r.starRating),
+        text: (r.comment ?? "").trim(),
+        when: relativeWhen(r.createTime),
+        photo: r.reviewer?.profilePhotoUrl,
+      }))
+      .filter((r) => r.text.length > 0);
+
+    return {
+      rating: data.averageRating,
+      count: data.totalReviewCount ?? reviews.length,
+      reviews,
+    };
   } catch {
     return null;
   }
 }
 
-/** Live rating, review count, and up to 5 reviews — or null if unavailable. */
-export async function getGoogleReviewData(): Promise<GoogleReviewData | null> {
+/** Google Places API (New) → normalized reviews. Only if an API key is set. */
+async function fromPlacesApi(): Promise<GoogleReviewData | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
-  if (!key) return null;
+  if (!key || !GOOGLE_PLACE_ID) return null;
   try {
-    const placeId = await resolvePlaceId(key);
-    if (!placeId) return null;
-
-    const res = await fetch(`${PLACES}/places/${placeId}`, {
+    const res = await fetch(`https://places.googleapis.com/v1/places/${GOOGLE_PLACE_ID}`, {
       headers: {
         "X-Goog-Api-Key": key,
         "X-Goog-FieldMask": "rating,userRatingCount,reviews",
       },
-      next: { revalidate: 86400 }, // daily
+      next: { revalidate: 86400 },
     });
     if (!res.ok) return null;
-
     const data = (await res.json()) as {
       rating?: number;
       userRatingCount?: number;
@@ -83,23 +122,22 @@ export async function getGoogleReviewData(): Promise<GoogleReviewData | null> {
       }>;
     };
     if (typeof data.rating !== "number") return null;
-
     const reviews: LiveReview[] = (data.reviews ?? [])
       .map((r) => ({
         author: r.authorAttribution?.displayName ?? "Google customer",
         rating: r.rating ?? 5,
-        text: r.text?.text ?? r.originalText?.text ?? "",
+        text: (r.text?.text ?? r.originalText?.text ?? "").trim(),
         when: r.relativePublishTimeDescription ?? "recently",
         photo: r.authorAttribution?.photoUri,
       }))
-      .filter((r) => r.text.trim().length > 0);
-
-    return {
-      rating: data.rating,
-      count: data.userRatingCount ?? 0,
-      reviews,
-    };
+      .filter((r) => r.text.length > 0);
+    return { rating: data.rating, count: data.userRatingCount ?? 0, reviews };
   } catch {
     return null;
   }
+}
+
+/** Live rating, review count, and reviews — or null to use curated fallback. */
+export async function getGoogleReviewData(): Promise<GoogleReviewData | null> {
+  return (await fromFeaturable()) ?? (await fromPlacesApi());
 }
