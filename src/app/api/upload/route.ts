@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { getWriteClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -287,9 +287,12 @@ async function handleMetricool(request: Request) {
 /** Force-refresh the pages that surface live Google review data (they're
  *  cached ~24h). Handy right after connecting/rotating the Places API key. */
 function handleRevalidate() {
+  // Purge the cached Google-review fetch (survives revalidatePath), then the
+  // pages that render it.
+  revalidateTag("google-reviews", "max");
   const paths = ["/", "/reviews"];
   for (const p of paths) revalidatePath(p);
-  return Response.json({ ok: true, revalidated: paths });
+  return Response.json({ ok: true, revalidatedTag: "google-reviews", revalidated: paths });
 }
 
 /** Upload a single photo and return its generated SEO + asset id. */
