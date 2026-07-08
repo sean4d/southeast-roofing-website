@@ -61,7 +61,7 @@ async function fromFeaturable(): Promise<GoogleReviewData | null> {
   try {
     const res = await fetch(
       `https://api.featurable.com/v1/widgets/${FEATURABLE_WIDGET_ID}`,
-      { next: { revalidate: 86400 } },
+      { next: { revalidate: 86400, tags: ["google-reviews"] } },
     );
     if (!res.ok) return null;
     const data = (await res.json()) as {
@@ -107,7 +107,7 @@ async function fromPlacesApi(): Promise<GoogleReviewData | null> {
         "X-Goog-Api-Key": key,
         "X-Goog-FieldMask": "rating,userRatingCount,reviews",
       },
-      next: { revalidate: 86400 },
+      next: { revalidate: 86400, tags: ["google-reviews"] },
     });
     if (!res.ok) return null;
     const data = (await res.json()) as {
