@@ -18,6 +18,8 @@ import {
 } from "@/lib/job-content";
 import { polishCaption } from "@/lib/ai-caption";
 import { syndicate } from "@/lib/syndicate";
+import { postViaMetricool } from "@/lib/metricool";
+import { diagnoseReviews } from "@/lib/google-reviews";
 import { badgeImage } from "@/lib/social-badge";
 
 export const runtime = "nodejs";
@@ -77,6 +79,8 @@ export async function POST(request: Request) {
     if (step === "asset") return await handleAsset(request);
     if (step === "create") return await handleCreate(request);
     if (step === "delete") return await handleDelete(request);
+    if (step === "metricool") return await handleMetricool(request);
+    if (step === "check") return await handleCheck();
     return Response.json({ error: "Unknown step" }, { status: 400 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
@@ -93,6 +97,99 @@ async function handleDelete(request: Request) {
   await client.delete(id);
   revalidatePath("/projects");
   return Response.json({ ok: true, deleted: id });
+}
+
+/**
+ * Diagnostic (password-gated): reports whether live Google reviews and the
+ * Metricool credentials are actually working in THIS environment. Never leaks
+ * secret values — only presence booleans + upstream status/messages.
+ */
+async function handleCheck() {
+  const reviews = await diagnoseReviews();
+  const metricool = {
+    tokenPresent: Boolean(process.env.METRICOOL_API_TOKEN),
+    userIdPresent: Boolean(process.env.METRICOOL_USER_ID),
+    blogIdPresent: Boolean(process.env.METRICOOL_BLOG_ID),
+  };
+  const anthropicKeyPresent = Boolean(process.env.ANTHROPIC_API_KEY);
+  return Response.json({ reviews, metricool, anthropicKeyPresent });
+}
+
+interface ProjectDoc {
+  _id: string;
+  title?: string;
+  socialCaption?: string;
+  media?: Array<{
+    image?: { asset?: { _ref?: string } };
+    phase?: PhaseKey;
+    alt?: string;
+    title?: string;
+    metaDescription?: string;
+    filename?: string;
+  }>;
+  syndication?: Array<Record<string, unknown> & { platform?: string }>;
+}
+
+/**
+ * Repost an EXISTING project to Google Business Profile + TikTok via Metricool
+ * ONLY — deliberately skips the Meta (Facebook/Instagram) path so a job that
+ * already went to FB/IG isn't double-posted there. Reuses the job's stored
+ * caption and photos (re-badging before/after just like the original post).
+ */
+async function handleMetricool(request: Request) {
+  const { id } = (await request.json()) as { id?: string };
+  if (!id) return Response.json({ error: "No id provided" }, { status: 400 });
+
+  const client = getWriteClient();
+  const doc = (await client.getDocument(id)) as ProjectDoc | undefined;
+  if (!doc) return Response.json({ error: "Project not found" }, { status: 404 });
+
+  const rawMedia: MediaEntry[] = (doc.media ?? [])
+    .map((m) => ({
+      assetId: m.image?.asset?._ref ?? "",
+      phase: (m.phase ?? "after") as PhaseKey,
+      alt: m.alt ?? "",
+      title: m.title ?? "",
+      metaDescription: m.metaDescription ?? "",
+      filename: m.filename ?? "photo.jpg",
+    }))
+    .filter((m) => m.assetId);
+
+  if (rawMedia.length === 0) {
+    return Response.json({ error: "Project has no photos" }, { status: 400 });
+  }
+
+  const media = [...rawMedia].sort(
+    (a, b) => (PHASE_RANK[a.phase] ?? 1) - (PHASE_RANK[b.phase] ?? 1),
+  );
+  const labelPhotos =
+    media.some((m) => m.phase === "before") && media.some((m) => m.phase === "after");
+
+  const imageUrls = await socialImageUrls(media, client, labelPhotos);
+  const caption = doc.socialCaption ?? doc.title ?? "";
+
+  const results = await postViaMetricool({ text: caption, imageUrls });
+
+  // Merge into the syndication log: keep FB/IG (and anything else) untouched,
+  // replace only the google-business + tiktok entries with this run's outcome.
+  const now = new Date().toISOString();
+  const kept = (doc.syndication ?? []).filter(
+    (s) => s.platform !== "google-business" && s.platform !== "tiktok",
+  );
+  const merged = [
+    ...kept,
+    ...results.map((r) => ({
+      _key: randomUUID(),
+      _type: "syndicationTarget",
+      platform: r.network,
+      status: r.status,
+      note: r.note,
+      postedAt: r.status === "posted" ? now : undefined,
+    })),
+  ];
+  await client.patch(id).set({ syndication: merged }).commit();
+
+  return Response.json({ ok: true, id, title: doc.title, photos: imageUrls.length, results });
 }
 
 /** Upload a single photo and return its generated SEO + asset id. */

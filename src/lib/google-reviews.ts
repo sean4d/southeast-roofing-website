@@ -141,3 +141,84 @@ async function fromPlacesApi(): Promise<GoogleReviewData | null> {
 export async function getGoogleReviewData(): Promise<GoogleReviewData | null> {
   return (await fromFeaturable()) ?? (await fromPlacesApi());
 }
+
+/**
+ * Owner-facing diagnostic (password-gated endpoint). Surfaces WHY live reviews
+ * are or aren't showing, without ever echoing the API key. Google's error body
+ * carries the actionable message (referrer restriction, billing, API disabled,
+ * bad place id) — exactly what's needed to fix a misconfigured key.
+ */
+export interface ReviewsDiag {
+  live: boolean;
+  featurable: { widgetId: string; ok: boolean; status?: number; note?: string };
+  places: {
+    keyPresent: boolean;
+    placeId: string;
+    ok: boolean;
+    status?: number;
+    rating?: number;
+    count?: number;
+    note?: string;
+  };
+}
+
+export async function diagnoseReviews(): Promise<ReviewsDiag> {
+  const diag: ReviewsDiag = {
+    live: false,
+    featurable: { widgetId: FEATURABLE_WIDGET_ID, ok: false },
+    places: {
+      keyPresent: Boolean(process.env.GOOGLE_PLACES_API_KEY),
+      placeId: GOOGLE_PLACE_ID,
+      ok: false,
+    },
+  };
+
+  // Featurable
+  try {
+    const res = await fetch(`https://api.featurable.com/v1/widgets/${FEATURABLE_WIDGET_ID}`, {
+      cache: "no-store",
+    });
+    diag.featurable.status = res.status;
+    const data = (await res.json()) as {
+      success?: boolean;
+      averageRating?: number;
+      error?: { key?: string };
+    };
+    diag.featurable.ok =
+      res.ok && data.success !== false && typeof data.averageRating === "number";
+    if (!diag.featurable.ok) diag.featurable.note = data.error?.key ?? "not published / no data";
+  } catch (e) {
+    diag.featurable.note = e instanceof Error ? e.message : "fetch failed";
+  }
+
+  // Places
+  if (diag.places.keyPresent) {
+    try {
+      const res = await fetch(`https://places.googleapis.com/v1/places/${GOOGLE_PLACE_ID}`, {
+        headers: {
+          "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY!,
+          "X-Goog-FieldMask": "rating,userRatingCount,reviews",
+        },
+        cache: "no-store",
+      });
+      diag.places.status = res.status;
+      const data = (await res.json()) as {
+        rating?: number;
+        userRatingCount?: number;
+        error?: { message?: string; status?: string };
+      };
+      diag.places.ok = res.ok && typeof data.rating === "number";
+      diag.places.rating = data.rating;
+      diag.places.count = data.userRatingCount;
+      if (!diag.places.ok)
+        diag.places.note = data.error?.message ?? data.error?.status ?? "no rating in response";
+    } catch (e) {
+      diag.places.note = e instanceof Error ? e.message : "fetch failed";
+    }
+  } else {
+    diag.places.note = "GOOGLE_PLACES_API_KEY not set in this environment";
+  }
+
+  diag.live = diag.featurable.ok || diag.places.ok;
+  return diag;
+}
