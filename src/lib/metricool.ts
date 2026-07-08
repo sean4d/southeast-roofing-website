@@ -118,9 +118,9 @@ async function publish(
     });
     const text = await res.text();
     if (!res.ok) {
-      // Logged so the first live post is easy to verify/correct.
+      // Logged AND surfaced in the note so the first live post is diagnosable.
       console.error(`[metricool:${network}] ${res.status} ${text.slice(0, 500)}`);
-      return { network, status: "error", note: `HTTP ${res.status}` };
+      return { network, status: "error", note: `HTTP ${res.status}: ${text.slice(0, 300)}` };
     }
     console.log(`[metricool:${network}] scheduled ${text.slice(0, 200)}`);
     return { network, status: "posted" };
@@ -135,19 +135,24 @@ async function publish(
 
 /**
  * Fan out to Google Business Profile + TikTok. No-op (skipped results) until
- * the Metricool credentials are set. Never throws.
+ * the Metricool credentials are set. Never throws. `only` optionally restricts
+ * which networks to post (handy for retrying a single network).
  */
 export async function postViaMetricool(
   post: MetricoolPost,
+  only?: Array<"google-business" | "tiktok">,
 ): Promise<MetricoolResult[]> {
+  const targets: Array<"google-business" | "tiktok"> = only?.length
+    ? only
+    : ["google-business", "tiktok"];
   if (!metricoolConfigured()) {
-    return [
-      { network: "google-business", status: "skipped", note: "Not connected yet" },
-      { network: "tiktok", status: "skipped", note: "Not connected yet" },
-    ];
+    return targets.map((network) => ({
+      network,
+      status: "skipped" as const,
+      note: "Not connected yet",
+    }));
   }
-  return [
-    await publish("google-business", post),
-    await publish("tiktok", post),
-  ];
+  const out: MetricoolResult[] = [];
+  for (const network of targets) out.push(await publish(network, post));
+  return out;
 }
