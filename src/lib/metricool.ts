@@ -42,6 +42,27 @@ const NETWORK: Record<"google-business" | "tiktok", string> = {
   tiktok: "tiktok",
 };
 
+/**
+ * ── Google Business Profile "Photo" content type ───────────────────────────
+ * GBP accepts two DISTINCT kinds of content in Metricool's composer:
+ *   • "Post"  → a text update in the profile's *Posts* feed (what publish()
+ *               above already does — one image + our caption).
+ *   • "Photo" → a bare photo with NO caption, filed in the profile's *Photos*
+ *               gallery. This is the surface we want job photos to land in.
+ * The photo content type is selected by a per-network settings object, the same
+ * `<network>Data` shape Metricool uses for linkedinData / instagramData
+ * (confirmed from Metricool's own client). For GBP that object is
+ * `googleBusinessData`, and the content type lives in its `type` field.
+ *
+ * These two constants are the UNDER-DOCUMENTED bit and the ONE spot to adjust
+ * after the first live test. Run POST /api/upload?step=gbp-photo as a DRY RUN
+ * to see the exact body, then with { confirm: true } to send a single photo and
+ * confirm it lands in the gallery (not the Posts feed). If it lands in the feed
+ * instead, tweak GBP_DATA_FIELD / GBP_PHOTO_TYPE here — and only here.
+ */
+const GBP_DATA_FIELD = "googleBusinessData";
+const GBP_PHOTO_TYPE = "PHOTO";
+
 export interface MetricoolPost {
   /** Caption / post text. */
   text: string;
@@ -60,8 +81,8 @@ export interface MetricoolResult {
 export function metricoolConfigured(): boolean {
   return Boolean(
     process.env.METRICOOL_API_TOKEN &&
-      process.env.METRICOOL_USER_ID &&
-      process.env.METRICOOL_BLOG_ID,
+    process.env.METRICOOL_USER_ID &&
+    process.env.METRICOOL_BLOG_ID,
   );
 }
 
@@ -100,7 +121,11 @@ async function publish(
   let media: string[];
   if (network === "tiktok") {
     if (!post.videoUrl) {
-      return { network, status: "skipped", note: "Needs video — TikTok rejects photo posts" };
+      return {
+        network,
+        status: "skipped",
+        note: "Needs video — TikTok rejects photo posts",
+      };
     }
     media = [post.videoUrl];
   } else {
@@ -133,8 +158,14 @@ async function publish(
     const text = await res.text();
     if (!res.ok) {
       // Logged AND surfaced in the note so the first live post is diagnosable.
-      console.error(`[metricool:${network}] ${res.status} ${text.slice(0, 500)}`);
-      return { network, status: "error", note: `HTTP ${res.status}: ${text.slice(0, 300)}` };
+      console.error(
+        `[metricool:${network}] ${res.status} ${text.slice(0, 500)}`,
+      );
+      return {
+        network,
+        status: "error",
+        note: `HTTP ${res.status}: ${text.slice(0, 300)}`,
+      };
     }
     console.log(`[metricool:${network}] scheduled ${text.slice(0, 200)}`);
     return { network, status: "posted" };
@@ -145,6 +176,149 @@ async function publish(
       note: err instanceof Error ? err.message : "Unknown error",
     };
   }
+}
+
+/**
+ * Metricool's media-normalize step: hand it a public image URL and Metricool
+ * re-hosts the file on its own CDN, returning the URL to use in the post. A
+ * normal GBP Post accepts our Sanity URLs directly, but the Photo content type
+ * is stricter about media provenance, so we normalize first. Best-effort — on
+ * any failure we fall back to the original URL so a post is never blocked.
+ */
+async function normalizeMedia(url: string, token: string): Promise<string> {
+  try {
+    const endpoint = `https://app.metricool.com/api/actions/normalize/image/url?url=${encodeURIComponent(url)}`;
+    const res = await fetch(endpoint, {
+      headers: { "X-Mc-Auth": token },
+      cache: "no-store",
+    });
+    if (!res.ok) return url;
+    const data = (await res.json()) as { url?: string; data?: string } | string;
+    if (typeof data === "string") return data || url;
+    return data.url ?? data.data ?? url;
+  } catch {
+    return url;
+  }
+}
+
+export interface GbpPhotoResult {
+  status: "posted" | "skipped" | "error";
+  imageUrl: string;
+  note?: string;
+  /** The exact body sent to Metricool — surfaced so the first live post (and
+   *  the flag it hinges on) is verifiable without guessing. */
+  request?: unknown;
+  /** Metricool's raw response, for diagnosing the content-type flag. */
+  response?: { status: number; body: string };
+}
+
+/** The photo-only GBP post body for one already-normalized image. */
+function gbpPhotoBody(mediaUrl: string) {
+  return {
+    autoPublish: true,
+    // Schedule a few minutes out — Metricool rejects past times.
+    publicationDate: { dateTime: scheduleAt(5), timezone: TIMEZONE },
+    // A Photo carries NO caption — the empty text is what makes GBP file it in
+    // the Photos gallery rather than the Posts feed.
+    text: "",
+    providers: [{ network: NETWORK["google-business"] }],
+    [MEDIA_FIELD]: [mediaUrl],
+    [GBP_DATA_FIELD]: { type: GBP_PHOTO_TYPE },
+  };
+}
+
+/**
+ * Post ONE job photo to the Google Business Profile *Photos gallery* via
+ * Metricool's photo-only content type. One image per call — GBP takes a single
+ * image per photo item, so a set is a loop of careful single calls. Never
+ * throws. Pass `{ dryRun: true }` to get the exact request body WITHOUT sending
+ * it — the safe first step for verifying the flag.
+ */
+export async function postGbpPhoto(
+  imageUrl: string,
+  opts: { dryRun?: boolean } = {},
+): Promise<GbpPhotoResult> {
+  if (!metricoolConfigured()) {
+    return { status: "skipped", imageUrl, note: "Not connected yet" };
+  }
+  const token = process.env.METRICOOL_API_TOKEN!;
+  const userId = process.env.METRICOOL_USER_ID!;
+  const blogId = process.env.METRICOOL_BLOG_ID!;
+
+  const mediaUrl = await normalizeMedia(imageUrl, token);
+  const body = gbpPhotoBody(mediaUrl);
+
+  if (opts.dryRun) {
+    return {
+      status: "skipped",
+      imageUrl,
+      note: "Dry run — not sent",
+      request: body,
+    };
+  }
+
+  try {
+    const url = `${ENDPOINT}?userId=${encodeURIComponent(userId)}&blogId=${encodeURIComponent(blogId)}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "X-Mc-Auth": token, "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const text = await res.text();
+    if (!res.ok) {
+      console.error(
+        `[metricool:gbp-photo] ${res.status} ${text.slice(0, 500)}`,
+      );
+      return {
+        status: "error",
+        imageUrl,
+        note: `HTTP ${res.status}: ${text.slice(0, 300)}`,
+        request: body,
+        response: { status: res.status, body: text.slice(0, 1000) },
+      };
+    }
+    console.log(`[metricool:gbp-photo] scheduled ${text.slice(0, 200)}`);
+    return {
+      status: "posted",
+      imageUrl,
+      request: body,
+      response: { status: res.status, body: text.slice(0, 1000) },
+    };
+  } catch (err) {
+    return {
+      status: "error",
+      imageUrl,
+      note: err instanceof Error ? err.message : "Unknown error",
+      request: body,
+    };
+  }
+}
+
+/**
+ * Whether AUTOMATIC gallery fan-out is switched on. Off until the flag is
+ * confirmed live: set METRICOOL_GBP_PHOTOS=1 in the environment once the
+ * step=gbp-photo test shows a photo landing in the gallery. Until then, every
+ * new job still fully posts to the site + the GBP Posts feed as before; only
+ * the extra gallery push is held back.
+ */
+export function metricoolGalleryEnabled(): boolean {
+  return metricoolConfigured() && process.env.METRICOOL_GBP_PHOTOS === "1";
+}
+
+/**
+ * Post a set of job photos to the GBP Photos gallery, one careful call each.
+ * Capped so a single job can't flood the gallery (and to stay well clear of the
+ * duplicate-post incident that prompted the cleanup step). Never throws.
+ */
+export async function postGbpPhotos(
+  imageUrls: string[],
+  max = 6,
+): Promise<GbpPhotoResult[]> {
+  const out: GbpPhotoResult[] = [];
+  for (const url of imageUrls.slice(0, max)) {
+    out.push(await postGbpPhoto(url));
+  }
+  return out;
 }
 
 /** YYYY-MM-DD in TIMEZONE, `dayOffset` days from today. */
@@ -184,7 +358,11 @@ export async function inspectMetricool(): Promise<unknown> {
         id?: number;
         publicationDate?: { dateTime?: string };
         text?: string;
-        providers?: Array<{ network?: string; status?: string; detailedStatus?: string }>;
+        providers?: Array<{
+          network?: string;
+          status?: string;
+          detailedStatus?: string;
+        }>;
       }>;
     };
     // Compact newest-first so recent posts are always visible (untruncated).
@@ -201,7 +379,12 @@ export async function inspectMetricool(): Promise<unknown> {
           detail: pr.detailedStatus,
         })),
       }));
-    return { status: res.status, window: { start, end }, count: posts.length, posts };
+    return {
+      status: res.status,
+      window: { start, end },
+      count: posts.length,
+      posts,
+    };
   } catch (e) {
     return { error: e instanceof Error ? e.message : "fetch failed" };
   }
@@ -232,7 +415,10 @@ export async function deleteMetricoolPosts(
   for (const id of ids) {
     try {
       const url = `${ENDPOINT}/${id}?userId=${encodeURIComponent(userId)}&blogId=${encodeURIComponent(blogId)}`;
-      const res = await fetch(url, { method: "DELETE", headers: { "X-Mc-Auth": token } });
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: { "X-Mc-Auth": token },
+      });
       out.push({ id, status: res.status, ok: res.ok });
     } catch {
       out.push({ id, status: 0, ok: false });
