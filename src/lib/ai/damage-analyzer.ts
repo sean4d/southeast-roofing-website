@@ -1,10 +1,15 @@
 /**
  * Roof Damage Analyzer — analysis layer, provider-abstracted like the Roof
- * Assistant so a real vision model can be connected later without touching the
- * UI/route. Today it maps the selected issue to an honest, preliminary read (no
- * photo is actually analyzed yet). Implement `DamageProvider` and return it from
- * `getProvider()` when a vision model is wired up.
+ * Assistant. When ANTHROPIC_API_KEY is set, a Claude vision provider reads the
+ * uploaded photos + context and returns a tailored preliminary read; otherwise
+ * (or on any error) it falls back to the honest, issue-based template below.
+ * The UI/route never change. The Claude provider is held to the same integrity
+ * rules by its system prompt: hedge, never diagnose with authority, never
+ * invent facts, always route to a free inspection.
  */
+
+import { siteConfig } from "@/config/site";
+import { structuredClaude, type InlineImage } from "@/lib/ai/anthropic";
 
 export type DamageIssue =
   | "missing-shingles"
@@ -24,6 +29,8 @@ export interface DamageInput {
   when?: string;
   insurance?: string;
   photoCount?: number;
+  /** Resized JPEG photos (base64, no prefix) — analyzed when Claude is on. */
+  images?: InlineImage[];
 }
 
 export interface DamageResult {
@@ -100,13 +107,88 @@ const mockProvider: DamageProvider = {
   },
 };
 
+const ISSUE_LABELS: Record<DamageIssue, string> = {
+  "missing-shingles": "missing or lifted shingles",
+  leak: "an active leak / water intrusion",
+  hail: "possible hail damage",
+  wind: "possible wind damage",
+  "tree-damage": "tree or impact damage",
+  "pipe-boot-leak": "a failed pipe boot",
+  "rusted-metal": "rust / aging metal roof",
+  "commercial-ponding": "ponding water on a flat roof",
+  "not-sure": "not sure",
+};
+
+const DAMAGE_SYSTEM = [
+  `You are the Roof Damage Analyzer for ${siteConfig.name}, a licensed, insured`,
+  `roofing contractor in Hattiesburg, Mississippi. You give a homeowner a warm,`,
+  `plain-English PRELIMINARY read of roof damage and their next step. You are NOT`,
+  `performing an inspection.`,
+  ``,
+  `Hard rules:`,
+  `- If photos are provided, comment only on what is genuinely visible and hedge`,
+  `  ("looks like", "may be"). Never claim certainty about hidden damage,`,
+  `  structure, or safety, and never say a roof is fine/safe with authority.`,
+  `- Never invent measurements, prices, warranty terms, or insurance outcomes.`,
+  `  Never promise a claim will be approved.`,
+  `- Pick urgency conservatively: active leaks, missing shingles, fresh storm or`,
+  `  impact damage are "high".`,
+  `- The next step should almost always include a free professional inspection.`,
+  `- "damageType" is a short label (max ~5 words). "urgencyNote" and "nextStep"`,
+  `  are one sentence each. Local, honest, no hype.`,
+  `- Return your answer ONLY through the "report" tool.`,
+].join("\n");
+
+const DAMAGE_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  properties: {
+    damageType: { type: "string", description: "Short label for the likely issue." },
+    urgency: { type: "string", enum: ["low", "moderate", "high"] },
+    urgencyNote: { type: "string", description: "One sentence on why it does/doesn't need quick action." },
+    nextStep: { type: "string", description: "One sentence, concrete recommended next step." },
+  },
+  required: ["damageType", "urgency", "urgencyNote", "nextStep"],
+};
+
+const claudeProvider: DamageProvider = {
+  async analyze(input) {
+    const fallback = ISSUES[input.issue] ?? ISSUES["not-sure"];
+    const user = [
+      `What the homeowner reported: ${ISSUE_LABELS[input.issue] ?? input.issue}.`,
+      input.when ? `When it happened: ${input.when}.` : "",
+      input.insurance ? `Insurance involved: ${input.insurance}.` : "",
+      input.images?.length
+        ? `${input.images.length} photo(s) attached — analyze them.`
+        : "No photos attached — base your read on the reported issue only.",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const out = await structuredClaude<DamageResult>({
+      system: DAMAGE_SYSTEM,
+      user,
+      images: input.images,
+      schema: DAMAGE_SCHEMA,
+      maxTokens: 400,
+    });
+
+    if (!out) return fallback;
+    return {
+      damageType: out.damageType || fallback.damageType,
+      urgency: out.urgency ?? fallback.urgency,
+      urgencyNote: out.urgencyNote || fallback.urgencyNote,
+      nextStep: out.nextStep || fallback.nextStep,
+    };
+  },
+};
+
 /**
- * TODO(vision): return a provider that sends the uploaded photos + context to a
- * vision model (Claude/OpenAI/Gemini) and maps its structured output into
- * DamageResult. UI + API route stay unchanged.
+ * Returns the active provider: the Claude vision provider when
+ * ANTHROPIC_API_KEY is set, otherwise the deterministic mock. The Claude
+ * provider itself fails soft to the same templates on any error.
  */
 function getProvider(): DamageProvider {
-  return mockProvider;
+  return process.env.ANTHROPIC_API_KEY ? claudeProvider : mockProvider;
 }
 
 export async function analyzeDamage(input: DamageInput): Promise<DamageResult> {

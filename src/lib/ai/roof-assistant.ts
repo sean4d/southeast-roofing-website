@@ -1,14 +1,17 @@
 import { siteConfig } from "@/config/site";
+import { structuredClaude, type InlineImage } from "@/lib/ai/anthropic";
 
 /**
- * Roof Assistant analysis layer — provider-abstracted so a real vision model
- * (Claude, OpenAI, Gemini) can be swapped in later WITHOUT touching the UI or
- * the API route. Today it returns an honest, topic-based triage (no photo is
- * actually analyzed yet); when a vision provider is connected, implement the
- * `RoofAnalysisProvider` interface and return it from `getProvider()`.
+ * Roof Assistant analysis layer — provider-abstracted. When ANTHROPIC_API_KEY
+ * is set, a Claude vision provider reads any uploaded photos + the visitor's
+ * note and returns a tailored preliminary read; otherwise (or on any error) it
+ * falls back to the honest, topic-based template below. The UI and API route
+ * never change.
  *
  * Nothing here claims to have inspected the roof — the result is preliminary
- * guidance that routes the visitor to the right next step.
+ * guidance that routes the visitor to the right next step. The Claude provider
+ * is held to the same rule by its system prompt: hedge, never diagnose with
+ * authority, never invent facts, always route to a free inspection.
  */
 
 export type RoofTopic =
@@ -36,6 +39,8 @@ export interface AssistantInput {
   topic: RoofTopic;
   description?: string;
   photoCount?: number;
+  /** Resized JPEG photos (base64, no prefix) — analyzed when Claude is on. */
+  images?: InlineImage[];
 }
 
 export interface AssistantResult {
@@ -198,14 +203,128 @@ const mockProvider: RoofAnalysisProvider = {
   },
 };
 
+const TOPIC_LABELS: Record<RoofTopic, string> = {
+  "roof-leak": "roof leak",
+  "storm-damage": "storm damage",
+  "roof-replacement": "roof replacement",
+  "metal-roof": "metal roofing",
+  "commercial-roof": "commercial roofing",
+  "insurance-claim": "insurance claim",
+  maintenance: "roof maintenance",
+  gutters: "gutters / drainage",
+  "not-sure": "not sure yet",
+};
+
 /**
- * Returns the active analysis provider. TODO(vision): when a vision model is
- * connected (e.g., ANTHROPIC_API_KEY / OPENAI_API_KEY), return a provider that
- * sends the uploaded photos + description to the model and maps its structured
- * output into AssistantResult. The UI + API route need no changes.
+ * Valid CTA kinds Claude may choose from. Claude only picks the *kinds*; the
+ * actual links/labels are built server-side by buildCta so URLs and the phone
+ * number are never model-controlled.
+ */
+const CTA_KINDS: CtaKind[] = ["inspection", "estimate", "call", "insurance", "photos"];
+
+const ROOF_SYSTEM = [
+  `You are the Roof Assistant for ${siteConfig.name}, a licensed, insured roofing`,
+  `contractor in Hattiesburg, Mississippi serving the Pine Belt and Gulf Coast.`,
+  `You give a warm, plain-English PRELIMINARY read that routes the homeowner to`,
+  `the right next step. You are NOT performing an inspection.`,
+  ``,
+  `Hard rules:`,
+  `- If photos are provided, comment only on what is genuinely visible. Hedge`,
+  `  ("looks like", "may be"). Never claim certainty about hidden damage,`,
+  `  structure, or safety.`,
+  `- Never invent measurements, prices, warranty terms, timelines, or insurance`,
+  `  outcomes. Never promise a claim will be approved.`,
+  `- Pick urgency conservatively. Active leaks, missing shingles, and fresh storm`,
+  `  damage are "high"; considered purchases (metal, replacement planning) are`,
+  `  "low"/"moderate".`,
+  `- Always steer toward a free professional inspection.`,
+  `- Keep "read" to 2-3 sentences and each step short. Local, honest, no hype.`,
+  `- Return your answer ONLY through the "report" tool.`,
+].join("\n");
+
+const ROOF_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  properties: {
+    headline: { type: "string", description: "Short, friendly title (max ~6 words)." },
+    read: {
+      type: "string",
+      description: "2-3 sentence hedged preliminary read of the situation.",
+    },
+    urgency: { type: "string", enum: ["low", "moderate", "high"] },
+    urgencyNote: { type: "string", description: "One sentence on why it does/doesn't need quick action." },
+    steps: {
+      type: "array",
+      items: { type: "string" },
+      description: "2-3 short, concrete next steps for the homeowner.",
+    },
+    ctaKinds: {
+      type: "array",
+      items: { type: "string", enum: CTA_KINDS },
+      description: "1-3 relevant CTA kinds, most useful first.",
+    },
+  },
+  required: ["headline", "read", "urgency", "urgencyNote", "steps", "ctaKinds"],
+};
+
+interface RoofModelOutput {
+  headline: string;
+  read: string;
+  urgency: Urgency;
+  urgencyNote: string;
+  steps: string[];
+  ctaKinds: CtaKind[];
+}
+
+const claudeProvider: RoofAnalysisProvider = {
+  async analyze(input) {
+    const fallback = TOPICS[input.topic] ?? TOPICS["not-sure"];
+    const user = [
+      `Topic the homeowner picked: ${TOPIC_LABELS[input.topic] ?? input.topic}.`,
+      input.description ? `Their note: "${input.description}"` : "They left no note.",
+      input.images?.length
+        ? `${input.images.length} photo(s) attached — analyze them.`
+        : "No photos attached — base your read on the topic and note only.",
+    ].join("\n");
+
+    const out = await structuredClaude<RoofModelOutput>({
+      system: ROOF_SYSTEM,
+      user,
+      images: input.images,
+      schema: ROOF_SCHEMA,
+    });
+
+    if (!out) {
+      // Fail soft to the deterministic template.
+      return {
+        headline: fallback.headline,
+        read: fallback.read,
+        urgency: fallback.urgency,
+        urgencyNote: fallback.urgencyNote,
+        steps: fallback.steps,
+        ctas: fallback.ctaKinds.map(buildCta),
+      };
+    }
+
+    const kinds = (out.ctaKinds ?? []).filter((k) => CTA_KINDS.includes(k));
+    const ctaKinds = kinds.length ? kinds : fallback.ctaKinds;
+    return {
+      headline: out.headline || fallback.headline,
+      read: out.read || fallback.read,
+      urgency: out.urgency ?? fallback.urgency,
+      urgencyNote: out.urgencyNote || fallback.urgencyNote,
+      steps: out.steps?.length ? out.steps : fallback.steps,
+      ctas: ctaKinds.map(buildCta),
+    };
+  },
+};
+
+/**
+ * Returns the active analysis provider: the Claude vision provider when
+ * ANTHROPIC_API_KEY is set, otherwise the deterministic mock. The Claude
+ * provider itself fails soft to the same templates on any error.
  */
 function getProvider(): RoofAnalysisProvider {
-  return mockProvider;
+  return process.env.ANTHROPIC_API_KEY ? claudeProvider : mockProvider;
 }
 
 export async function analyzeRoof(input: AssistantInput): Promise<AssistantResult> {

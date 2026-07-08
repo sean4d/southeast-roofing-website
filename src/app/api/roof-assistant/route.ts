@@ -1,17 +1,27 @@
 import { analyzeRoof, type AssistantInput } from "@/lib/ai/roof-assistant";
 
 export const runtime = "nodejs";
+// Vision analysis can take a few seconds; give it headroom.
+export const maxDuration = 30;
+
+/** Cap photos server-side so payload + Claude cost stay bounded. */
+const MAX_IMAGES = 4;
 
 /**
  * Roof Assistant endpoint. Thin wrapper over the provider-abstracted analysis
- * layer — when a real vision model is connected, only lib/ai/roof-assistant
- * changes; this route and the UI stay the same.
+ * layer — the provider (Claude vision or the deterministic mock) is chosen
+ * inside lib/ai/roof-assistant; this route and the UI stay the same either way.
  */
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as AssistantInput;
     if (!body?.topic) {
       return Response.json({ error: "Missing topic" }, { status: 400 });
+    }
+    if (Array.isArray(body.images)) {
+      body.images = body.images
+        .filter((i) => i && typeof i.data === "string")
+        .slice(0, MAX_IMAGES);
     }
     const result = await analyzeRoof(body);
     return Response.json(result);

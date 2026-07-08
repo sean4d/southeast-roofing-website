@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import type { AssistantResult, RoofTopic } from "@/lib/ai/roof-assistant";
+import { encodeImages } from "@/lib/image-encode";
 import { cn } from "@/lib/utils";
 
 const TOPICS: { value: RoofTopic; label: string; icon: React.ElementType }[] = [
@@ -76,10 +77,11 @@ export function RoofAssistant() {
     if (!topic) return;
     setPhase("analyzing");
     setStage(0);
+    const images = files.length ? await encodeImages(files) : [];
     const req = fetch("/api/roof-assistant", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic, description, photoCount: files.length }),
+      body: JSON.stringify({ topic, description, photoCount: files.length, images }),
     }).then((r) => r.json() as Promise<AssistantResult>);
 
     for (let i = 0; i < STAGES.length; i++) {

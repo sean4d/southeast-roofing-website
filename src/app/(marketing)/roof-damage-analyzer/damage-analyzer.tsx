@@ -13,6 +13,7 @@ import {
 
 import { submitLead, type LeadFormState } from "@/lib/actions/lead";
 import type { DamageIssue, DamageResult } from "@/lib/ai/damage-analyzer";
+import { encodeImages } from "@/lib/image-encode";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
@@ -64,10 +65,11 @@ export function DamageAnalyzer() {
     if (!issue) return;
     setPhase("analyzing");
     setStage(0);
+    const images = files.length ? await encodeImages(files) : [];
     const req = fetch("/api/damage-analyzer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ issue, when, insurance, photoCount: files.length }),
+      body: JSON.stringify({ issue, when, insurance, photoCount: files.length, images }),
     }).then((r) => r.json() as Promise<DamageResult>);
     for (let i = 0; i < STAGES.length; i++) {
       await sleep(650);
