@@ -77,18 +77,27 @@ function staticCompletedJobs(): GalleryJob[] {
       id: `static-${key}`,
       category: "completed",
       title: isMetal
-        ? `Metal roof — ${f.city}, MS`
+        ? `${f.product ?? "Metal roof"}${f.color ? ` in ${f.color}` : ""} — ${f.city}, MS`
         : `${f.manufacturer ?? ""} ${f.line ?? ""} in ${f.color ?? ""} — ${f.city}, MS`.trim(),
       city: f.city,
       citySlug: f.citySlug,
+      // Metal jobs now carry their real product/profile (e.g. "29ga Gibraltar
+      // Rib") so they share ONE product chip with new metal uploads instead of
+      // a separate generic "Metal Roof" pill.
       product: isMetal
-        ? "Metal Roof"
+        ? (f.product ?? "Metal Roof")
         : f.manufacturer && f.line
           ? `${f.manufacturer} ${f.line}`
           : undefined,
-      color: isMetal ? undefined : f.color,
+      // Metal colors (e.g. Galvalume) live behind the "+ Metal & gutter colors"
+      // toggle via hidesColor(), but are recorded so the color is correct there.
+      color: f.color,
       material: isMetal ? "metal" : "shingle",
-      photos: photos.map((p, i) => ({ id: `${key}-${i}`, src: p.src, alt: p.alt })),
+      photos: photos.map((p, i) => ({
+        id: `${key}-${i}`,
+        src: p.src,
+        alt: p.alt,
+      })),
       source: "static",
     });
   }
@@ -126,7 +135,11 @@ function staticStormJobs(): GalleryJob[] {
       citySlug: f.citySlug,
       stormType: label,
       material: "other",
-      photos: photos.map((p, i) => ({ id: `${key}-${i}`, src: p.src, alt: p.alt })),
+      photos: photos.map((p, i) => ({
+        id: `${key}-${i}`,
+        src: p.src,
+        alt: p.alt,
+      })),
       source: "static",
     });
   }
