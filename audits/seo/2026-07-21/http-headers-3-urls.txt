@@ -1,0 +1,39 @@
+################################################################
+# https://www.southeastroofing.llc/booking-form
+################################################################
+HTTP/2 308 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Tue, 21 Jul 2026 16:51:48 GMT
+location: https://southeastroofing.llc/booking-form
+refresh: 0;url=https://southeastroofing.llc/booking-form
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::5v246-1784652708134-1813f4a93bba
+
+################################################################
+# https://southeastroofing.llc/booking-form
+################################################################
+HTTP/2 308 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Tue, 21 Jul 2026 16:51:48 GMT
+location: /free-inspection
+refresh: 0;url=/free-inspection
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::9zq5c-1784652708782-510fb70c713e
+
+################################################################
+# https://www.southeastroofing.llc/emergency-roof-services
+################################################################
+HTTP/2 308 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Tue, 21 Jul 2026 16:51:49 GMT
+location: https://southeastroofing.llc/emergency-roof-services
+refresh: 0;url=https://southeastroofing.llc/emergency-roof-services
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::md8nd-1784652709154-9c7bba516ef8
+

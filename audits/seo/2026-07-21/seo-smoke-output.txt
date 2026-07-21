@@ -1,0 +1,33 @@
+SEO smoke test against https://southeastroofing.llc
+
+PASS  redirect /emergency-roof-services -> 308 /storm-damage/emergency-roofing (expected 308 /storm-damage/emergency-roofing)
+PASS  redirect /roof-inspections -> 308 /free-inspection (expected 308 /free-inspection)
+PASS  redirect /booking-form -> 308 /free-inspection (expected 308 /free-inspection)
+PASS  redirect /commerical-roofing -> 308 /commercial (expected 308 /commercial)
+PASS  redirect /copy-of-roof-repairs -> 308 /residential/roof-repair (expected 308 /residential/roof-repair)
+PASS  redirect /copy-of-insurance-solutions -> 308 /storm-damage/insurance-claims (expected 308 /storm-damage/insurance-claims)
+PASS  redirect /oceansprings-services -> 308 /service-areas/ocean-springs (expected 308 /service-areas/ocean-springs)
+PASS  www host -> 308 https://southeastroofing.llc/residential/roof-repair?x=1 (expected permanent, path+query preserved)
+PASS  robots.txt 200
+PASS  robots references sitemap
+PASS  robots disallows /studio
+PASS  robots disallows /upload
+PASS  robots allows public content
+PASS  sitemap.xml 200
+PASS  sitemap has 113 URLs
+PASS  all sitemap URLs use canonical host
+PASS  sitemap URL 200 (no redirect): / -> 200
+PASS  sitemap URL 200 (no redirect): /anatomy-of-a-roof -> 200
+PASS  sitemap URL 200 (no redirect): /commercial/roof-repair -> 200
+PASS  sitemap URL 200 (no redirect): /service-areas/meridian -> 200
+PASS  sitemap URL 200 (no redirect): /service-areas/crystal-springs -> 200
+PASS  service page 200
+PASS  self-referencing canonical (https://southeastroofing.llc/residential/roof-repair)
+PASS  has one <title>
+PASS  exactly one <h1>
+PASS  no accidental noindex meta
+PASS  all JSON-LD blocks parse
+PASS  exactly one business entity in JSON-LD (found 1)
+PASS  business entity uses stable @id (https://southeastroofing.llc/#organization)
+
+29 passed, 0 failed

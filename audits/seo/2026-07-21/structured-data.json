@@ -1,0 +1,98 @@
+{
+  "home": {
+    "url": "https://southeastroofing.llc/",
+    "ldjson_blocks": 3,
+    "parse_errors": [],
+    "top_level_types": [
+      "WebSite",
+      "FAQPage",
+      "RoofingContractor"
+    ],
+    "business_entity_nodes": 1,
+    "id_refs": [
+      "https://southeastroofing.llc/#website",
+      "https://southeastroofing.llc/#organization"
+    ],
+    "page_canonical": "https://southeastroofing.llc"
+  },
+  "residential_service": {
+    "url": "https://southeastroofing.llc/residential/roof-repair",
+    "ldjson_blocks": 4,
+    "parse_errors": [],
+    "top_level_types": [
+      "Service",
+      "BreadcrumbList",
+      "FAQPage",
+      "RoofingContractor"
+    ],
+    "business_entity_nodes": 1,
+    "id_refs": [
+      "https://southeastroofing.llc/#organization"
+    ],
+    "page_canonical": "https://southeastroofing.llc/residential/roof-repair"
+  },
+  "commercial_service": {
+    "url": "https://southeastroofing.llc/commercial/tpo",
+    "ldjson_blocks": 4,
+    "parse_errors": [],
+    "top_level_types": [
+      "Service",
+      "BreadcrumbList",
+      "FAQPage",
+      "RoofingContractor"
+    ],
+    "business_entity_nodes": 1,
+    "id_refs": [
+      "https://southeastroofing.llc/#organization"
+    ],
+    "page_canonical": "https://southeastroofing.llc/commercial/tpo"
+  },
+  "storm": {
+    "url": "https://southeastroofing.llc/storm-damage",
+    "ldjson_blocks": 4,
+    "parse_errors": [],
+    "top_level_types": [
+      "Service",
+      "BreadcrumbList",
+      "FAQPage",
+      "RoofingContractor"
+    ],
+    "business_entity_nodes": 1,
+    "id_refs": [
+      "https://southeastroofing.llc/#organization"
+    ],
+    "page_canonical": "https://southeastroofing.llc/storm-damage"
+  },
+  "location": {
+    "url": "https://southeastroofing.llc/service-areas/hattiesburg",
+    "ldjson_blocks": 4,
+    "parse_errors": [],
+    "top_level_types": [
+      "Service",
+      "BreadcrumbList",
+      "FAQPage",
+      "RoofingContractor"
+    ],
+    "business_entity_nodes": 1,
+    "id_refs": [
+      "https://southeastroofing.llc/#organization"
+    ],
+    "page_canonical": "https://southeastroofing.llc/service-areas/hattiesburg"
+  },
+  "learning_article": {
+    "url": "https://southeastroofing.llc/learn/insurance-claims/how-roof-insurance-claims-work-mississippi",
+    "ldjson_blocks": 4,
+    "parse_errors": [],
+    "top_level_types": [
+      "BreadcrumbList",
+      "Article",
+      "FAQPage",
+      "RoofingContractor"
+    ],
+    "business_entity_nodes": 1,
+    "id_refs": [
+      "https://southeastroofing.llc/#organization"
+    ],
+    "page_canonical": "https://southeastroofing.llc/learn/insurance-claims/how-roof-insurance-claims-work-mississippi"
+  }
+}
