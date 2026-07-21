@@ -1,4 +1,9 @@
-import { client } from "./client";
+import { freshClient } from "./client";
+
+/** Cache tag for every project read, so an /upload can purge them all at once
+ *  via revalidateTag("projects") — more reliable than revalidatePath for a
+ *  Sanity fetch cache. */
+const PROJECTS_TAG = "projects";
 
 /** Published projects (drafts excluded) for the live gallery section. */
 const LIVE_PROJECTS_QUERY = `*[_type == "project" && !(_id in path("drafts.**"))]
@@ -35,13 +40,14 @@ export interface LiveProject {
   media?: LiveProjectMedia[];
 }
 
-/** Fetch the live gallery feed. Revalidates hourly; ISR picks up new jobs. */
+/** Fetch the live gallery feed. Fresh (non-CDN) reads + a "projects" cache tag
+ *  so a new upload appears immediately once the page cache is revalidated. */
 export async function getLiveProjects(): Promise<LiveProject[]> {
   try {
-    return await client.fetch(
+    return await freshClient.fetch(
       LIVE_PROJECTS_QUERY,
       {},
-      { next: { revalidate: 600 } },
+      { next: { revalidate: 600, tags: [PROJECTS_TAG] } },
     );
   } catch {
     // If Sanity is unreachable, the live section simply doesn't render —
@@ -75,12 +81,14 @@ export interface ProjectDetail {
   media?: ProjectDetailMedia[];
 }
 
-export async function getProjectBySlug(slug: string): Promise<ProjectDetail | null> {
+export async function getProjectBySlug(
+  slug: string,
+): Promise<ProjectDetail | null> {
   try {
-    return await client.fetch(
+    return await freshClient.fetch(
       PROJECT_BY_SLUG_QUERY,
       { slug },
-      { next: { revalidate: 600 } },
+      { next: { revalidate: 600, tags: [PROJECTS_TAG] } },
     );
   } catch {
     return null;
@@ -90,8 +98,10 @@ export async function getProjectBySlug(slug: string): Promise<ProjectDetail | nu
 /** All published project slugs — for generateStaticParams. */
 export async function getProjectSlugs(): Promise<string[]> {
   try {
-    return await client.fetch(
+    return await freshClient.fetch(
       `*[_type == "project" && defined(slug.current) && !(_id in path("drafts.**"))].slug.current`,
+      {},
+      { next: { revalidate: 600, tags: [PROJECTS_TAG] } },
     );
   } catch {
     return [];

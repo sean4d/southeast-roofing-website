@@ -11,6 +11,20 @@ export const client = createClient({
 });
 
 /**
+ * Read-only client that bypasses Sanity's CDN (`useCdn: false`) so reads are
+ * immediately consistent with writes. Used for the project gallery, whose page
+ * cache is revalidated right after an /upload — the CDN can lag a freshly
+ * created doc, so a CDN read on regeneration would re-cache the old list. Reads
+ * are still infrequent (the page is cached), so the extra API hit is negligible.
+ */
+export const freshClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+});
+
+/**
  * Server-only write client for the /upload job-intake API. The token
  * (`SANITY_WRITE_TOKEN`) is a secret — it lives only in the hosting
  * environment variables, never in the client bundle (no NEXT_PUBLIC prefix)
