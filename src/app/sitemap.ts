@@ -6,6 +6,7 @@ import { articlePath, learnArticles } from "@/content/learn";
 import { blogPosts } from "@/content/blog";
 import { getProjectSlugs } from "@/sanity/lib/queries";
 import { absoluteUrl } from "@/lib/seo";
+import { siteConfig } from "@/config/site";
 
 /**
  * Auto-generated sitemap (PRD §2). Only launched routes are listed —
@@ -46,7 +47,11 @@ const launchedStaticRoutes = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = launchedStaticRoutes.map((path) => ({
-    url: absoluteUrl(path),
+    // Homepage: emit the bare origin (no trailing slash) so the sitemap entry
+    // matches the self-referencing canonical Next renders for "/"
+    // (https://southeastroofing.llc). absoluteUrl("/") would add a trailing
+    // slash and read as a non-self-canonical mismatch in crawlers.
+    url: path === "/" ? siteConfig.url : absoluteUrl(path),
     changeFrequency: "weekly" as const,
     priority: path === "/" ? 1 : 0.8,
   }));
