@@ -23,6 +23,10 @@ import {
   inspectMetricool,
   listMetricoolPosts,
   deleteMetricoolPosts,
+  postGbpPhoto,
+  postGbpPhotos,
+  metricoolGalleryEnabled,
+  type GbpPhotoResult,
 } from "@/lib/metricool";
 import { diagnoseReviews } from "@/lib/google-reviews";
 import { badgeImage } from "@/lib/social-badge";
@@ -61,7 +65,10 @@ async function tiktokVideoUrl(
 const PHASE_RANK: Record<string, number> = { before: 0, progress: 1, after: 2 };
 
 function jpgUrl(assetId: string): string {
-  return urlFor({ _type: "image", asset: { _type: "reference", _ref: assetId } })
+  return urlFor({
+    _type: "image",
+    asset: { _type: "reference", _ref: assetId },
+  })
     .width(1200)
     .format("jpg")
     .url();
@@ -86,7 +93,10 @@ async function socialImageUrls(
     try {
       const res = await fetch(plain);
       if (!res.ok) throw new Error(`fetch ${res.status}`);
-      const badged = await badgeImage(Buffer.from(await res.arrayBuffer()), m.phase);
+      const badged = await badgeImage(
+        Buffer.from(await res.arrayBuffer()),
+        m.phase,
+      );
       const asset = await client.assets.upload("image", badged, {
         filename: `social-${m.phase}-${m.filename}`,
         contentType: "image/jpeg",
@@ -113,6 +123,7 @@ export async function POST(request: Request) {
     if (step === "delete") return await handleDelete(request);
     if (step === "metricool") return await handleMetricool(request);
     if (step === "metricool-clean") return await handleMetricoolClean(request);
+    if (step === "gbp-photo") return await handleGbpPhoto(request);
     if (step === "check") return await handleCheck();
     if (step === "revalidate") return handleRevalidate();
     return Response.json({ error: "Unknown step" }, { status: 400 });
@@ -144,10 +155,18 @@ async function handleCheck() {
     tokenPresent: Boolean(process.env.METRICOOL_API_TOKEN),
     userIdPresent: Boolean(process.env.METRICOOL_USER_ID),
     blogIdPresent: Boolean(process.env.METRICOOL_BLOG_ID),
+    // Auto GBP-gallery fan-out only fires once this is switched on (after the
+    // step=gbp-photo test confirms the flag). Off by default.
+    galleryAutoPost: metricoolGalleryEnabled(),
   };
   const anthropicKeyPresent = Boolean(process.env.ANTHROPIC_API_KEY);
   const metricoolPosts = await inspectMetricool();
-  return Response.json({ reviews, metricool, anthropicKeyPresent, metricoolPosts });
+  return Response.json({
+    reviews,
+    metricool,
+    anthropicKeyPresent,
+    metricoolPosts,
+  });
 }
 
 /**
@@ -177,19 +196,89 @@ async function handleMetricoolClean(request: Request) {
         statuses.includes(pr.status),
     ),
   );
-  const ids = targets.map((p) => p.id).filter((v): v is number => typeof v === "number");
+  const ids = targets
+    .map((p) => p.id)
+    .filter((v): v is number => typeof v === "number");
 
   const byStatus: Record<string, number> = {};
   for (const p of targets)
     for (const pr of p.providers ?? [])
-      if (pr.status) byStatus[`${pr.network}:${pr.status}`] = (byStatus[`${pr.network}:${pr.status}`] ?? 0) + 1;
+      if (pr.status)
+        byStatus[`${pr.network}:${pr.status}`] =
+          (byStatus[`${pr.network}:${pr.status}`] ?? 0) + 1;
 
   if (!confirm) {
     return Response.json({ dryRun: true, matched: ids.length, byStatus, ids });
   }
   const deleted = await deleteMetricoolPosts(ids);
   const okCount = deleted.filter((d) => d.ok).length;
-  return Response.json({ dryRun: false, attempted: ids.length, deleted: okCount, results: deleted });
+  return Response.json({
+    dryRun: false,
+    attempted: ids.length,
+    deleted: okCount,
+    results: deleted,
+  });
+}
+
+/**
+ * Careful single-call test for the GBP Photos-gallery path (the task's
+ * "figure out the flag + test one call at a time" step). Password-gated.
+ *
+ * Body (all optional):
+ *   { imageUrl }        — post this exact public image
+ *   { id, index }       — post one photo (default the first) from an existing
+ *                         project, preferring an "after" photo
+ *   { confirm: true }   — actually send. WITHOUT it this is a DRY RUN that
+ *                         returns the exact body that WOULD be sent, no network
+ *                         call — so the flag is inspectable before anything goes
+ *                         live. After a confirmed send, use step=check to read
+ *                         the post back and verify it landed in the gallery.
+ */
+async function handleGbpPhoto(request: Request) {
+  const {
+    imageUrl,
+    id,
+    index = 0,
+    confirm = false,
+  } = (await request.json().catch(() => ({}))) as {
+    imageUrl?: string;
+    id?: string;
+    index?: number;
+    confirm?: boolean;
+  };
+
+  let target = imageUrl;
+  if (!target && id) {
+    const client = getWriteClient();
+    const doc = (await client.getDocument(id)) as ProjectDoc | undefined;
+    if (!doc)
+      return Response.json({ error: "Project not found" }, { status: 404 });
+    const assetIds = (doc.media ?? [])
+      .slice()
+      // Prefer "after" photos — that's the finished-work shot for the gallery.
+      .sort(
+        (a, b) =>
+          (a.phase === "after" ? -1 : 0) - (b.phase === "after" ? -1 : 0),
+      )
+      .map((m) => m.image?.asset?._ref)
+      .filter((v): v is string => Boolean(v));
+    if (assetIds.length === 0) {
+      return Response.json({ error: "Project has no photos" }, { status: 400 });
+    }
+    target = jpgUrl(assetIds[Math.min(index, assetIds.length - 1)]);
+  }
+
+  if (!target) {
+    return Response.json(
+      { error: "Provide an imageUrl or a project id" },
+      { status: 400 },
+    );
+  }
+
+  const result: GbpPhotoResult = await postGbpPhoto(target, {
+    dryRun: !confirm,
+  });
+  return Response.json({ ok: true, dryRun: !confirm, result });
 }
 
 interface ProjectDoc {
@@ -222,7 +311,8 @@ async function handleMetricool(request: Request) {
 
   const client = getWriteClient();
   const doc = (await client.getDocument(id)) as ProjectDoc | undefined;
-  if (!doc) return Response.json({ error: "Project not found" }, { status: 404 });
+  if (!doc)
+    return Response.json({ error: "Project not found" }, { status: 404 });
 
   const rawMedia: MediaEntry[] = (doc.media ?? [])
     .map((m) => ({
@@ -243,7 +333,8 @@ async function handleMetricool(request: Request) {
     (a, b) => (PHASE_RANK[a.phase] ?? 1) - (PHASE_RANK[b.phase] ?? 1),
   );
   const labelPhotos =
-    media.some((m) => m.phase === "before") && media.some((m) => m.phase === "after");
+    media.some((m) => m.phase === "before") &&
+    media.some((m) => m.phase === "after");
 
   const imageUrls = await socialImageUrls(media, client, labelPhotos);
   const caption = doc.socialCaption ?? doc.title ?? "";
@@ -281,7 +372,13 @@ async function handleMetricool(request: Request) {
   ];
   await client.patch(id).set({ syndication: merged }).commit();
 
-  return Response.json({ ok: true, id, title: doc.title, photos: imageUrls.length, results });
+  return Response.json({
+    ok: true,
+    id,
+    title: doc.title,
+    photos: imageUrls.length,
+    results,
+  });
 }
 
 /** Force-refresh the pages that surface live Google review data (they're
@@ -292,7 +389,11 @@ function handleRevalidate() {
   revalidateTag("google-reviews", "max");
   const paths = ["/", "/reviews"];
   for (const p of paths) revalidatePath(p);
-  return Response.json({ ok: true, revalidatedTag: "google-reviews", revalidated: paths });
+  return Response.json({
+    ok: true,
+    revalidatedTag: "google-reviews",
+    revalidated: paths,
+  });
 }
 
 /** Upload a single photo and return its generated SEO + asset id. */
@@ -360,7 +461,13 @@ async function handleCreate(request: Request) {
       const field = jt?.fields.find((f) => f.key === key);
       const text = Array.isArray(value) ? value.join(", ") : value;
       if (!text) return null;
-      return { _key: randomUUID(), _type: "detail", key, label: field?.label ?? key, value: text };
+      return {
+        _key: randomUUID(),
+        _type: "detail",
+        key,
+        label: field?.label ?? key,
+        value: text,
+      };
     })
     .filter(Boolean);
 
@@ -378,7 +485,8 @@ async function handleCreate(request: Request) {
   // Polished caption: AI when a key is set, deterministic template otherwise.
   // Never the owner's raw notes verbatim. Before/after jobs get an explicit
   // "before & after" lead so viewers know the old roof isn't fresh work.
-  const aiBody = (await polishCaption(submission)) ?? deterministicBody(submission);
+  const aiBody =
+    (await polishCaption(submission)) ?? deterministicBody(submission);
   const captionBody = labelPhotos
     ? `📸 Swipe to see the BEFORE & AFTER 👉\n\n${aiBody}`
     : aiBody;
@@ -425,9 +533,27 @@ async function handleCreate(request: Request) {
     })
     .commit();
 
+  // Also push the finished-work photos to the GBP *Photos gallery* (a separate
+  // surface from the Posts feed the syndicate() call above already hit). Env-
+  // gated OFF until the flag is confirmed live via step=gbp-photo, so this is a
+  // no-op for now and never blocks the upload. Prefer "after" photos; fall back
+  // to whatever we have.
+  let gallery: GbpPhotoResult[] | undefined;
+  if (metricoolGalleryEnabled()) {
+    const afterUrls = imageUrls.filter((_, i) => media[i]?.phase === "after");
+    gallery = await postGbpPhotos(afterUrls.length ? afterUrls : imageUrls);
+  }
+
   // Regenerate the gallery now so the new job (and its filter) appear immediately.
   revalidatePath("/projects");
   if (submission.featured) revalidatePath("/");
 
-  return Response.json({ ok: true, id: doc._id, title, slug, url: projectUrl });
+  return Response.json({
+    ok: true,
+    id: doc._id,
+    title,
+    slug,
+    url: projectUrl,
+    gallery,
+  });
 }

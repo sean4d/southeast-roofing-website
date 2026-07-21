@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, MapPin, X } from "lucide-react";
 
@@ -61,14 +61,19 @@ function beforeOf(job: GalleryJob) {
 export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
   const categories = uniq(jobs.map((j) => j.category)) as GalleryCategory[];
   const [category, setCategory] = useState<GalleryCategory>(
-    categories.includes("completed") ? "completed" : (categories[0] ?? "completed"),
+    categories.includes("completed")
+      ? "completed"
+      : (categories[0] ?? "completed"),
   );
   const [city, setCity] = useState<string | null>(null);
   const [product, setProduct] = useState<string | null>(null);
   const [color, setColor] = useState<string | null>(null);
   const [storm, setStorm] = useState<string | null>(null);
   const [showHiddenColors, setShowHiddenColors] = useState(false);
-  const [openJob, setOpenJob] = useState<{ job: GalleryJob; photoId: string } | null>(null);
+  const [openJob, setOpenJob] = useState<{
+    job: GalleryJob;
+    photoId: string;
+  } | null>(null);
 
   // Reset facets when the category changes.
   function switchCategory(next: GalleryCategory) {
@@ -85,9 +90,18 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
   );
 
   // Available (non-empty) filter values for this category.
-  const cities = useMemo(() => uniq(inCategory.map((j) => j.city)), [inCategory]);
-  const products = useMemo(() => uniq(inCategory.map((j) => j.product)), [inCategory]);
-  const stormTypes = useMemo(() => uniq(inCategory.map((j) => j.stormType)), [inCategory]);
+  const cities = useMemo(
+    () => uniq(inCategory.map((j) => j.city)),
+    [inCategory],
+  );
+  const products = useMemo(
+    () => uniq(inCategory.map((j) => j.product)),
+    [inCategory],
+  );
+  const stormTypes = useMemo(
+    () => uniq(inCategory.map((j) => j.stormType)),
+    [inCategory],
+  );
   const shownColors = useMemo(
     () => uniq(inCategory.filter((j) => !hidesColor(j)).map((j) => j.color)),
     [inCategory],
@@ -115,7 +129,11 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
     () =>
       filtered.flatMap((j) => {
         const showcase = showcaseOf(j);
-        return showcase.map((p) => ({ ...p, job: j, showcaseCount: showcase.length }));
+        return showcase.map((p) => ({
+          ...p,
+          job: j,
+          showcaseCount: showcase.length,
+        }));
       }),
     [filtered],
   );
@@ -134,7 +152,9 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
               onClick={() => switchCategory(c)}
               className={cn(
                 "rounded-full px-5 py-2 text-sm font-semibold transition",
-                category === c ? "bg-navy-900 text-white" : "text-slate-600 hover:text-navy-900",
+                category === c
+                  ? "bg-navy-900 text-white"
+                  : "text-slate-600 hover:text-navy-900",
               )}
             >
               {CATEGORY_LABEL[c]}
@@ -148,7 +168,11 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
         {cities.length > 1 && (
           <FilterRow label="City">
             {cities.map((c) => (
-              <Pill key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>
+              <Pill
+                key={c}
+                active={city === c}
+                onClick={() => setCity(city === c ? null : c)}
+              >
                 {c}
               </Pill>
             ))}
@@ -158,43 +182,60 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
         {category === "completed" && products.length > 0 && (
           <FilterRow label="Product">
             {products.map((p) => (
-              <Pill key={p} active={product === p} onClick={() => setProduct(product === p ? null : p)}>
+              <Pill
+                key={p}
+                active={product === p}
+                onClick={() => setProduct(product === p ? null : p)}
+              >
                 {p}
               </Pill>
             ))}
           </FilterRow>
         )}
 
-        {category === "completed" && (shownColors.length > 0 || hiddenColors.length > 0) && (
-          <FilterRow label="Color">
-            {shownColors.map((c) => (
-              <Pill key={c} active={color === c} onClick={() => setColor(color === c ? null : c)}>
-                {c}
-              </Pill>
-            ))}
-            {hiddenColors.length > 0 &&
-              (showHiddenColors ? (
-                hiddenColors.map((c) => (
-                  <Pill key={c} active={color === c} onClick={() => setColor(color === c ? null : c)}>
-                    {c}
-                  </Pill>
-                ))
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowHiddenColors(true)}
-                  className="rounded-full border border-dashed border-steel-500 px-3.5 py-1.5 text-sm font-medium text-steel-500 hover:bg-secondary"
+        {category === "completed" &&
+          (shownColors.length > 0 || hiddenColors.length > 0) && (
+            <FilterRow label="Color">
+              {shownColors.map((c) => (
+                <Pill
+                  key={c}
+                  active={color === c}
+                  onClick={() => setColor(color === c ? null : c)}
                 >
-                  + Metal &amp; gutter colors
-                </button>
+                  {c}
+                </Pill>
               ))}
-          </FilterRow>
-        )}
+              {hiddenColors.length > 0 &&
+                (showHiddenColors ? (
+                  hiddenColors.map((c) => (
+                    <Pill
+                      key={c}
+                      active={color === c}
+                      onClick={() => setColor(color === c ? null : c)}
+                    >
+                      {c}
+                    </Pill>
+                  ))
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowHiddenColors(true)}
+                    className="rounded-full border border-dashed border-steel-500 px-3.5 py-1.5 text-sm font-medium text-steel-500 hover:bg-secondary"
+                  >
+                    + Metal &amp; gutter colors
+                  </button>
+                ))}
+            </FilterRow>
+          )}
 
         {category === "storm" && stormTypes.length > 1 && (
           <FilterRow label="Damage">
             {stormTypes.map((s) => (
-              <Pill key={s} active={storm === s} onClick={() => setStorm(storm === s ? null : s)}>
+              <Pill
+                key={s}
+                active={storm === s}
+                onClick={() => setStorm(storm === s ? null : s)}
+              >
                 {s}
               </Pill>
             ))}
@@ -238,7 +279,7 @@ export function UnifiedGallery({ jobs }: { jobs: GalleryJob[] }) {
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               {p.showcaseCount > 1 && (
-                <span className="absolute right-2 top-2 rounded-full bg-navy-950/70 px-2 py-0.5 text-xs font-semibold text-white">
+                <span className="absolute top-2 right-2 rounded-full bg-navy-950/70 px-2 py-0.5 text-xs font-semibold text-white">
                   {p.showcaseCount} photos
                 </span>
               )}
@@ -293,47 +334,96 @@ export function JobCard({
   const [beforeView, setBeforeView] = useState<GalleryPhoto | null>(null);
   const photo = beforeView ?? showcase[index] ?? job.photos[0];
 
+  const next = () => {
+    setBeforeView(null);
+    setIndex((i) => (i + 1) % showcase.length);
+  };
+  const prev = () => {
+    setBeforeView(null);
+    setIndex((i) => (i - 1 + showcase.length) % showcase.length);
+  };
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") {
-        setBeforeView(null);
-        setIndex((i) => (i + 1) % showcase.length);
-      }
-      if (e.key === "ArrowLeft") {
-        setBeforeView(null);
-        setIndex((i) => (i - 1 + showcase.length) % showcase.length);
-      }
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showcase.length, onClose]);
 
-  const chips = [job.product, job.color, job.stormType].filter(Boolean) as string[];
+  // Lock the page behind the modal so mobile scroll stays inside the card
+  // instead of the gallery moving underneath. Paired with overscroll-contain on
+  // the card's scroll region so it also doesn't rubber-band into the page.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  // Swipe the main image left/right to move through the job's photos (mobile).
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    // Horizontal, deliberate swipe only — ignore vertical scrolls/taps.
+    if (
+      Math.abs(dx) > 45 &&
+      Math.abs(dx) > Math.abs(dy) * 1.5 &&
+      showcase.length > 1 &&
+      !beforeView
+    ) {
+      if (dx < 0) next();
+      else prev();
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  }
+
+  const chips = [job.product, job.color, job.stormType].filter(
+    Boolean,
+  ) as string[];
   const badge = photo.phase ? PHASE_BADGE[photo.phase] : undefined;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/80 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/80 p-3 sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white"
+        // dvh (not vh) so the card fits the *visible* mobile viewport with the
+        // URL bar showing — vh overflowed and pushed the CTAs off-screen.
+        className="flex max-h-[92dvh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white sm:max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative bg-navy-950">
+        <div
+          className="relative bg-navy-950 select-none"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={photo.src}
             alt={photo.alt}
-            className="max-h-[60vh] w-full object-contain"
+            draggable={false}
+            className="max-h-[46dvh] w-full object-contain sm:max-h-[60vh]"
           />
           {showPhase && badge && (
             <span
               className={cn(
-                "absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide",
+                "absolute top-3 left-3 rounded-full px-3 py-1 text-xs font-bold tracking-wide uppercase",
                 badge.cls,
               )}
             >
@@ -344,14 +434,17 @@ export function JobCard({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-navy-900"
+            className="absolute top-3 right-3 rounded-full bg-white/90 p-2 text-navy-900"
           >
             <X className="size-5" />
           </button>
           {showcase.length > 1 && !beforeView && (
             <>
-              <NavBtn side="left" onClick={() => setIndex((i) => (i - 1 + showcase.length) % showcase.length)} />
-              <NavBtn side="right" onClick={() => setIndex((i) => (i + 1) % showcase.length)} />
+              {/* Arrows on ≥sm; on touch the image also swipes left/right. */}
+              <div className="hidden sm:block">
+                <NavBtn side="left" onClick={prev} />
+                <NavBtn side="right" onClick={next} />
+              </div>
               <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-navy-950/70 px-3 py-1 text-xs font-semibold text-white">
                 {index + 1} / {showcase.length}
               </span>
@@ -359,7 +452,7 @@ export function JobCard({
           )}
         </div>
 
-        <div className="flex flex-col gap-3 overflow-y-auto p-5">
+        <div className="flex flex-col gap-3 overflow-y-auto overscroll-contain p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <h3 className="text-lg font-bold text-navy-900">{job.title}</h3>
           <div className="flex flex-wrap items-center gap-2">
             {job.city && (
@@ -368,7 +461,10 @@ export function JobCard({
               </span>
             )}
             {chips.map((c) => (
-              <span key={c} className="rounded-full border border-border px-3 py-1 text-sm text-slate-600">
+              <span
+                key={c}
+                className="rounded-full border border-border px-3 py-1 text-sm text-slate-600"
+              >
                 {c}
               </span>
             ))}
@@ -386,11 +482,17 @@ export function JobCard({
                   }}
                   className={cn(
                     "size-16 flex-none overflow-hidden rounded-lg border-2",
-                    !beforeView && i === index ? "border-navy-900" : "border-transparent",
+                    !beforeView && i === index
+                      ? "border-navy-900"
+                      : "border-transparent",
                   )}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.src} alt={p.alt} className="h-full w-full object-cover" />
+                  <img
+                    src={p.src}
+                    alt={p.alt}
+                    className="h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -398,8 +500,10 @@ export function JobCard({
 
           {before.length > 0 && (
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
-              <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-700">
-                <span className="rounded-full bg-amber-500 px-2 py-0.5 text-white">Before</span>
+              <p className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-amber-700 uppercase">
+                <span className="rounded-full bg-amber-500 px-2 py-0.5 text-white">
+                  Before
+                </span>
                 What this roof looked like before we started
               </p>
               <div className="mt-2.5 flex gap-2 overflow-x-auto pb-1">
@@ -410,11 +514,17 @@ export function JobCard({
                     onClick={() => setBeforeView(p)}
                     className={cn(
                       "relative size-16 flex-none overflow-hidden rounded-lg border-2",
-                      beforeView?.id === p.id ? "border-amber-500" : "border-transparent",
+                      beforeView?.id === p.id
+                        ? "border-amber-500"
+                        : "border-transparent",
                     )}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.src} alt={p.alt} className="h-full w-full object-cover" />
+                    <img
+                      src={p.src}
+                      alt={p.alt}
+                      className="h-full w-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -451,7 +561,13 @@ export function JobCard({
   );
 }
 
-function NavBtn({ side, onClick }: { side: "left" | "right"; onClick: () => void }) {
+function NavBtn({
+  side,
+  onClick,
+}: {
+  side: "left" | "right";
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"
@@ -462,15 +578,25 @@ function NavBtn({ side, onClick }: { side: "left" | "right"; onClick: () => void
         side === "left" ? "left-3" : "right-3",
       )}
     >
-      {side === "left" ? <ChevronLeft className="size-5" /> : <ChevronRight className="size-5" />}
+      {side === "left" ? (
+        <ChevronLeft className="size-5" />
+      ) : (
+        <ChevronRight className="size-5" />
+      )}
     </button>
   );
 }
 
-function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
+function FilterRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-steel-500">
+      <span className="mr-1 text-xs font-semibold tracking-wide text-steel-500 uppercase">
         {label}
       </span>
       {children}
