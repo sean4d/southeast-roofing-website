@@ -140,7 +140,9 @@ async function handleDelete(request: Request) {
   if (!id) return Response.json({ error: "No id provided" }, { status: 400 });
   const client = getWriteClient();
   await client.delete(id);
+  revalidateTag("projects", "max");
   revalidatePath("/projects");
+  revalidatePath("/project-map");
   return Response.json({ ok: true, deleted: id });
 }
 
@@ -381,17 +383,18 @@ async function handleMetricool(request: Request) {
   });
 }
 
-/** Force-refresh the pages that surface live Google review data (they're
- *  cached ~24h). Handy right after connecting/rotating the Places API key. */
+/** Force-refresh cached content on demand (password-gated). Covers live Google
+ *  reviews (cached ~24h) AND the project gallery — so a just-uploaded job can be
+ *  pushed live instantly instead of waiting out the gallery's cache window. */
 function handleRevalidate() {
-  // Purge the cached Google-review fetch (survives revalidatePath), then the
-  // pages that render it.
+  // Purge the cached fetches (they survive revalidatePath), then the pages.
   revalidateTag("google-reviews", "max");
-  const paths = ["/", "/reviews"];
+  revalidateTag("projects", "max");
+  const paths = ["/", "/reviews", "/projects", "/project-map"];
   for (const p of paths) revalidatePath(p);
   return Response.json({
     ok: true,
-    revalidatedTag: "google-reviews",
+    revalidatedTags: ["google-reviews", "projects"],
     revalidated: paths,
   });
 }
@@ -544,8 +547,12 @@ async function handleCreate(request: Request) {
     gallery = await postGbpPhotos(afterUrls.length ? afterUrls : imageUrls);
   }
 
-  // Regenerate the gallery now so the new job (and its filter) appear immediately.
+  // Regenerate the gallery now so the new job (and its filter) appear
+  // immediately. revalidateTag purges the (fresh, non-CDN) project fetch cache
+  // reliably; revalidatePath rebuilds the pages that render it.
+  revalidateTag("projects", "max");
   revalidatePath("/projects");
+  revalidatePath("/project-map");
   if (submission.featured) revalidatePath("/");
 
   return Response.json({
