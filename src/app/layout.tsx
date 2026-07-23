@@ -31,6 +31,27 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  /**
+   * Browser favicons use a TRANSPARENT roof mark that follows the tab theme:
+   * navy on light tabs, white on dark tabs. The theme-aware SVG handles this in
+   * all modern browsers (Chrome/Edge 80+, Firefox, Safari 16.4+) via
+   * prefers-color-scheme; the light/dark PNGs are a fallback for browsers that
+   * take a favicon `media` hint but not SVG; app/favicon.ico (auto-wired) is the
+   * universal legacy fallback. Installed-app icons (apple-icon.png + the
+   * manifest's public/icons/*) keep the filled navy tile — the standard there.
+   */
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon/favicon-32.png", type: "image/png", sizes: "32x32", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon/favicon-white-32.png", type: "image/png", sizes: "32x32", media: "(prefers-color-scheme: dark)" },
+      { url: "/favicon/favicon-16.png", type: "image/png", sizes: "16x16", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon/favicon-white-16.png", type: "image/png", sizes: "16x16", media: "(prefers-color-scheme: dark)" },
+    ],
+    // Installed-app icon (filled navy tile) — the manual `icon` list above
+    // suppresses file-convention auto-detection, so declare it explicitly.
+    apple: "/apple-icon.png",
+  },
   // Google Search Console verification — set the token in env to emit the tag.
   ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
     ? {
